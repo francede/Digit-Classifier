@@ -53,6 +53,7 @@ public class Matrix {
     	}
     	return str;
     }
+
 //STATIC MATRIX OPERATIONS
 
     /**
@@ -109,6 +110,25 @@ public class Matrix {
     }
 
     /**
+     * Transforms a two dimensional array into a two dimensional matrix
+     * @param array: Array to transform
+     * @return Returns a new matrix on successful transformation.
+     * Returns null on unsuccessful transformation,
+     * e.g. the 2nd dimension arrays are of variabe length
+     */
+    public static Matrix arrayToMatrix(float[][] array){
+    	Matrix result = new Matrix(array.length, array[0].length);
+    	int secondArrLength = array[0].length;
+    	for(int i = 0; i < array.length; i++){
+    		if(array[i].length != secondArrLength) return null;
+    		for(int j = 0; j < secondArrLength; j++){
+    			result.data[i][j] = array[i][j];
+    		}
+    	}
+    	return result;
+    }
+
+    /**
      * Creates a clone of the given matrix without modifying the original
      * @param m: Matrix to clone
      * @return Returns the clone matrix
@@ -122,6 +142,14 @@ public class Matrix {
     	}
     	return result;
     }
+
+//MATRIX GETTERS (AND SETTERS)
+
+    public float[][] getData(){return this.data;}
+
+    public int getRows(){return this.rows;}
+
+    public int getCols(){return this.cols;}
 
 //MATRIX ELEMENTWISE AND NUMERIC OPERATIONS
 
@@ -247,7 +275,7 @@ public class Matrix {
      * @param f: FloatFunction to map to each element(see lambda functions)
      * @return Returns true if successful mapping and false upon failed mapping
      */
-    public boolean map(FloatOperation f){
+    public boolean map(MapOperation f){
     	Matrix backup = Matrix.clone(this);
     	try{
 	    	for(int i = 0; i < this.rows; i++){
@@ -266,7 +294,5 @@ public class Matrix {
      * A functional interface for lambda functions of one parameter(float) and of return type float
      * @author Francesco
      */
-    public interface FloatOperation{
-    	float operation(float x);
-    }
+    public interface MapOperation{float operation(float x);}
 }
