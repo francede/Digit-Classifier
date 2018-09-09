@@ -30,7 +30,7 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 
 	private String inputImagePath = "data/train-images/train-images.idx3-ubyte";
 	private String inputLabelPath = "data/train-images/train-labels.idx1-ubyte";
-	private String outputPath = "data/train-images/";
+	private String pngOutputPath = "data/train-images/";
 
 	private int numberOfImages;
 	private int numberOfRows;
@@ -94,6 +94,22 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		closeFileStreams();
 		return singleImageAsPixels;
 	}
+	
+	public ArrayList<int[]> getMultipleImagesAsPixels(int amountOfImages) {
+		openFileStreams();
+		ArrayList<int[]> multipleImagesAsPixels = new ArrayList<int[]>();
+		int[] singleImageAsPixels = null;
+		for (int i = 0; i < amountOfImages; i++) {
+			if (i % 100 == 0) {
+				System.out.println("Number of images processed: " + i);
+			}
+			singleImageAsPixels = readImageFiles();
+			multipleImagesAsPixels.add(singleImageAsPixels);
+		}	
+		
+		closeFileStreams();
+		return multipleImagesAsPixels;
+	}
 
 	public ArrayList<int[]> getAllImagesAsPixels() {
 		openFileStreams();
@@ -101,7 +117,7 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		int[] singleImageAsPixels = null;
 		for (int i = 0; i < numberOfImages; i++) {
 			if (i % 100 == 0) {
-				System.out.println("Number of images processed: " + i);
+				System.out.println("IDXImageFileReaderImpl: Number of images processed: " + i);
 			}
 			singleImageAsPixels = readImageFiles();
 			allImagesAsPixels.add(singleImageAsPixels);
@@ -139,7 +155,7 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	}
 
 	/*
-	 * The original code from Stackoverflow with the paths changed. Stored here for
+	 * The original code from Stackoverflow with the paths changed. Stored for
 	 * testing purposes.
 	 */
 	public static void IDXReader() {

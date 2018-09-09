@@ -29,10 +29,20 @@ public class IDXImageFileReaderImplTest {
 	}
 	
 	public void checkPixelValues(int[] imageAsPixels) {
-		System.out.println("meni");
 		for (int i : imageAsPixels) {
 			assertTrue("The pixel value is below 0", i >= 0);
 			assertTrue("The pixel value is greater than 255", i <= 255);
+		}
+	}
+	
+	@Test public void getMultipleImagesAsPixels() {
+		System.out.println("---Test: get multiple images as pixels---");
+		ArrayList<int[]> multipleImagesAsPixels;
+		int amountOfImages = 5;
+		multipleImagesAsPixels = IDXReader.getMultipleImagesAsPixels(amountOfImages);
+		assertNotNull("The image Arraylist is null", multipleImagesAsPixels);
+		for (int[] imageAsPixels : multipleImagesAsPixels) {
+			checkPixelValues(imageAsPixels);
 		}
 	}
 	
