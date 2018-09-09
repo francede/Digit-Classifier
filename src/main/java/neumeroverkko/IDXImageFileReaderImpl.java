@@ -101,7 +101,7 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		int[] singleImageAsPixels = null;
 		for (int i = 0; i < amountOfImages; i++) {
 			if (i % 100 == 0) {
-				System.out.println("Number of images processed: " + i);
+				System.out.println("IDXImageFileReaderImpl: Number of images processed: " + i);
 			}
 			singleImageAsPixels = readImageFiles();
 			multipleImagesAsPixels.add(singleImageAsPixels);

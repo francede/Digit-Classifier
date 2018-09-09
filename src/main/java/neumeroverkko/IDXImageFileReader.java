@@ -14,7 +14,7 @@ public interface IDXImageFileReader {
 	 * Returns a number image from the training set as a int[] of length 785, 
 	 * where the first 784 integers are the grayscale pixel values of the image
 	 * (0 = white, 255 = black) and the last integer is the number the pixels represent (0-9). 
-	 * Pixels are organized row-wise.
+	 * Pixels are organized row-wise. The original image is 28x28 pixels.
 	 */	
 	public int[] getSingleImageAsPixels();
 	
