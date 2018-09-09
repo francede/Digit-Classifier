@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 /**
- * Pixels are organized row-wise. Pixel values are 0 to 255. 0 means background
- * (white), 255 means foreground (black).
+ * Pixels in the file 'train-images.idx3-ubyte' are organized row-wise. 
+ * Pixel values are 0 to 255. 0 means background (white), 255 means foreground (black).
  * 
  * Label is the number drawn in the image (values 0-9)
  * 
@@ -100,6 +100,9 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		ArrayList<int[]> allImagesAsPixels = new ArrayList<int[]>();
 		int[] singleImageAsPixels = null;
 		for (int i = 0; i < numberOfImages; i++) {
+			if (i % 100 == 0) {
+				System.out.println("Number of images processed: " + i);
+			}
 			singleImageAsPixels = readImageFiles();
 			allImagesAsPixels.add(singleImageAsPixels);
 		}	
