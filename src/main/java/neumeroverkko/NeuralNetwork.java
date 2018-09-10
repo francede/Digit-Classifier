@@ -12,18 +12,15 @@ public interface NeuralNetwork {
 	 *
 	 * The parameter int[] must contain the pixel values of a grayscale 28x28 image arranged row-wise.
 	 *
-	 * The parameter int[] may contain the actual number the pixels represent as it's last element.
-	 *
-	 * The returning double[] contains predictions as probabilities for each number 0-9.
+	 * Returns predictions as probabilities for each number 0-9.
 	 */
-	public double[] givePrediction(int[] imageAsPixels);
+	public double[] makePrediction(int[] imageAsPixels);
 
 	/*
-	 * Trains the network with a training set. The parameter int[] must contain the pixel values
-	 * of a grayscale 28x28 image arranged row-wise and the last element must be the actual
-	 * number the pixels represent.
+	 * Trains the network with a training set. The image objects in the parameter must 
+	 * contain the pixel values of a grayscale 28x28 image arranged row-wise and have a label assigned.
 	 */
-	public void trainWithATrainingSet(ArrayList<int[]> trainingSet);
+	public void trainWithATrainingSet(ArrayList<ImageAsPixelsAndLabel> trainingSet);
 
 	/*
 	 * Resets the neural network by randomizing all weights and biases.

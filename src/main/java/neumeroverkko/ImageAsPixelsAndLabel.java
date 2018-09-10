@@ -1,11 +1,11 @@
 package neumeroverkko;
 
-public class ImageAsPixels {
-	
+public class ImageAsPixelsAndLabel {
+
 	private int[] pixels;
 	private int label;
-	
-	public ImageAsPixels(int[] pixels, int label) {
+
+	public ImageAsPixelsAndLabel(int[] pixels, int label) {
 		this.pixels = pixels;
 		this.label = label;
 	}
@@ -16,6 +16,10 @@ public class ImageAsPixels {
 
 	public int getLabel() {
 		return label;
+	}
+
+	public void setLabel(int label) {
+		this.label = label;
 	}
 
 }
