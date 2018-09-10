@@ -63,7 +63,7 @@ public class Matrix {
      * Note that the order in which the param matrices are given matters:
      * a's columns need to match with b's rows
      * @return Returns a matrix which is the dot product of the two matrices.
-     * Returns false if a's columns and b's rows don't match
+     * Returns null if a's columns and b's rows don't match
      */
     public static Matrix dotProduct(Matrix a, Matrix b){
     	if(a.cols != b.rows) return null;
