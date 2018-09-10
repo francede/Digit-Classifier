@@ -11,19 +11,22 @@ import java.util.ArrayList;
 public interface IDXImageFileReader {
 	
 	/**
-	 * Returns a number image from the training set as a int[] of length 785, 
-	 * where the first 784 integers are the grayscale pixel values of the image
-	 * (0 = white, 255 = black) and the last integer is the number the pixels represent (0-9). 
-	 * Pixels are organized row-wise. The original image is 28x28 pixels.
+	 * Returns an ImageAsPixel object constructed from the training set. 
+	 * 
+	 * The object has an attribute 'label', which stores the actual number the pictures represent (0-9) 
+	 * and 'pixels' (int[]) of length 784, which are the
+	 * grayscale pixel values of the image organized row-wise (0 = white, 255 = black).
+	 * 
+	 * The original image is 28x28 pixels.
 	 */	
-	public int[] getSingleImageAsPixels();
+	public ImageAsPixels getSingleImageAsPixels();
 	
 	/**
-	 * Returns X amount of number images from the training set as a ArrayList of int[].
+	 * Returns X amount of number images constructed from the training set as a ArrayList.
 	 * 
 	 * The last integer of each int[] is the number the pixels represent.
 	 */
-	public ArrayList<int[]> getMultipleImagesAsPixels(int amountOfImages);
+	public ArrayList<ImageAsPixels> getMultipleImagesAsPixels(int amountOfImages);
 	
 	/**
 	 * Returns all 60000 number images from the training set as a ArrayList of int[].
