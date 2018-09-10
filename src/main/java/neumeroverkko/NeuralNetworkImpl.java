@@ -6,7 +6,7 @@ public class NeuralNetworkImpl{
 	private Matrix[] weights;
 	private Matrix[] biases;
 	private int[] layerSizes;
-	//private MapOperation activationFunction = (x) -> {};
+	private MapOperation activationFunction = (x) -> {return x;};
 
 	public NeuralNetworkImpl(int[] layerSizes){
 		this.layerSizes = layerSizes.clone();
