@@ -11,14 +11,16 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 /**
- * Pixels in the file 'train-images.idx3-ubyte' are organized row-wise. 
+* This piece of code is based on a IDX file reader presented in Stackoverflow
+* by RayDeeA.
+* https://stackoverflow.com/questions/17279049/reading-a-idx-file-type-in-java
+*/
+
+/**
+ * Pixels in the training set images are organized row-wise. 
  * Pixel values are 0 to 255. 0 means background (white), 255 means foreground (black).
  * 
- * Label is the number drawn in the image (values 0-9)
- * 
- * This piece of code is based on a IDX file reader presented in Stackoverflow
- * by RayDeeA.
- * https://stackoverflow.com/questions/17279049/reading-a-idx-file-type-in-java
+ * Label is the number drawn in the image (values 0-9).
  * 
  * @author Antti Nieminen
  *
@@ -30,12 +32,11 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 
 	private String inputImagePath = "data/train-images/train-images.idx3-ubyte";
 	private String inputLabelPath = "data/train-images/train-labels.idx1-ubyte";
-	private String pngOutputPath = "data/train-images/";
+	private String outputPNGPath = "data/train-images/";
 
 	private int numberOfImages;
 	private int numberOfRows;
 	private int numberOfColumns;
-	private int numberOfLabels;
 
 	public IDXImageFileReaderImpl() {
 		openFileStreams();
@@ -49,11 +50,11 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			numberOfColumns = (inImage.read() << 24) | (inImage.read() << 16) | (inImage.read() << 8)
 					| (inImage.read());
 
-			// Although magicNumberLabels isn't used in this class, it must be read from the
+			// Although magicNumberLabels or numberOfLabels aren't used in this class, they must be read from the
 			// bit stream.
 			int magicNumberLabels = (inLabel.read() << 24) | (inLabel.read() << 16) | (inLabel.read() << 8)
 					| (inLabel.read());
-			numberOfLabels = (inLabel.read() << 24) | (inLabel.read() << 16) | (inLabel.read() << 8) | (inLabel.read());
+			int numberOfLabels = (inLabel.read() << 24) | (inLabel.read() << 16) | (inLabel.read() << 8) | (inLabel.read());
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -87,18 +88,18 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		}
 	}
 
-	public int[] getSingleImageAsPixels() {
+	public ImageAsPixelsAndLabel getSingleImageAsPixels() {
 		openFileStreams();
-		int[] singleImageAsPixels = null;
+		ImageAsPixelsAndLabel singleImageAsPixels = null;
 		singleImageAsPixels = readImageFiles();
 		closeFileStreams();
 		return singleImageAsPixels;
 	}
 	
-	public ArrayList<int[]> getMultipleImagesAsPixels(int amountOfImages) {
+	public ArrayList<ImageAsPixelsAndLabel> getMultipleImagesAsPixels(int amountOfImages) {
 		openFileStreams();
-		ArrayList<int[]> multipleImagesAsPixels = new ArrayList<int[]>();
-		int[] singleImageAsPixels = null;
+		ArrayList<ImageAsPixelsAndLabel> multipleImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
+		ImageAsPixelsAndLabel singleImageAsPixels = null;
 		for (int i = 0; i < amountOfImages; i++) {
 			if (i % 100 == 0) {
 				System.out.println("IDXImageFileReaderImpl: Number of images processed: " + i);
@@ -111,18 +112,10 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		return multipleImagesAsPixels;
 	}
 
-	public ArrayList<int[]> getAllImagesAsPixels() {
+	public ArrayList<ImageAsPixelsAndLabel> getAllImagesAsPixels() {
 		openFileStreams();
-		ArrayList<int[]> allImagesAsPixels = new ArrayList<int[]>();
-		int[] singleImageAsPixels = null;
-		for (int i = 0; i < numberOfImages; i++) {
-			if (i % 100 == 0) {
-				System.out.println("IDXImageFileReaderImpl: Number of images processed: " + i);
-			}
-			singleImageAsPixels = readImageFiles();
-			allImagesAsPixels.add(singleImageAsPixels);
-		}	
-		
+		ArrayList<ImageAsPixelsAndLabel> allImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
+		allImagesAsPixels = getMultipleImagesAsPixels(60000);
 		closeFileStreams();
 		return allImagesAsPixels;
 	}
@@ -131,26 +124,31 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		// TODO Auto-generated method stub
 	}
 
-	private int[] readImageFiles() {
-
+	private ImageAsPixelsAndLabel readImageFiles() {
+		
+		ImageAsPixelsAndLabel imageAsPixelsAndLabel = null;
 		int numberOfPixels = numberOfRows * numberOfColumns;
-		int[] imageAsPixels = new int[numberOfPixels + 1];
+		int[] pixelsOfImage = new int[numberOfPixels];
 
 		try {
-
+			
+			// Read the pixels of the image
 			for (int p = 0; p < numberOfPixels; p++) {
 				int pixelValue = inImage.read();
-				imageAsPixels[p] = pixelValue;
+				pixelsOfImage[p] = pixelValue;
 			}
-
+			
+			// Read the label of the number
 			int labelValue = inLabel.read();
-			imageAsPixels[imageAsPixels.length - 1] = labelValue;
+			
+			// Assign the pixels and label to a new object
+			imageAsPixelsAndLabel = new ImageAsPixelsAndLabel(pixelsOfImage, labelValue);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return imageAsPixels;
+		return imageAsPixelsAndLabel;
 
 	}
 
