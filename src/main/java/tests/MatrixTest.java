@@ -11,8 +11,8 @@ import neumeroverkko.Matrix;
 public class MatrixTest {
 	private static Matrix m1;
 	private static Matrix m2;
-	private static float[] m1arr = {1.0f, 2.0f, 3.0f};
-	private static float[][] m2arr = {{2.0f, 3.0f, 2.0f}, {1.0f,1.0f,2.0f}};
+	private static double[] m1arr = {1.0f, 2.0f, 3.0f};
+	private static double[][] m2arr = {{2.0f, 3.0f, 2.0f}, {1.0f,1.0f,2.0f}};
 
 
 	@BeforeClass public static void initTest(){

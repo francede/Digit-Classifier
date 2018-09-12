@@ -11,7 +11,7 @@ import java.util.Random;
 public class Matrix {
     private int rows;
     private int cols;
-    private float[][] data;
+    private double[][] data;
 
     /**
      * Creates a rows x cols size matrix full of zeros
@@ -21,7 +21,7 @@ public class Matrix {
     public Matrix(int rows,int cols){
     	this.rows = rows;
     	this.cols = cols;
-    	this.data = new float[rows][cols];
+    	this.data = new double[rows][cols];
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
     			this.data[i][j] = 0;
@@ -36,7 +36,7 @@ public class Matrix {
     	Random r = new Random();
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
-    			data[i][j] = (float)r.nextGaussian();
+    			data[i][j] = r.nextGaussian();
     		}
     	}
     }
@@ -71,7 +71,7 @@ public class Matrix {
 
     	for(int i = 0; i < result.rows; i++){
     		for(int j = 0; j < result.cols; j++){
-    			float element_sum = 0;
+    			double element_sum = 0;
     			for(int k = 0; k < a.cols; k++){
     				element_sum += a.data[i][k] * b.data[k][j];
     			}
@@ -101,7 +101,7 @@ public class Matrix {
      * @param array: Array to tranform into a matrix
      * @return Returns a one dimensional matrix
      */
-    public static Matrix arrayToMatrix(float[] array){
+    public static Matrix arrayToMatrix(double[] array){
     	Matrix result = new Matrix(array.length, 1);
     	for(int i = 0; i < array.length; i++){
     		result.data[i][0] = array[i];
@@ -116,7 +116,7 @@ public class Matrix {
      * Returns null on unsuccessful transformation,
      * e.g. the 2nd dimension arrays are of variabe length
      */
-    public static Matrix arrayToMatrix(float[][] array){
+    public static Matrix arrayToMatrix(double[][] array){
     	Matrix result = new Matrix(array.length, array[0].length);
     	int secondArrLength = array[0].length;
     	for(int i = 0; i < array.length; i++){
@@ -145,11 +145,24 @@ public class Matrix {
 
 //MATRIX GETTERS (AND SETTERS)
 
-    public float[][] getData(){return this.data;}
+    public double[][] getData(){return this.data;}
 
     public int getRows(){return this.rows;}
 
     public int getCols(){return this.cols;}
+
+    /**
+     * Sets a single value in the matrix
+     * @param rowNumber
+     * @param colNumber
+     * @param value: The value to be set into the matrix
+     * @return Returns false if given rows/cols are invalid
+     */
+    public boolean setValue(int rowIndex, int colIndex, double value){
+    	if(rowIndex > this.rows || rowIndex < 0 || colIndex > this.cols || colIndex < 0) return false;
+    	this.data[rowIndex][colIndex] = value;
+    	return true;
+    }
 
 //MATRIX ELEMENTWISE AND NUMERIC OPERATIONS
 
@@ -157,7 +170,7 @@ public class Matrix {
      * Adds a number to every element of the matrix
      * @param number: number to add to every element of the matrix
      */
-    public boolean add(float number){
+    public boolean add(double number){
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
     			data[i][j] += number;
@@ -185,7 +198,7 @@ public class Matrix {
 	 * Subtracts a number from every element of the matrix
 	 * @param number: number to subtract from every element of the matrix
 	 */
-	public boolean sub(float number){
+	public boolean sub(double number){
 		for(int i = 0; i < rows; i++){
 			for(int j = 0; j < cols; j++){
 				data[i][j] -= number;
@@ -214,7 +227,7 @@ public class Matrix {
      * @param number: number to divide every element of the matrix with
      * @return Returns false if number is 0
      */
-    public boolean divide(float number){
+    public boolean divide(double number){
     	if(number == 0) return false;
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
@@ -245,7 +258,7 @@ public class Matrix {
      * Multiplies every element of the matrix with a number
      * @param number: number to multiply every element of the matrix with
      */
-    public boolean multiply(float number){
+    public boolean multiply(double number){
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
     			data[i][j] *= number;
@@ -272,7 +285,7 @@ public class Matrix {
     /**
      * Maps a function to every element of the matrix. In the event of a failed mapping,
      * restores to the original matrix
-     * @param f: FloatFunction to map to each element(see lambda functions)
+     * @param f: MapOperation to map to each element(see lambda functions)
      * @return Returns true if successful mapping and false upon failed mapping
      */
     public boolean map(MapOperation f){
@@ -291,8 +304,8 @@ public class Matrix {
     }
 
     /**
-     * A functional interface for lambda functions of one parameter(float) and of return type float
+     * A functional interface for lambda functions of one parameter(double) and of return type double
      * @author Francesco
      */
-    public interface MapOperation{float operation(float x);}
+    public interface MapOperation{double operation(double x);}
 }
