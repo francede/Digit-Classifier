@@ -17,13 +17,7 @@ import javax.imageio.ImageIO;
 */
 
 /**
- * Pixels in the training set images are organized row-wise. 
- * Pixel values are 0 to 255. 0 means background (white), 255 means foreground (black).
- * 
- * Label is the number drawn in the image (values 0-9).
- * 
  * @author Antti Nieminen
- *
  */
 public class IDXImageFileReaderImpl implements IDXImageFileReader {
 

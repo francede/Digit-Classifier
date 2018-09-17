@@ -3,11 +3,12 @@ package neumeroverkko;
 import java.util.ArrayList;
 
 /**
- * Returns number images as ImageAsPixelsAndLabel objects from the training set.
+ * Reads and returns number images as ImageAsPixelsAndLabel objects from the training set.
  * 
  * The objects contains the labels of the numbers the pixels represent.
  * 
- * The pixels are organized row-wise and are grayscale values (0 = white, 255 = black)
+ * The pixels are organized row-wise and are grayscale values (0 = white, 255 = black).
+ * The labels are the number drawn in the image (values 0-9).
  * 
  * @author Antti Nieminen
  */ 
