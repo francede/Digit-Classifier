@@ -2,7 +2,7 @@ package neumeroverkko;
 
 import neumeroverkko.Matrix.MapOperation;
 
-public class NeuralNetworkImpl{
+public class NeuralNetworkImpl {
 	private Matrix[] weights;
 	private Matrix[] biases;
 

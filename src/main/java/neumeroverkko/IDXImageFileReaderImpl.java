@@ -31,10 +31,19 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	private int numberOfImages;
 	private int numberOfRows;
 	private int numberOfColumns;
+	
+	private int numberOfImagesRead;
 
 	public IDXImageFileReaderImpl() {
 		openFileStreams();
+		numberOfImagesRead = 0;
+	}
+
+	private void openFileStreams() {
 		try {
+			inImage = new FileInputStream(inputImagePath);
+			inLabel = new FileInputStream(inputLabelPath);
+
 			// Although magicNumberImages isn't used in this class, it must be read from the
 			// bit stream.
 			int magicNumberImages = (inImage.read() << 24) | (inImage.read() << 16) | (inImage.read() << 8)
@@ -44,23 +53,17 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			numberOfColumns = (inImage.read() << 24) | (inImage.read() << 16) | (inImage.read() << 8)
 					| (inImage.read());
 
-			// Although magicNumberLabels or numberOfLabels aren't used in this class, they must be read from the
+			// Although magicNumberLabels or numberOfLabels aren't used in this class, they
+			// must be read from the
 			// bit stream.
 			int magicNumberLabels = (inLabel.read() << 24) | (inLabel.read() << 16) | (inLabel.read() << 8)
 					| (inLabel.read());
-			int numberOfLabels = (inLabel.read() << 24) | (inLabel.read() << 16) | (inLabel.read() << 8) | (inLabel.read());
+			int numberOfLabels = (inLabel.read() << 24) | (inLabel.read() << 16) | (inLabel.read() << 8)
+					| (inLabel.read());
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		closeFileStreams();
-	}
-
-	private void openFileStreams() {
-		try {
-			inImage = new FileInputStream(inputImagePath);
-			inLabel = new FileInputStream(inputLabelPath);
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -83,15 +86,13 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	}
 
 	public ImageAsPixelsAndLabel getSingleImageAsPixels() {
-		openFileStreams();
 		ImageAsPixelsAndLabel singleImageAsPixels = null;
 		singleImageAsPixels = readImageFiles();
-		closeFileStreams();
 		return singleImageAsPixels;
 	}
-	
+
+
 	public ArrayList<ImageAsPixelsAndLabel> getMultipleImagesAsPixels(int amountOfImages) {
-		openFileStreams();
 		ArrayList<ImageAsPixelsAndLabel> multipleImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
 		ImageAsPixelsAndLabel singleImageAsPixels = null;
 		for (int i = 0; i < amountOfImages; i++) {
@@ -100,41 +101,37 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			}
 			singleImageAsPixels = readImageFiles();
 			multipleImagesAsPixels.add(singleImageAsPixels);
-		}	
-		
-		closeFileStreams();
+		}
 		return multipleImagesAsPixels;
 	}
 
 	public ArrayList<ImageAsPixelsAndLabel> getAllImagesAsPixels() {
-		openFileStreams();
 		ArrayList<ImageAsPixelsAndLabel> allImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
 		allImagesAsPixels = getMultipleImagesAsPixels(60000);
-		closeFileStreams();
 		return allImagesAsPixels;
 	}
 
-	private void createImagesAsPNGFiles() {
-		// TODO Auto-generated method stub
-	}
 
 	private ImageAsPixelsAndLabel readImageFiles() {
-		
+		if (numberOfImagesRead > numberOfImages) {
+			resetStream();
+		}
+
 		ImageAsPixelsAndLabel imageAsPixelsAndLabel = null;
 		int numberOfPixels = numberOfRows * numberOfColumns;
 		int[] pixelsOfImage = new int[numberOfPixels];
 
 		try {
-			
+
 			// Read the pixels of the image
 			for (int p = 0; p < numberOfPixels; p++) {
 				int pixelValue = inImage.read();
 				pixelsOfImage[p] = pixelValue;
 			}
-			
+
 			// Read the label of the number
 			int labelValue = inLabel.read();
-			
+
 			// Assign the pixels and label to a new object
 			imageAsPixelsAndLabel = new ImageAsPixelsAndLabel(pixelsOfImage, labelValue);
 
@@ -145,14 +142,14 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		return imageAsPixelsAndLabel;
 
 	}
+	
+	private void resetStream() {
+		closeFileStreams();
+		openFileStreams();
+		this.numberOfImagesRead = 0;
+	}
 
-	/*
-	 * The original code from Stackoverflow with the paths changed. Stored for
-	 * testing purposes.
-	 */
-	public static void IDXReader() {
-		FileInputStream inImage = null;
-		FileInputStream inLabel = null;
+	public void createPNGFiles(int amount) {
 
 		String inputImagePath = "data/train-images/train-images.idx3-ubyte";
 		String inputLabelPath = "data/train-images/train-labels.idx1-ubyte";
@@ -161,22 +158,6 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		int[] hashMap = new int[10];
 
 		try {
-			inImage = new FileInputStream(inputImagePath);
-			inLabel = new FileInputStream(inputLabelPath);
-
-			int magicNumberImages = (inImage.read() << 24) | (inImage.read() << 16) | (inImage.read() << 8)
-					| (inImage.read());
-			int numberOfImages = (inImage.read() << 24) | (inImage.read() << 16) | (inImage.read() << 8)
-					| (inImage.read());
-			int numberOfRows = (inImage.read() << 24) | (inImage.read() << 16) | (inImage.read() << 8)
-					| (inImage.read());
-			int numberOfColumns = (inImage.read() << 24) | (inImage.read() << 16) | (inImage.read() << 8)
-					| (inImage.read());
-
-			int magicNumberLabels = (inLabel.read() << 24) | (inLabel.read() << 16) | (inLabel.read() << 8)
-					| (inLabel.read());
-			int numberOfLabels = (inLabel.read() << 24) | (inLabel.read() << 16) | (inLabel.read() << 8)
-					| (inLabel.read());
 
 			BufferedImage image = new BufferedImage(numberOfColumns, numberOfRows, BufferedImage.TYPE_INT_ARGB);
 			int numberOfPixels = numberOfRows * numberOfColumns;
@@ -185,7 +166,7 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			System.out.println("NumberofRows: " + numberOfRows);
 			System.out.println("numberOfColumns: " + numberOfColumns);
 
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < amount; i++) {
 
 				if (i % 100 == 0) {
 					System.out.println("Number of images extracted: " + i);
@@ -203,6 +184,8 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 				hashMap[label]++;
 				File outputfile = new File(outputPath + label + "_0" + hashMap[label] + ".png");
 
+				System.out.println("Created file " + outputPath + label + "_0" + hashMap[label] + ".png");
+
 				ImageIO.write(image, "png", outputfile);
 			}
 
@@ -212,24 +195,25 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			if (inImage != null) {
-				try {
-					inImage.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			if (inLabel != null) {
-				try {
-					inLabel.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
 		}
+//		finally {
+//			if (inImage != null) {
+//				try {
+//					inImage.close();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//			if (inLabel != null) {
+//				try {
+//					inLabel.close();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		}
 	}
 
 }

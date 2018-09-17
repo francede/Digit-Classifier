@@ -30,5 +30,11 @@ public interface IDXImageFileReader {
 	 */
 	public ArrayList<ImageAsPixelsAndLabel> getAllImagesAsPixels();
 	
+	/*
+	 * If you want to verify the numbers from the training set. 
+	 * Starts extracting from the beginning of the set.
+	 */
+	public void createPNGFiles(int amount);
+	
 
 }
