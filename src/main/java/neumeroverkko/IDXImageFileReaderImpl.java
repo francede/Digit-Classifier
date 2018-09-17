@@ -31,7 +31,7 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	private int numberOfImages;
 	private int numberOfRows;
 	private int numberOfColumns;
-	
+
 	private int numberOfImagesRead;
 
 	public IDXImageFileReaderImpl() {
@@ -68,49 +68,12 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		}
 	}
 
-	private void closeFileStreams() {
-		if (inImage != null) {
-			try {
-				inImage.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		if (inLabel != null) {
-			try {
-				inLabel.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
+	@Override
 	public ImageAsPixelsAndLabel getSingleImageAsPixels() {
 		ImageAsPixelsAndLabel singleImageAsPixels = null;
 		singleImageAsPixels = readImageFiles();
 		return singleImageAsPixels;
 	}
-
-
-	public ArrayList<ImageAsPixelsAndLabel> getMultipleImagesAsPixels(int amountOfImages) {
-		ArrayList<ImageAsPixelsAndLabel> multipleImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
-		ImageAsPixelsAndLabel singleImageAsPixels = null;
-		for (int i = 0; i < amountOfImages; i++) {
-			if (i % 100 == 0) {
-				System.out.println("IDXImageFileReaderImpl: Number of images processed: " + i);
-			}
-			singleImageAsPixels = readImageFiles();
-			multipleImagesAsPixels.add(singleImageAsPixels);
-		}
-		return multipleImagesAsPixels;
-	}
-
-	public ArrayList<ImageAsPixelsAndLabel> getAllImagesAsPixels() {
-		ArrayList<ImageAsPixelsAndLabel> allImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
-		allImagesAsPixels = getMultipleImagesAsPixels(60000);
-		return allImagesAsPixels;
-	}
-
 
 	private ImageAsPixelsAndLabel readImageFiles() {
 		if (numberOfImagesRead > numberOfImages) {
@@ -142,13 +105,52 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		return imageAsPixelsAndLabel;
 
 	}
-	
+
 	private void resetStream() {
 		closeFileStreams();
 		openFileStreams();
 		this.numberOfImagesRead = 0;
 	}
 
+	private void closeFileStreams() {
+		if (inImage != null) {
+			try {
+				inImage.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (inLabel != null) {
+			try {
+				inLabel.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public ArrayList<ImageAsPixelsAndLabel> getMultipleImagesAsPixels(int amountOfImages) {
+		ArrayList<ImageAsPixelsAndLabel> multipleImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
+		ImageAsPixelsAndLabel singleImageAsPixels = null;
+		for (int i = 0; i < amountOfImages; i++) {
+			if (i % 100 == 0) {
+				System.out.println("IDXImageFileReaderImpl: Number of images processed: " + i);
+			}
+			singleImageAsPixels = readImageFiles();
+			multipleImagesAsPixels.add(singleImageAsPixels);
+		}
+		return multipleImagesAsPixels;
+	}
+
+	@Override
+	public ArrayList<ImageAsPixelsAndLabel> getAllImagesAsPixels() {
+		ArrayList<ImageAsPixelsAndLabel> allImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
+		allImagesAsPixels = getMultipleImagesAsPixels(60000);
+		return allImagesAsPixels;
+	}
+
+	@Override
 	public void createPNGFiles(int amount) {
 
 		String inputImagePath = "data/train-images/train-images.idx3-ubyte";
@@ -196,24 +198,6 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		finally {
-//			if (inImage != null) {
-//				try {
-//					inImage.close();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//			if (inLabel != null) {
-//				try {
-//					inLabel.close();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//		}
 	}
 
 }

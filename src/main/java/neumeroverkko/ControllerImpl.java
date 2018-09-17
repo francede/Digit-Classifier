@@ -29,36 +29,37 @@ public class ControllerImpl implements Controller {
 	}
 
 	@Override
-	public void trainNetwork(int amountOfTrainingNumbers) {		
-		ArrayList<ImageAsPixelsAndLabel> trainingSet;
-		int numberOfImagesProcessedAtOnce = 10;
-		int imagesProcessed = 0;
-		do {
-			if (imagesProcessed + numberOfImagesProcessedAtOnce > amountOfTrainingNumbers)
-				numberOfImagesProcessedAtOnce = amountOfTrainingNumbers - imagesProcessed;
-			trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(numberOfImagesProcessedAtOnce);
-			// neuralNetwork.trainWithATrainingSet(trainingSet);
-			// gui.showProgress(i, amountOfTrainingNumbers);
-			imagesProcessed += numberOfImagesProcessedAtOnce;
-		} while (imagesProcessed < amountOfTrainingNumbers);
+	public void trainNetwork(int amountOfTrainingNumbers) {				
+		for (int i = 0; i < amountOfTrainingNumbers; i++) {
+			ImageAsPixelsAndLabel trainingImage;
+			trainingImage = IDXImageFileReader.getSingleImageAsPixels();
+			// neuralNetwork.train(trainingImage.getPixels(), trainingImage.getLabel());
+			// gui.showProgress(i, amountOfTrainingNumbers);		
+		}
+	}
+	
+	@Override
+	public void saveNetwork() {
+//		Matrix[] weights = neuralNetwork.getWeights();
+//		Matrix[] biases = neuralNetwork.getBiases();
+//		DAOController.putWeightsAndBiasesToDatabase(weights, biases);
 	}
 
+	
 	@Override
-	public void putWeightsAndBiasesToDatabase() {
-		// TODO Auto-generated method stub
+	public void loadNetwork() {
+		Matrix[] weights = null;
+		Matrix[] biases = null;
+//		weights = DAOController.getWeightsFromDatabase
+//		biases = DAOController.getBiasesFromDatabase
+//		neuralNetwork.setWeights(weights);
+//		neuralNetwork.setBiases(biases);
 
 	}
-
+	
 	@Override
-	public void getWeightsAndBiasesFromDatabase() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void putWeightsAndBiasesToNeuralNetwork(Matrix[] weights, Matrix[] biases) {
-		// TODO Auto-generated method stub
-
+	public void resetNetwork() {
+		// neuralNetwork.reset();
 	}
 
 }
