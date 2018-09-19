@@ -2,6 +2,7 @@ package neumeroverkko;
 
 import java.util.ArrayList;
 
+
 public class ControllerImpl implements Controller {
 
 	// TODO:
@@ -10,7 +11,7 @@ public class ControllerImpl implements Controller {
 	private Main gui;
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
-	private final int[] LAYER_SIZES = {2, 2, 1};
+	private final int[] NETWORK_LAYER_SIZES = {2, 2, 1};
 
 	public ControllerImpl(Main gui) {
 		this.gui = gui;
@@ -37,6 +38,7 @@ public class ControllerImpl implements Controller {
 			// gui.showProgress(i, amountOfTrainingNumbers);		
 		}
 	}
+	
 	
 	@Override
 	public void saveNetwork() {
