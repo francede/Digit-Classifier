@@ -36,13 +36,19 @@ public class IDXImageFileReaderImplTest {
 		}
 	}
 	
+	@Test public void createPNGfiles() {
+		IDXReader.createPNGFiles(5);
+		IDXReader.createPNGFiles(5);
+	}
+	
 	@Test public void checkLabelValues() {
 		System.out.println("---Test: check label values from 5 first images in the training set---");
 		ArrayList<ImageAsPixelsAndLabel> multipleImagesAsPixels;
 		int amountOfImages = 5;
-		int[] rightLabels = {0,0,8,1,0};
+		int[] rightLabels = {5,0,4,1,9};
 		multipleImagesAsPixels = IDXReader.getMultipleImagesAsPixels(amountOfImages);
 		for (int i = 0; i < amountOfImages; i++) {
+//			System.out.println("label: " + multipleImagesAsPixels.get(i).getLabel());
 			assertEquals("The label was wrong for a number", rightLabels[i], multipleImagesAsPixels.get(i).getLabel());
 		}
 	}
