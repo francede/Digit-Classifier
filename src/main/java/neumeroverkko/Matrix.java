@@ -143,7 +143,34 @@ public class Matrix {
     	return result;
     }
 
-//MATRIX GETTERS (AND SETTERS)
+    /**
+     *
+     * @param a
+     * @param b
+     * @param operation: "ADD", "SUB", "MULTIPLY", "DIVIDE"
+     * @return
+     */
+    public static Matrix operate(Matrix a, Matrix b, String operation){
+    	switch (operation){
+    	case "ADD":
+    		a.add(b);
+    		break;
+    	case "SUB":
+    		a.sub(b);
+    		break;
+    	case "MULTIPLY":
+    		a.multiply(b);
+    		break;
+    	case "DIVIDE":
+    		a.divide(b);
+    		break;
+    	default:
+    		return null;
+    	}
+    	return a;
+    }
+
+    //MATRIX GETTERS (AND SETTERS)
 
     public double[][] getData(){return this.data;}
 
@@ -216,7 +243,7 @@ public class Matrix {
 		if(matrix.rows != this.rows || matrix.cols != this.cols) return false;
 		for(int i = 0; i < rows; i++){
 			for(int j = 0; j < cols; j++){
-				data[i][j] -= matrix.data[i][j];
+				this.data[i][j] -= matrix.data[i][j];
 			}
 		}
 		return true;

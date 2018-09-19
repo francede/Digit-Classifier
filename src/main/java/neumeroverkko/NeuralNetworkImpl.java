@@ -5,11 +5,13 @@ import neumeroverkko.Matrix.MapOperation;
 public class NeuralNetworkImpl{
 	private Matrix[] weights;
 	private Matrix[] biases;
-
-	private double 	learningRate = 0.1;
-	private int 	learningIterationSize = 10;
-	private int 	learningIterations = 40;
 	private Matrix[] layerOutputs;
+	private Matrix[] layerWeightedSums;
+
+	private int actualLayers;
+	private double 	learningRate = 0.1;
+//	private int 	learningIterationSize = 10;
+//	private int 	learningIterations = 40;
 
 	private MapOperation activationFunction = (x) ->
 		1 / (1+Math.pow(Math.E,-x));
@@ -21,9 +23,13 @@ public class NeuralNetworkImpl{
 	 * @param layerSizes: The sizes of all nodes in the network including the input "layer"
 	 */
 	public NeuralNetworkImpl(int[] layerSizes){
-		this.layerOutputs = new Matrix[layerSizes.length-1];
-		this.weights = new Matrix[layerSizes.length-1];
-		this.biases = new Matrix[layerSizes.length-1];
+		this.actualLayers = layerSizes.length - 1;
+		this.layerOutputs = new Matrix[actualLayers];
+		this.layerWeightedSums = new Matrix[actualLayers];
+
+		this.weights = new Matrix[actualLayers];
+		this.biases = new Matrix[actualLayers];
+
 		for(int i = 0; i < layerSizes.length-1; i++){
 			weights[i] = new Matrix(layerSizes[i+1], layerSizes[i]);
 			biases[i] = new Matrix(layerSizes[i+1], 1);
@@ -66,6 +72,7 @@ public class NeuralNetworkImpl{
 		for(int i = 0; i < weights.length; i++){
 			output = Matrix.dotProduct(weights[i], output);
 			output.add(biases[i]);
+			layerWeightedSums[i] = Matrix.clone(output);
 			output.map(activationFunction);
 			layerOutputs[i] = Matrix.clone(output);
 		}
@@ -73,65 +80,71 @@ public class NeuralNetworkImpl{
 		return output;
 	}
 
-	/**
-	 * Returns a change Matrix for one training set
-	 * @param inputs
-	 * @param label
-	 * @return
-	 */
-	public Matrix[] createGradients(Matrix inputs, int label){
-		this.feedForward(inputs);
+	public void trainOnce(Matrix inputs, Matrix target){
+		Matrix targetClone = Matrix.clone(target);
+		Matrix output = this.feedForward(inputs);
+		Matrix[][] deltas = createChanges(inputs, output, targetClone);
+		Matrix[] weightDeltas = deltas[0];
+		Matrix[] biasDeltas = deltas[1];
+		for(int layer = 0; layer < actualLayers; layer++){
+//			System.out.println("layer " + layer);
+//			System.out.println(weights[layer]);
+//			System.out.println(weightDeltas[layer]);
+			weights[layer].add(weightDeltas[layer]);
+//			System.out.println(weights[layer]);
+			biases[layer].add(biasDeltas[layer]);
+		}
+	}
 
-		//Error matrix calculated from outputs and target
-		Matrix error = new Matrix(biases[biases.length-1].getRows(), 1);
-		error.setValue(label, 0, 1);
-		error.sub(layerOutputs[layerOutputs.length-1]);
+	public Matrix[][] createChanges(Matrix inputs, Matrix outputs, Matrix target){
+		Matrix[] errors = createErrors(target, outputs, this.weights);
+		Matrix[] gradients = createGradients(errors);
+		Matrix[] weightDeltas = createDeltas(gradients, inputs);
+		return new Matrix[][]{weightDeltas, gradients};
+	}
 
-		//All changes to be made according to this single training iteration
-		Matrix[] gradients = new Matrix[weights.length];
+	public Matrix[] createErrors(Matrix target, Matrix output, Matrix[] weights){
+		Matrix[] errors = new Matrix[actualLayers];
 
-		//Calculate gradient and deltas for the weights
-		for(int out = 0; out < weights.length; out++){
-			Matrix gradient = Matrix.clone(layerOutputs[layerOutputs.length-out-1]);
-			gradient.map(activationFunctionDerivative);
-			gradient.multiply(error);
-			gradient.multiply(learningRate);
-			gradients[layerOutputs.length-out-1] = gradient;
+		//Error from output is T - O(last)
+		//Error for layer n is Wt(n+1) .p E(n+1)
+		//Where T is target, O is layer output, Wt is transposed weights
+		errors[errors.length-1] = Matrix.operate(target, output, "SUB");
+		for(int n = errors.length-2; n >= 0; n--){
+			Matrix Wt = Matrix.transpose(weights[n+1]);
+			errors[n] = Matrix.dotProduct(Wt, errors[n+1]);
+		}
+		return errors;
+	}
+
+	public Matrix[] createGradients(Matrix[] errors){
+		Matrix[] gradients = new Matrix[actualLayers];
+
+		//Gradient for layer n is da(S(n)) * E(n) * LR
+		//Where da is derivateive of af and S is weighted sum before af
+		for(int n = 0; n < gradients.length; n++){
+			Matrix S = layerWeightedSums[n];
+			Matrix E = errors[n];
+			S.map(activationFunctionDerivative);
+			gradients[n] = Matrix.operate(S, E, "MULTIPLY");
+			gradients[n].multiply(learningRate);
 		}
 		return gradients;
 	}
 
-	public void trainIteration(Matrix[] inputs, int[] labels){
-		Matrix[] gradientAverage = new Matrix[weights.length];
-		Matrix[] outputAverage = new Matrix[weights.length];
+	public Matrix[] createDeltas(Matrix[] gradients, Matrix inputs){
+		Matrix[] deltaWeights = new Matrix[actualLayers];
 
-		for(int input = 0; input < inputs.length; input++){
-			Matrix gradients[] = this.createGradients(inputs[input], labels[input]);
-
-			for(int layer = 0; layer < gradients.length; layer++){
-				if(outputAverage[layer] == null){
-					outputAverage[layer] = Matrix.clone(layerOutputs[layer]);
-				}else{
-					outputAverage[layer].add(layerOutputs[layer]);
-				}
-				if(gradientAverage[layer] == null){
-					gradientAverage[layer] = Matrix.clone(gradients[layer]);
-				}else{
-					gradientAverage[layer].add(gradients[layer]);
-				}
-			}
+		//First weights' deltas(Wd) is G(1) .p It
+		//Weights' deltas at layer n is G(n) .p Ot(n-1)
+		//Where G is gradient, It is transposed inputs and Ot is layer's outputs(after af) transposed
+		deltaWeights[0] = Matrix.dotProduct(gradients[0], Matrix.transpose(inputs));
+		for(int n = 1; n < deltaWeights.length; n++){
+			Matrix Ot = Matrix.transpose(layerOutputs[n-1]);
+			deltaWeights[n] = Matrix.dotProduct(gradients[n], Ot);
 		}
 
-		//Average of gradient across one training iteration
-		for(Matrix layer : gradientAverage) layer.divide(inputs.length);
-
-		//Apply gradient to weights and biases
-		for(int layer = 0; layer < weights.length; layer++){
-			Matrix layerOutputAverage_T = Matrix.transpose(outputAverage[layer]);
-			Matrix deltaWeights = Matrix.dotProduct(gradientAverage[layer], layerOutputAverage_T);
-
-			weights[layer].add(deltaWeights);
-			biases[layer].add(gradientAverage[layer]);
-		}
+		return deltaWeights;
 	}
+
 }
