@@ -133,13 +133,11 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	public ArrayList<ImageAsPixelsAndLabel> getMultipleImagesAsPixels(int amountOfImages) {
 		ArrayList<ImageAsPixelsAndLabel> multipleImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
 		ImageAsPixelsAndLabel singleImageAsPixels = null;
-		for (int i = 0; i < amountOfImages; i++) {
-			if (i % 100 == 0) {
-				System.out.println("IDXImageFileReaderImpl: Number of images processed: " + i);
-			}
+		for (int i = 1; i <= amountOfImages; i++) {
 			singleImageAsPixels = readImageFiles();
 			multipleImagesAsPixels.add(singleImageAsPixels);
 		}
+		System.out.println("IDXImageFileReaderImpl: Number of images processed: " + amountOfImages);
 		return multipleImagesAsPixels;
 	}
 

@@ -2,24 +2,20 @@ package neumeroverkko;
 
 public class ImageAsPixelsAndLabel {
 
-	private int[] pixels;
-	private int label;
+	private final int[] PIXELS;
+	private final int LABEL;
 
 	public ImageAsPixelsAndLabel(int[] pixels, int label) {
-		this.pixels = pixels;
-		this.label = label;
+		this.PIXELS = pixels;
+		this.LABEL = label;
 	}
 
 	public int[] getPixels() {
-		return pixels;
+		return PIXELS;
 	}
 
 	public int getLabel() {
-		return label;
-	}
-
-	public void setLabel(int label) {
-		this.label = label;
+		return LABEL;
 	}
 
 }
