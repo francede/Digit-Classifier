@@ -16,6 +16,8 @@ import javafx.embed.swing.SwingFXUtils;
 public class NeuroCanvas extends Canvas {
 
 	private GraphicsContext gc;
+	private final int scaledImageSizeI = 20;
+	private final int scaledImageSizeO = 28;
 
 	public NeuroCanvas(int w, int h, Color bgColor, Color sColor, int lineWidth) {
 		super(w, h);
@@ -24,15 +26,6 @@ public class NeuroCanvas extends Canvas {
         gc.fillRect(0, 0, w, h);
         gc.setStroke(sColor);
         gc.setLineWidth(lineWidth);
-	}
-
-	public void test() {
-		BufferedImage image = canvasToBimg();
-		BufferedImage croppedImage = crop(image);
-		clearScreen();
-		BufferedImage scaledImage = scale(croppedImage, 20, 28);
-		gc.drawImage(this.bimgToWimg(scaledImage), 0, 0);
-		getPixels(scaledImage);
 	}
 
 	public void draw() {
@@ -80,11 +73,6 @@ public class NeuroCanvas extends Canvas {
 		return bimg;
 	}
 
-	public WritableImage bimgToWimg(BufferedImage image) {
-		WritableImage wimg = SwingFXUtils.toFXImage(image, null);
-		return wimg;
-	}
-
 	public int getRGBblue(int color ){
 		return color & 0xff;
     }
@@ -96,8 +84,8 @@ public class NeuroCanvas extends Canvas {
 		int xMax = xMax(image);
 		int width = xMax-xMin+1;
 		int height = yMax-yMin+1;
-		BufferedImage newImage = image.getSubimage(xMin, yMin, width, height);
-		return newImage;
+		BufferedImage croppedImage = image.getSubimage(xMin, yMin, width, height);
+		return croppedImage;
 	}
 
 	public BufferedImage scale(BufferedImage sourceImg, double insideImgSize, double backGroundImgSize) {
@@ -123,13 +111,29 @@ public class NeuroCanvas extends Canvas {
 		return newImage;
 	}
 
-	public int[] getPixels(BufferedImage image) {
-		int [] tempRgbArray = new int[image.getWidth()*image.getHeight()];
-		tempRgbArray = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
-		int [] rgbArray = new int[image.getWidth()*image.getHeight()];
+//	public WritableImage bimgToWimg(BufferedImage image) {
+//		WritableImage wimg = SwingFXUtils.toFXImage(image, null);
+//		return wimg;
+//	}
+
+//	public void test() {
+//	BufferedImage image = canvasToBimg();
+//	BufferedImage croppedImage = crop(image);
+//	clearScreen();
+//	BufferedImage scaledImage = scale(croppedImage, 20, 28);
+//	gc.drawImage(this.bimgToWimg(scaledImage), 0, 0);
+//	getPixels();
+//}
+
+	public int[] getPixels() {
+		BufferedImage originalImage = canvasToBimg();
+		BufferedImage scaledImage = scale(crop(originalImage), scaledImageSizeI, scaledImageSizeO);
+		int [] tempRgbArray = new int[scaledImage.getWidth()*scaledImage.getHeight()];
+		tempRgbArray = scaledImage.getRGB(0, 0, scaledImage.getWidth(), scaledImage.getHeight(), null, 0, scaledImage.getWidth());
+		int [] rgbArray = new int[scaledImage.getWidth()*scaledImage.getHeight()];
 		for (int i = 0; i < rgbArray.length; i++) {
 			rgbArray[i] = getRGBblue(tempRgbArray[i]);
-			System.out.println(rgbArray[i]);
+//			System.out.println(rgbArray[i]);
 		}
 		return rgbArray;
 	}

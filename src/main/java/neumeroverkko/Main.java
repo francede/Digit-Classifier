@@ -15,14 +15,15 @@ import javafx.scene.paint.Color;
 public class Main extends Application {
 
 	@Override
-	public void start(Stage primaryStage) {
-		NeuroCanvas canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 5);
-		canvas.draw();
+	public void start(Stage primaryStage) {		
+		NeuroCanvas canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 10);
+		ControllerImpl controller = new ControllerImpl(this);
+		HBox hBox = new HBox();
 		Group root = new Group();
-		BorderPane borderPane = new BorderPane();
-		borderPane.setCenter(canvas);
-		HBox hBox = new HBox(8);
-		setButtons(hBox, canvas);
+		BorderPane borderPane = new BorderPane();		
+		canvas.draw();				
+		borderPane.setCenter(canvas);		
+		setButtons(hBox, canvas, controller);
 		borderPane.setBottom(hBox);
 		root.getChildren().add(borderPane);
 		primaryStage.setTitle("NeuroCanvas");
@@ -34,9 +35,10 @@ public class Main extends Application {
 		launch(args);
 	}
 
-	private void setButtons(HBox hBox, NeuroCanvas canvas) {
+	private void setButtons(HBox hBox, NeuroCanvas canvas, ControllerImpl controller) {
 		Button clear = new Button("Clear");
 		Button submit = new Button("Submit");
+		Button train = new Button("Train neural network");
 		clear.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -46,9 +48,10 @@ public class Main extends Application {
 		submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	canvas.test();
+            	controller.makePrediction(canvas.getPixels());
             }
         });
-		hBox.getChildren().addAll(clear, submit);
+		hBox.getChildren().addAll(clear, submit, train);
+
 	}
 }
