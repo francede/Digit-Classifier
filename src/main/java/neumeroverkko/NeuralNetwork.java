@@ -22,6 +22,11 @@ public interface NeuralNetwork {
 	 * Trains the network with a single image
 	 */
 	public void train(int[] imageAsPixels, int label);
+	
+	/**
+	 * Trains the network with multiple images
+	 */
+	public void trainWithaTrainingSet(ArrayList<ImageAsPixelsAndLabel> trainingSet);
 
 	/**
 	 * Resets the network by randomizing all weights and biases.
