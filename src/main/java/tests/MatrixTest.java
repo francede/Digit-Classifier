@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import neumeroverkko.Matrix;
+import neumeroverkko.MatrixException;
 
 public class MatrixTest {
 	private static Matrix m1;
@@ -15,19 +16,19 @@ public class MatrixTest {
 	private static double[][] m2arr = {{2.0f, 3.0f, 2.0f}, {1.0f,1.0f,2.0f}};
 
 
-	@BeforeClass public static void initTest(){
+	@BeforeClass public static void initTest() throws MatrixException{
 		m1 = Matrix.arrayToMatrix(m1arr);
 		m2 = Matrix.arrayToMatrix(m2arr);
 		System.out.println("Matrix 1:\n" + m1);
 		System.out.println("Matrix 2:\n" + m2);
 	}
 
-	@Before public void resetMatrix(){
+	@Before public void resetMatrix() throws MatrixException{
 		m1 = Matrix.arrayToMatrix(m1arr);
 		m2 = Matrix.arrayToMatrix(m2arr);
 	}
 
-	@Test public void testDotProduct() {
+	@Test public void testDotProduct() throws MatrixException {
 		System.out.println("---Test dotProduct---");
 		Matrix dotResult = Matrix.dotProduct(m2, m1);
 		System.out.println("Dot result:\n" + dotResult);
