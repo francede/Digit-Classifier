@@ -4,8 +4,12 @@ import java.util.Random;
 
 public class DevTestClass {
 	public static void main(String[] args){
+		testMatrixDimensions();
+	}
+
+	public static void testNN(){
 		NeuralNetworkImpl nn = new NeuralNetworkImpl(new int[]{2,2,1});
-		nn.randomizeAll();
+		nn.reset();
 		nn.setLearningRate(0.2);
 		Matrix inTT = Matrix.arrayToMatrix(new double[]{1,1});
 		Matrix inTF = Matrix.arrayToMatrix(new double[]{1,0});
@@ -19,19 +23,15 @@ public class DevTestClass {
 			int r = new Random().nextInt(4);
 			switch(r){
 			case 0:
-				System.out.println("TT");
 				nn.trainOnce(inTT, labelFalse);
 				break;
 			case 1:
-				System.out.println("TF");
 				nn.trainOnce(inTF, labelTrue);
 				break;
 			case 2:
-				System.out.println("FT");
 				nn.trainOnce(inFT, labelTrue);
 				break;
 			case 3:
-				System.out.println("FF");
 				nn.trainOnce(inFF, labelFalse);
 				break;
 			}
@@ -44,5 +44,15 @@ public class DevTestClass {
 		nn.trainOnce(inFT, labelTrue);
 		System.out.println("FF");
 		nn.trainOnce(inFF, labelFalse);
+	}
+
+	public static void testMatrixDimensions(){
+		Matrix m1 = new Matrix(5,1);
+		double[] d1 = new double[m1.getRows()];
+		for(int i = 0; i < d1.length; i++){
+			d1[i] = m1.getData()[i][0];
+		}
+		System.out.println(m1);
+		System.out.println(d1[2]);
 	}
 }

@@ -64,9 +64,10 @@ public class Matrix {
      * a's columns need to match with b's rows
      * @return Returns a matrix which is the dot product of the two matrices.
      * Returns null if a's columns and b's rows don't match
+     * @throws MatrixException
      */
     public static Matrix dotProduct(Matrix a, Matrix b){
-    	if(a.cols != b.rows) return null;
+    	if(a.cols != b.rows) throw new MatrixException("A's number of colums must be equal to B's number of rows.");
     	Matrix result = new Matrix(a.rows, b.cols);
 
     	for(int i = 0; i < result.rows; i++){
@@ -115,12 +116,13 @@ public class Matrix {
      * @return Returns a new matrix on successful transformation.
      * Returns null on unsuccessful transformation,
      * e.g. the 2nd dimension arrays are of variabe length
+     * @throws MatrixException
      */
     public static Matrix arrayToMatrix(double[][] array){
     	Matrix result = new Matrix(array.length, array[0].length);
     	int secondArrLength = array[0].length;
     	for(int i = 0; i < array.length; i++){
-    		if(array[i].length != secondArrLength) return null;
+    		if(array[i].length != secondArrLength) throw new MatrixException("All rows must be of equal size.");
     		for(int j = 0; j < secondArrLength; j++){
     			result.data[i][j] = array[i][j];
     		}
@@ -149,6 +151,7 @@ public class Matrix {
      * @param b
      * @param operation: "ADD", "SUB", "MULTIPLY", "DIVIDE"
      * @return
+     * @throws MatrixException
      */
     public static Matrix operate(Matrix a, Matrix b, String operation){
     	switch (operation){
@@ -210,9 +213,10 @@ public class Matrix {
      * Adds elementwise two matrices together
      * @param matrix: matrix to add
      * @return Returns true if the matrices were added successfully. Returns false if the matrices are of different size
+     * @throws MatrixException
      */
     public boolean add(Matrix matrix){
-    	if(matrix.rows != this.rows || matrix.cols != this.cols) return false;
+    	if(matrix.rows != this.rows || matrix.cols != this.cols) throw new MatrixException("Matrix dimensions must match.");
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
     			data[i][j] += matrix.data[i][j];
@@ -238,9 +242,10 @@ public class Matrix {
 	 * Subtracts element wise two matrices together
 	 * @param matrix: matrix to subtract
 	 * @return Returns true if the matrices were subtracted successfully. Returns false if the matrices are of different size
+	 * @throws MatrixException
 	 */
 	public boolean sub(Matrix matrix){
-		if(matrix.rows != this.rows || matrix.cols != this.cols) return false;
+		if(matrix.rows != this.rows || matrix.cols != this.cols) throw new MatrixException("Matrix dimensions must match.");
 		for(int i = 0; i < rows; i++){
 			for(int j = 0; j < cols; j++){
 				this.data[i][j] -= matrix.data[i][j];
@@ -269,9 +274,10 @@ public class Matrix {
      * @param matrix: matrix to divide with
      * @return Returns true if the matrices were divided successfully.
      * Returns false if the matrices are of different size or if the divider matrix contains zeros
+     * @throws MatrixException
      */
     public boolean divide(Matrix matrix){
-    	if(matrix.rows != this.rows || matrix.cols != this.cols) return false;
+    	if(matrix.rows != this.rows || matrix.cols != this.cols) throw new MatrixException("Matrix dimensions must match.");
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
     			if(matrix.data[i][j] == 0) return false;
@@ -298,9 +304,10 @@ public class Matrix {
      * Adds elementwise two matrices together
      * @param matrix: matrix to add
      * @return Returns true if the matrices were added successfully. Returns false if the matrices are of different size
+     * @throws MatrixException
      */
     public boolean multiply(Matrix matrix){
-    	if(matrix.rows != this.rows || matrix.cols != this.cols) return false;
+    	if(matrix.rows != this.rows || matrix.cols != this.cols) throw new MatrixException("Matrix dimensions must match.");
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
     			data[i][j] *= matrix.data[i][j];

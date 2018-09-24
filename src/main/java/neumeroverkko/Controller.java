@@ -13,10 +13,10 @@ public interface Controller {
 	public double[] makePrediction(int[] ImageAsPixels);
 	
 	/**
-	 * Reads the training set and trains the network and 
+	 * Reads the training set, trains the network with them and 
 	 * updates GUI to show progress.
 	 */
-	public void trainNetwork(int amountOfTrainingNumbers);
+	public void trainNetwork(int amountOfTrainingImages);
 	
 	/**
 	 * Resets the neural network by randomizing all the weights and biases
