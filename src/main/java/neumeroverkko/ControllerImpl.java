@@ -8,12 +8,12 @@ public class ControllerImpl implements Controller {
 	// TODO:
 	// Import and instantiate DAO-controller
 
-	private Main gui;
+	private Gui gui;
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
 	private final int[] NETWORK_LAYER_SIZES = {2, 2, 1};
 
-	public ControllerImpl(Main gui) {
+	public ControllerImpl(Gui gui) {
 		this.gui = gui;
 //		this.neuralNetwork = new NeuralNetworkImpl(LAYER_SIZES);
 		this.IDXImageFileReader = new IDXImageFileReaderImpl();
@@ -23,23 +23,23 @@ public class ControllerImpl implements Controller {
 	public double[] makePrediction(int[] ImageAsPixels) {
 		// Waiting for neural network to be finished, returns now a random double[] for testing purposes
 		return new double[] {1, 0.1, 0.2, 0.4, 0.564, 0.543, 0.143, 0.2, 0.5, 0.113};
-		
+
 //		double[] predictions = null;
 //		predictions = neuralNetwork(ImageAsPixels);
 //		return predictions;
 	}
 
 	@Override
-	public void trainNetwork(int amountOfTrainingNumbers) {				
+	public void trainNetwork(int amountOfTrainingNumbers) {
 		for (int i = 0; i < amountOfTrainingNumbers; i++) {
 			ImageAsPixelsAndLabel trainingImage;
 			trainingImage = IDXImageFileReader.getSingleImageAsPixels();
 			// neuralNetwork.train(trainingImage.getPixels(), trainingImage.getLabel());
-			// gui.showProgress(i, amountOfTrainingNumbers);		
+			// gui.showProgress(i, amountOfTrainingNumbers);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void saveNetwork() {
 //		Matrix[] weights = neuralNetwork.getWeights();
@@ -47,7 +47,7 @@ public class ControllerImpl implements Controller {
 //		DAOController.putWeightsAndBiasesToDatabase(weights, biases);
 	}
 
-	
+
 	@Override
 	public void loadNetwork() {
 		Matrix[] weights = null;
@@ -58,7 +58,7 @@ public class ControllerImpl implements Controller {
 //		neuralNetwork.setBiases(biases);
 
 	}
-	
+
 	@Override
 	public void resetNetwork() {
 		// neuralNetwork.reset();
