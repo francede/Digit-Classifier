@@ -48,7 +48,7 @@ public class DevTestClass {
 	public static void testNNLarger(){
 		NeuralNetworkImpl nn = new NeuralNetworkImpl(new int[]{2,2,1});
 		nn.reset();
-		nn.setLearningRate(0.1);
+		nn.setLearningRate(0.15);
 		ArrayList<InputData> trainingData = new ArrayList<InputData>();
 		trainingData.add(new InputDataBoolean(new double[]{1,1},false));
 		trainingData.add(new InputDataBoolean(new double[]{1,0},true));
@@ -57,20 +57,20 @@ public class DevTestClass {
 
 		for(int i = 0; i < 100000; i++){
 			ArrayList<InputData> dataSet = new ArrayList<InputData>();
-			for(int j = 0; j < 10; j++){
+			for(int j = 0; j < 20; j++){
 				int r = new Random().nextInt(4);
 				dataSet.add(trainingData.get(r));
 			}
 			nn.trainWithaTrainingSet(dataSet);
 		}
 		System.out.println("TT");
-		nn.train(trainingData.get(0));
+		System.out.println(nn.makePrediction(trainingData.get(0)));
 		System.out.println("TF");
-		nn.train(trainingData.get(1));
+		System.out.println(nn.makePrediction(trainingData.get(1)));
 		System.out.println("FT");
-		nn.train(trainingData.get(2));
+		System.out.println(nn.makePrediction(trainingData.get(2)));
 		System.out.println("FF");
-		nn.train(trainingData.get(3));
+		System.out.println(nn.makePrediction(trainingData.get(3)));
 	}
 
 	public static void testMatrixDimensions(){

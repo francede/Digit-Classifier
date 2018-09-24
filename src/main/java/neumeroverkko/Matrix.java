@@ -130,6 +130,22 @@ public class Matrix {
     	return result;
     }
 
+    public static double[] matrixToArray(Matrix matrix){
+    	double[] array = new double[matrix.cols*matrix.rows];
+    	for(int i = 0; i < matrix.rows; i++){
+    		for(int j = 0; j < matrix.cols; j++){
+    			array[i*j + j] = matrix.data[i][j];
+    		}
+    	}
+    	/* To make 1-dimensional in the future
+    	 * double[] output_array = new double[output.getRows()];
+			for(int i = 0; i < output_array.length; i++){
+			output_array[i] = output.getData()[i][0];
+			}
+    	 */
+    	return array;
+    }
+
     /**
      * Creates a clone of the given matrix without modifying the original
      * @param m: Matrix to clone

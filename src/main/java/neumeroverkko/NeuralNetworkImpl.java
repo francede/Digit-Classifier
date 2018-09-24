@@ -129,10 +129,10 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 	 * @throws MatrixException
 	 */
 	private Matrix[][] backpropagate(Matrix inputs, Matrix outputs, Matrix target){
-		Matrix[] errors = createErrors(target, outputs, this.weights);
+		Matrix[] errors = createErrors(target, Matrix.clone(outputs), this.weights);
 		Matrix[] gradients = createGradients(errors);
 		Matrix[] weightDeltas = createDeltas(gradients, inputs);
-		//bias deltas = gradients
+		//bias deltas are the gradients
 		return new Matrix[][]{weightDeltas, gradients};
 	}
 
@@ -182,16 +182,12 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 
 
 	@Override
-	public double[] makePrediction(InputData input){
+	public Matrix makePrediction(InputData input){
 
 		Matrix image = Matrix.arrayToMatrix(input.getInput());
 		Matrix output = feedForward(image);
 
-		double[] output_array = new double[output.getRows()];
-		for(int i = 0; i < output_array.length; i++){
-			output_array[i] = output.getData()[i][0];
-		}
-		return output_array;
+		return output;
 	}
 
 	public void train(InputData trainginData) {
