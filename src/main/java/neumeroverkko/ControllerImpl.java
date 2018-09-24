@@ -10,12 +10,14 @@ public class ControllerImpl implements Controller {
 	private Main gui;
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
+	private DAOController DAOController;
 	private final int[] NETWORK_LAYER_SIZES = { 2, 2, 1 };
 
 	public ControllerImpl(Main gui) {
 		this.gui = gui;
 //		this.neuralNetwork = new NeuralNetworkImpl(LAYER_SIZES);
 		this.IDXImageFileReader = new IDXImageFileReaderImpl();
+		this.DAOController = new DAOControllerImpl();
 	}
 
 	@Override
