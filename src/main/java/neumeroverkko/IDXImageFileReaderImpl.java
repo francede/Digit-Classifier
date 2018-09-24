@@ -82,7 +82,7 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 
 		InputDataNumberImages imageAsPixelsAndLabel = null;
 		int numberOfPixels = numberOfRows * numberOfColumns;
-		int[] pixelsOfImage = new int[numberOfPixels];
+		double[] pixelsOfImage = new double[numberOfPixels];
 
 		try {
 
