@@ -10,7 +10,7 @@ public class ControllerImpl implements Controller {
 	private Main gui;
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
-	private final int[] LAYER_SIZES = {2, 2, 1};
+	private final int[] NETWORK_LAYER_SIZES = { 2, 2, 1 };
 
 	public ControllerImpl(Main gui) {
 		this.gui = gui;
@@ -20,24 +20,29 @@ public class ControllerImpl implements Controller {
 
 	@Override
 	public double[] makePrediction(int[] ImageAsPixels) {
-		// Waiting for neural network to be finished, returns now a random double[] for testing purposes
-		return new double[] {1, 0.1, 0.2, 0.4, 0.564, 0.543, 0.143, 0.2, 0.5, 0.113};
-		
+		// Waiting for neural network to be finished, returns now a random double[] for
+		// testing purposes
+		return new double[] { 1, 0.1, 0.2, 0.4, 0.564, 0.543, 0.143, 0.2, 0.5, 0.113 };
+
 //		double[] predictions = null;
 //		predictions = neuralNetwork(ImageAsPixels);
 //		return predictions;
 	}
 
 	@Override
-	public void trainNetwork(int amountOfTrainingNumbers) {				
-		for (int i = 0; i < amountOfTrainingNumbers; i++) {
-			ImageAsPixelsAndLabel trainingImage;
-			trainingImage = IDXImageFileReader.getSingleImageAsPixels();
-			// neuralNetwork.train(trainingImage.getPixels(), trainingImage.getLabel());
-			// gui.showProgress(i, amountOfTrainingNumbers);		
+	public void trainNetwork(int amountOfTrainingImages) {
+		ArrayList<InputDataNumberImages> trainingSet;
+		int amountOfImagesProcessedAtaTime = 10;
+		for (int i = 0, j = 0; i <= amountOfTrainingImages; i++, j++) {
+			if (j == amountOfImagesProcessedAtaTime | i == amountOfTrainingImages) {
+				trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(j);
+//				neuralNetwork.trainWithaTrainingSet(trainingSet);
+//				gui.showProgress(i, amountOfTrainingNumbers);
+				j = 0;
+			}
 		}
 	}
-	
+
 	@Override
 	public void saveNetwork() {
 //		Matrix[] weights = neuralNetwork.getWeights();
@@ -45,7 +50,6 @@ public class ControllerImpl implements Controller {
 //		DAOController.putWeightsAndBiasesToDatabase(weights, biases);
 	}
 
-	
 	@Override
 	public void loadNetwork() {
 		Matrix[] weights = null;
@@ -56,7 +60,7 @@ public class ControllerImpl implements Controller {
 //		neuralNetwork.setBiases(biases);
 
 	}
-	
+
 	@Override
 	public void resetNetwork() {
 		// neuralNetwork.reset();

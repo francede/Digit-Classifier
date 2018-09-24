@@ -16,13 +16,18 @@ public interface NeuralNetwork {
 	 * @return predictions as probabilities for each number 0-9.
 	 * @throws MatrixException
 	 */
-	public double[] makePrediction(int[] imageAsPixels);
+	public double[] makePrediction(InputData input);
 
 
 	/**
 	 * Trains the network with a single image
 	 */
-	public void train(int[] imageAsPixels, int label);
+	public void train(InputData trainData);
+
+	/**
+	 * Trains the network with multiple images
+	 */
+	public void trainWithaTrainingSet(ArrayList<InputData> trainingSet);
 
 	/**
 	 * Resets the network by randomizing all weights and biases.

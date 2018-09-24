@@ -1,5 +1,7 @@
 package neumeroverkko;
 
+import java.util.ArrayList;
+
 import neumeroverkko.Matrix.MapOperation;
 
 public class NeuralNetworkImpl implements NeuralNetwork{
@@ -10,8 +12,6 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 
 	private int actualLayers;
 	private double 	learningRate = 0.1;
-//	private int 	learningIterationSize = 10;
-//	private int 	learningIterations = 40;
 
 	private MapOperation activationFunction = (x) ->
 		1 / (1+Math.pow(Math.E,-x));
@@ -36,6 +36,8 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		}
 	}
 
+//SETTERS & GETTERS --------------------------------------------------------------------------------------
+
 	/**
 	 * Sets the activation function used by this neural network
 	 * @param newFunction: The lambda expression to be used as the activation function
@@ -52,6 +54,44 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 	 */
 	public void setLearningRate(double newRate){
 		this.learningRate = newRate;
+	}
+
+	public void setWeights(Matrix[] weights){
+		if(this.weights.length != weights.length) throw new MatrixException("weights[] length must match.");
+		for(int i = 0; i < this.weights.length; i++){
+			if(weights[i].getCols() == this.weights[i].getCols() && weights[i].getRows() == this.weights[i].getRows()){
+				this.weights[i] = Matrix.clone(weights[i]);
+			}else{
+				throw new MatrixException("Weights' (index: " + i + ") matrices' dimensions must match.");
+			}
+		}
+	}
+
+	public void setBiases(Matrix[] biases){
+		if(this.biases.length != biases.length) throw new MatrixException("biases[] length must match.");
+		for(int i = 0; i < this.biases.length; i++){
+			if(biases[i].getCols() == this.biases[i].getCols() && biases[i].getRows() == this.biases[i].getRows()){
+				this.biases[i] = Matrix.clone(biases[i]);
+			}else{
+				throw new MatrixException("Biases' (index: " + i + ") matrices' dimensions must match.");
+			}
+		}
+	}
+
+	public Matrix[] getWeights() {
+		Matrix[] weightsClone = new Matrix[weights.length];
+		for(int i = 0; i < weightsClone.length; i++){
+			weightsClone[i] = Matrix.clone(weights[i]);
+		}
+		return weightsClone;
+	}
+
+	public Matrix[] getBiases() {
+		Matrix[] biasesClone = new Matrix[biases.length];
+		for(int i = 0; i < biasesClone.length; i++){
+			biasesClone[i] = Matrix.clone(biases[i]);
+		}
+		return biasesClone;
 	}
 
 	/**
@@ -81,18 +121,6 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		return output;
 	}
 
-	public void trainOnce(Matrix inputs, Matrix target){
-		Matrix targetClone = Matrix.clone(target);
-		Matrix output = this.feedForward(inputs);
-		Matrix[][] deltas = createChanges(inputs, output, targetClone);
-		Matrix[] weightDeltas = deltas[0];
-		Matrix[] biasDeltas = deltas[1];
-		for(int layer = 0; layer < actualLayers; layer++){
-			weights[layer].add(weightDeltas[layer]);
-			biases[layer].add(biasDeltas[layer]);
-		}
-	}
-
 	/**
 	 *
 	 * @param inputs
@@ -101,10 +129,11 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 	 * @return return[0] is weightDeltas, return[1] is gradients
 	 * @throws MatrixException
 	 */
-	private Matrix[][] createChanges(Matrix inputs, Matrix outputs, Matrix target){
+	private Matrix[][] backpropagate(Matrix inputs, Matrix outputs, Matrix target){
 		Matrix[] errors = createErrors(target, outputs, this.weights);
 		Matrix[] gradients = createGradients(errors);
 		Matrix[] weightDeltas = createDeltas(gradients, inputs);
+		//bias deltas = gradients
 		return new Matrix[][]{weightDeltas, gradients};
 	}
 
@@ -154,12 +183,9 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 
 
 	@Override
-	public double[] makePrediction(int[] imageAsPixels){
-		double[] normalizedImageAsPixels = new double[imageAsPixels.length];
-		for(int i = 0; i < normalizedImageAsPixels.length; i++){
-			normalizedImageAsPixels[i] = (double)imageAsPixels[i] / 255.0;
-		}
-		Matrix image = Matrix.arrayToMatrix(normalizedImageAsPixels);
+	public double[] makePrediction(InputData input){
+
+		Matrix image = Matrix.arrayToMatrix(input.getInput());
 		Matrix output = feedForward(image);
 
 		double[] output_array = new double[output.getRows()];
@@ -169,52 +195,46 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		return output_array;
 	}
 
-	@Override
-	public void train(int[] imageAsPixels, int label) {
-		// TODO Auto-generated method stub
+	public void train(InputData trainginData) {
+		Matrix input = Matrix.arrayToMatrix(trainginData.getInput());
+		Matrix target = Matrix.arrayToMatrix(trainginData.getTarget());
+		Matrix output = this.feedForward(input);
+		Matrix[][] changes = this.backpropagate(input, output, target);
+		Matrix[] weightDeltas = changes[0];
+		Matrix[] biasDeltas = changes[1];
 
-	}
-
-	@Override
-	public Matrix[] getWeights() {
-		Matrix[] weightsClone = new Matrix[weights.length];
-		for(int i = 0; i < weightsClone.length; i++){
-			weightsClone[i] = Matrix.clone(weights[i]);
+		for(int layer = 0; layer < actualLayers; layer++){
+			weights[layer].add(weightDeltas[layer]);
+			biases[layer].add(biasDeltas[layer]);
 		}
-		return weightsClone;
 	}
 
-	@Override
-	public Matrix[] getBiases() {
-		Matrix[] biasesClone = new Matrix[biases.length];
-		for(int i = 0; i < biasesClone.length; i++){
-			biasesClone[i] = Matrix.clone(biases[i]);
-		}
-		return biasesClone;
-	}
-
-	@Override
-	public void setWeights(Matrix[] weights){
-		if(this.weights.length != weights.length) throw new MatrixException("weights[] length must match.");
-		for(int i = 0; i < this.weights.length; i++){
-			if(weights[i].getCols() == this.weights[i].getCols() && weights[i].getRows() == this.weights[i].getRows()){
-				this.weights[i] = Matrix.clone(weights[i]);
-			}else{
-				throw new MatrixException("Weights' (index: " + i + ") matrices' dimensions must match.");
+	public void trainWithaTrainingSet(ArrayList<InputData> trainingSet){
+		Matrix[] averageWeightDeltas = new Matrix[actualLayers];
+		Matrix[] averageBiasDeltas = new Matrix[actualLayers];
+		for(InputData data : trainingSet){
+			Matrix input = Matrix.arrayToMatrix(data.getInput());
+			Matrix target = Matrix.arrayToMatrix(data.getTarget());
+			Matrix output = this.feedForward(input);
+			Matrix[][] deltas = this.backpropagate(input, output, target);
+			Matrix[] weightDeltas = deltas[0];
+			Matrix[] biasDeltas = deltas[1];
+			for(int layer = 0; layer < actualLayers; layer++){
+				averageWeightDeltas[layer].add(weightDeltas[layer]);
+				averageBiasDeltas[layer].add(biasDeltas[layer]);
 			}
 		}
-	}
 
-	@Override
-	public void setBiases(Matrix[] biases){
-		if(this.biases.length != biases.length) throw new MatrixException("biases[] length must match.");
-		for(int i = 0; i < this.biases.length; i++){
-			if(biases[i].getCols() == this.biases[i].getCols() && biases[i].getRows() == this.biases[i].getRows()){
-				this.biases[i] = Matrix.clone(biases[i]);
-			}else{
-				throw new MatrixException("Biases' (index: " + i + ") matrices' dimensions must match.");
-			}
+		//Take average
+		for(int layer = 0; layer < actualLayers; layer++){
+			averageWeightDeltas[layer].divide(trainingSet.size());
+			averageBiasDeltas[layer].divide(trainingSet.size());
+		}
+
+		//Add average to weights and biases
+		for(int layer = 0; layer < actualLayers; layer++){
+			weights[layer].add(averageWeightDeltas[layer]);
+			biases[layer].add(averageBiasDeltas[layer]);
 		}
 	}
-
 }
