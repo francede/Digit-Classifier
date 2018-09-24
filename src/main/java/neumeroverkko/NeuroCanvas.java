@@ -16,8 +16,8 @@ import javafx.embed.swing.SwingFXUtils;
 public class NeuroCanvas extends Canvas {
 
 	private GraphicsContext gc;
-	private final int scaledImageSizeI = 20;
-	private final int scaledImageSizeO = 28;
+	private final double insideImgSize = 20;
+	private final double backGroundImgSize = 28;
 
 	public NeuroCanvas(int w, int h, Color bgColor, Color sColor, int lineWidth) {
 		super(w, h);
@@ -117,23 +117,18 @@ public class NeuroCanvas extends Canvas {
 //	}
 
 //	public void test() {
-//	BufferedImage image = canvasToBimg();
-//	BufferedImage croppedImage = crop(image);
-//	clearScreen();
-//	BufferedImage scaledImage = scale(croppedImage, 20, 28);
-//	gc.drawImage(this.bimgToWimg(scaledImage), 0, 0);
-//	getPixels();
+//		getPixels();
 //}
 
 	public int[] getPixels() {
 		BufferedImage originalImage = canvasToBimg();
-		BufferedImage scaledImage = scale(crop(originalImage), scaledImageSizeI, scaledImageSizeO);
+		BufferedImage scaledImage = scale(crop(originalImage), insideImgSize, backGroundImgSize);
 		int [] tempRgbArray = new int[scaledImage.getWidth()*scaledImage.getHeight()];
 		tempRgbArray = scaledImage.getRGB(0, 0, scaledImage.getWidth(), scaledImage.getHeight(), null, 0, scaledImage.getWidth());
 		int [] rgbArray = new int[scaledImage.getWidth()*scaledImage.getHeight()];
 		for (int i = 0; i < rgbArray.length; i++) {
 			rgbArray[i] = getRGBblue(tempRgbArray[i]);
-//			System.out.println(rgbArray[i]);
+			System.out.println(rgbArray[i]);
 		}
 		return rgbArray;
 	}
