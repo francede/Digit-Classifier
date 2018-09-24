@@ -1,49 +1,76 @@
 package neumeroverkko;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class DevTestClass {
 	public static void main(String[] args){
-		testMatrixDimensions();
+		testNNLarger();
 	}
 
 	public static void testNN(){
 		NeuralNetworkImpl nn = new NeuralNetworkImpl(new int[]{2,2,1});
 		nn.reset();
-		nn.setLearningRate(0.2);
-		Matrix inTT = Matrix.arrayToMatrix(new double[]{1,1});
-		Matrix inTF = Matrix.arrayToMatrix(new double[]{1,0});
-		Matrix inFT = Matrix.arrayToMatrix(new double[]{0,1});
-		Matrix inFF = Matrix.arrayToMatrix(new double[]{0,0});
-
-		Matrix labelTrue = Matrix.arrayToMatrix(new double[]{1});
-		Matrix labelFalse = Matrix.arrayToMatrix(new double[]{0});
+		nn.setLearningRate(0.1);
+		ArrayList<InputData> trainingData = new ArrayList<InputData>();
+		trainingData.add(new InputDataBoolean(new double[]{1,1},false));
+		trainingData.add(new InputDataBoolean(new double[]{1,0},true));
+		trainingData.add(new InputDataBoolean(new double[]{0,1},true));
+		trainingData.add(new InputDataBoolean(new double[]{0,0},false));
 
 		for(int i = 0; i < 100000; i++){
 			int r = new Random().nextInt(4);
 			switch(r){
 			case 0:
-				nn.trainOnce(inTT, labelFalse);
+				nn.train(trainingData.get(r));
 				break;
 			case 1:
-				nn.trainOnce(inTF, labelTrue);
+				nn.train(trainingData.get(r));
 				break;
 			case 2:
-				nn.trainOnce(inFT, labelTrue);
+				nn.train(trainingData.get(r));
 				break;
 			case 3:
-				nn.trainOnce(inFF, labelFalse);
+				nn.train(trainingData.get(r));
 				break;
 			}
 		}
 		System.out.println("TT");
-		nn.trainOnce(inTT, labelFalse);
+		nn.train(trainingData.get(0));
 		System.out.println("TF");
-		nn.trainOnce(inTF, labelTrue);
+		nn.train(trainingData.get(1));
 		System.out.println("FT");
-		nn.trainOnce(inFT, labelTrue);
+		nn.train(trainingData.get(2));
 		System.out.println("FF");
-		nn.trainOnce(inFF, labelFalse);
+		nn.train(trainingData.get(3));
+	}
+
+	public static void testNNLarger(){
+		NeuralNetworkImpl nn = new NeuralNetworkImpl(new int[]{2,2,1});
+		nn.reset();
+		nn.setLearningRate(0.1);
+		ArrayList<InputData> trainingData = new ArrayList<InputData>();
+		trainingData.add(new InputDataBoolean(new double[]{1,1},false));
+		trainingData.add(new InputDataBoolean(new double[]{1,0},true));
+		trainingData.add(new InputDataBoolean(new double[]{0,1},true));
+		trainingData.add(new InputDataBoolean(new double[]{0,0},false));
+
+		for(int i = 0; i < 100000; i++){
+			ArrayList<InputData> dataSet = new ArrayList<InputData>();
+			for(int j = 0; j < 10; j++){
+				int r = new Random().nextInt(4);
+				dataSet.add(trainingData.get(r));
+			}
+			nn.trainWithaTrainingSet(dataSet);
+		}
+		System.out.println("TT");
+		nn.train(trainingData.get(0));
+		System.out.println("TF");
+		nn.train(trainingData.get(1));
+		System.out.println("FT");
+		nn.train(trainingData.get(2));
+		System.out.println("FF");
+		nn.train(trainingData.get(3));
 	}
 
 	public static void testMatrixDimensions(){

@@ -117,7 +117,6 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 			output.map(activationFunction);
 			layerOutputs[i] = Matrix.clone(output);
 		}
-		System.out.println(output);
 		return output;
 	}
 
@@ -212,6 +211,7 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 	public void trainWithaTrainingSet(ArrayList<InputData> trainingSet){
 		Matrix[] averageWeightDeltas = new Matrix[actualLayers];
 		Matrix[] averageBiasDeltas = new Matrix[actualLayers];
+
 		for(InputData data : trainingSet){
 			Matrix input = Matrix.arrayToMatrix(data.getInput());
 			Matrix target = Matrix.arrayToMatrix(data.getTarget());
@@ -220,8 +220,13 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 			Matrix[] weightDeltas = deltas[0];
 			Matrix[] biasDeltas = deltas[1];
 			for(int layer = 0; layer < actualLayers; layer++){
-				averageWeightDeltas[layer].add(weightDeltas[layer]);
-				averageBiasDeltas[layer].add(biasDeltas[layer]);
+				if(averageWeightDeltas[layer] == null){
+					averageWeightDeltas[layer] = Matrix.clone(weightDeltas[layer]);
+					averageBiasDeltas[layer] = Matrix.clone(biasDeltas[layer]);
+				}else{
+					averageWeightDeltas[layer].add(weightDeltas[layer]);
+					averageBiasDeltas[layer].add(biasDeltas[layer]);
+				}
 			}
 		}
 
