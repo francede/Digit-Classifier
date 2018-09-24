@@ -69,18 +69,18 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	}
 
 	@Override
-	public ImageAsPixelsAndLabel getSingleImageAsPixels() {
-		ImageAsPixelsAndLabel singleImageAsPixels = null;
+	public InputDataNumberImages getSingleImageAsPixels() {
+		InputDataNumberImages singleImageAsPixels = null;
 		singleImageAsPixels = readImageFiles();
 		return singleImageAsPixels;
 	}
 
-	private ImageAsPixelsAndLabel readImageFiles() {
+	private InputDataNumberImages readImageFiles() {
 		if (numberOfImagesRead > numberOfImages) {
 			resetStream();
 		}
 
-		ImageAsPixelsAndLabel imageAsPixelsAndLabel = null;
+		InputDataNumberImages imageAsPixelsAndLabel = null;
 		int numberOfPixels = numberOfRows * numberOfColumns;
 		int[] pixelsOfImage = new int[numberOfPixels];
 
@@ -96,7 +96,7 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			int labelValue = inLabel.read();
 
 			// Assign the pixels and label to a new object
-			imageAsPixelsAndLabel = new ImageAsPixelsAndLabel(pixelsOfImage, labelValue);
+			imageAsPixelsAndLabel = new InputDataNumberImages(pixelsOfImage, labelValue);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -130,9 +130,9 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	}
 
 	@Override
-	public ArrayList<ImageAsPixelsAndLabel> getMultipleImagesAsPixels(int amountOfImages) {
-		ArrayList<ImageAsPixelsAndLabel> multipleImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
-		ImageAsPixelsAndLabel singleImageAsPixels = null;
+	public ArrayList<InputDataNumberImages> getMultipleImagesAsPixels(int amountOfImages) {
+		ArrayList<InputDataNumberImages> multipleImagesAsPixels = new ArrayList<InputDataNumberImages>();
+		InputDataNumberImages singleImageAsPixels = null;
 		for (int i = 1; i <= amountOfImages; i++) {
 			singleImageAsPixels = readImageFiles();
 			multipleImagesAsPixels.add(singleImageAsPixels);
@@ -142,8 +142,8 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	}
 
 	@Override
-	public ArrayList<ImageAsPixelsAndLabel> getAllImagesAsPixels() {
-		ArrayList<ImageAsPixelsAndLabel> allImagesAsPixels = new ArrayList<ImageAsPixelsAndLabel>();
+	public ArrayList<InputDataNumberImages> getAllImagesAsPixels() {
+		ArrayList<InputDataNumberImages> allImagesAsPixels = new ArrayList<InputDataNumberImages>();
 		allImagesAsPixels = getMultipleImagesAsPixels(60000);
 		return allImagesAsPixels;
 	}

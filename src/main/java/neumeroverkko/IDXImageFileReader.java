@@ -17,18 +17,18 @@ public interface IDXImageFileReader {
 	/**
 	 * Returns one ImageAsPixelsAndLabel object constructed from the training set. 
 	 */	
-	public ImageAsPixelsAndLabel getSingleImageAsPixels();
+	public InputDataNumberImages getSingleImageAsPixels();
 	
 	/**
 	 * Returns X amount of ImageAsPixelsAndLabel objects constructed from the training set as a ArrayList.
 	 */
-	public ArrayList<ImageAsPixelsAndLabel> getMultipleImagesAsPixels(int amountOfImages);
+	public ArrayList<InputDataNumberImages> getMultipleImagesAsPixels(int amountOfImages);
 	
 	/**
 	 * Returns all 60000 number images as ImageAsPixelsAndLabel objects 
 	 * from the training set as an ArrayList.
 	 */
-	public ArrayList<ImageAsPixelsAndLabel> getAllImagesAsPixels();
+	public ArrayList<InputDataNumberImages> getAllImagesAsPixels();
 	
 	/**
 	 * If you want to verify the numbers from the training set. 
