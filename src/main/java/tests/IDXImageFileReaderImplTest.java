@@ -8,9 +8,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import neumeroverkko.IDXImageFileReader;
-import neumeroverkko.IDXImageFileReaderImpl;
-import neumeroverkko.InputDataNumberImages;
+import controller.IDXImageFileReader;
+import controller.IDXImageFileReaderImpl;
+import model.InputDataNumberImages;
 
 public class IDXImageFileReaderImplTest {
 	

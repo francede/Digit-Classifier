@@ -1,4 +1,4 @@
-package neumeroverkko;
+package model;
 
 public class MatrixException extends RuntimeException{
 	public MatrixException(String msg){

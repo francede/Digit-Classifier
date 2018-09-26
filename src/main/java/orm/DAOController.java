@@ -1,4 +1,6 @@
-package neumeroverkko;
+package orm;
+
+import model.Matrix;
 
 public interface DAOController {
 	

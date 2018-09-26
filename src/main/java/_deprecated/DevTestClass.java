@@ -1,11 +1,16 @@
-package neumeroverkko;
+package _deprecated;
 
 import java.util.ArrayList;
 import java.util.Random;
 
+import model.InputData;
+import model.InputDataBoolean;
+import model.Matrix;
+import model.NeuralNetworkImpl;
+
 public class DevTestClass {
 	public static void main(String[] args){
-		testNNLarger();
+		testDimensions();
 	}
 
 	public static void testNN(){
@@ -81,5 +86,13 @@ public class DevTestClass {
 		}
 		System.out.println(m1);
 		System.out.println(d1[2]);
+	}
+
+	public static void testDimensions(){
+		NeuralNetworkImpl nn = new NeuralNetworkImpl(new int[]{2,6,1});
+		Matrix[] ws = nn.getWeights();
+		for(Matrix w : ws){
+			System.out.println(w);
+		}
 	}
 }

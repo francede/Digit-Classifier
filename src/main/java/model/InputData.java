@@ -1,4 +1,4 @@
-package neumeroverkko;
+package model;
 
 public interface InputData {
 	public double[] getInput();

@@ -6,8 +6,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import neumeroverkko.Matrix;
-import neumeroverkko.MatrixException;
+import model.Matrix;
+import model.MatrixException;
 
 public class MatrixTest {
 	private static Matrix m1;

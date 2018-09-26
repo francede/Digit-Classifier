@@ -1,4 +1,4 @@
-package neumeroverkko;
+package model;
 
 import java.util.Random;
 
@@ -120,11 +120,11 @@ public class Matrix {
      */
     public static Matrix arrayToMatrix(double[][] array){
     	Matrix result = new Matrix(array.length, array[0].length);
-    	int secondArrLength = array[0].length;
-    	for(int i = 0; i < array.length; i++){
-    		if(array[i].length != secondArrLength) throw new MatrixException("All rows must be of equal size.");
-    		for(int j = 0; j < secondArrLength; j++){
-    			result.data[i][j] = array[i][j];
+    	int columnLength = array[0].length;
+    	for(int row = 0; row < array.length; row++){
+    		if(array[row].length != columnLength) throw new MatrixException("All rows must be of equal size.");
+    		for(int col = 0; col < columnLength; col++){
+    			result.data[row][col] = array[row][col];
     		}
     	}
     	return result;
@@ -137,12 +137,6 @@ public class Matrix {
     			array[i*j + j] = matrix.data[i][j];
     		}
     	}
-    	/* To make 1-dimensional in the future
-    	 * double[] output_array = new double[output.getRows()];
-			for(int i = 0; i < output_array.length; i++){
-			output_array[i] = output.getData()[i][0];
-			}
-    	 */
     	return array;
     }
 

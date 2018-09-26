@@ -1,6 +1,13 @@
-package neumeroverkko;
+package controller;
 
 import java.util.ArrayList;
+
+import model.InputDataNumberImages;
+import model.Matrix;
+import model.NeuralNetwork;
+import orm.DAOController;
+import orm.DAOControllerImpl;
+import view.Gui;
 
 public class ControllerImpl implements Controller {
 
