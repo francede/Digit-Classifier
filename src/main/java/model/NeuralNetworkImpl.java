@@ -1,8 +1,8 @@
-package neumeroverkko;
+package model;
 
 import java.util.ArrayList;
 
-import neumeroverkko.Matrix.MapOperation;
+import model.Matrix.MapOperation;
 
 public class NeuralNetworkImpl implements NeuralNetwork{
 	private Matrix[] weights;

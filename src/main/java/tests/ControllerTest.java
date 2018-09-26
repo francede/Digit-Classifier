@@ -6,9 +6,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import neumeroverkko.Controller;
-import neumeroverkko.ControllerImpl;
-import neumeroverkko.Gui;
+import controller.Controller;
+import controller.ControllerImpl;
+import view.Gui;
 
 public class ControllerTest {
 	

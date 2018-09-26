@@ -1,4 +1,4 @@
-package neumeroverkko;
+package model;
 
 public class InputDataBoolean implements InputData{
 	private final double[] input;

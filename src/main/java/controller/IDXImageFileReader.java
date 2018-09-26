@@ -1,6 +1,8 @@
-package neumeroverkko;
+package controller;
 
 import java.util.ArrayList;
+
+import model.InputDataNumberImages;
 
 /**
  * Reads and returns number images as ImageAsPixelsAndLabel objects from the training set.
