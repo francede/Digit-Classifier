@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import model.InputData;
 import model.InputDataNumberImages;
 
 /**
@@ -71,18 +72,18 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	}
 
 	@Override
-	public InputDataNumberImages getSingleImageAsPixels() {
-		InputDataNumberImages singleImageAsPixels = null;
+	public InputData getSingleImageAsPixels() {
+		InputData singleImageAsPixels = null;
 		singleImageAsPixels = readImageFiles();
 		return singleImageAsPixels;
 	}
 
-	private InputDataNumberImages readImageFiles() {
+	private InputData readImageFiles() {
 		if (numberOfImagesRead > numberOfImages) {
 			resetStream();
 		}
 
-		InputDataNumberImages imageAsPixelsAndLabel = null;
+		InputData imageAsPixelsAndLabel = null;
 		int numberOfPixels = numberOfRows * numberOfColumns;
 		double[] pixelsOfImage = new double[numberOfPixels];
 
@@ -132,9 +133,9 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	}
 
 	@Override
-	public ArrayList<InputDataNumberImages> getMultipleImagesAsPixels(int amountOfImages) {
-		ArrayList<InputDataNumberImages> multipleImagesAsPixels = new ArrayList<InputDataNumberImages>();
-		InputDataNumberImages singleImageAsPixels = null;
+	public ArrayList<InputData> getMultipleImagesAsPixels(int amountOfImages) {
+		ArrayList<InputData> multipleImagesAsPixels = new ArrayList<InputData>();
+		InputData singleImageAsPixels = null;
 		for (int i = 1; i <= amountOfImages; i++) {
 			singleImageAsPixels = readImageFiles();
 			multipleImagesAsPixels.add(singleImageAsPixels);
@@ -144,8 +145,8 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	}
 
 	@Override
-	public ArrayList<InputDataNumberImages> getAllImagesAsPixels() {
-		ArrayList<InputDataNumberImages> allImagesAsPixels = new ArrayList<InputDataNumberImages>();
+	public ArrayList<InputData> getAllImagesAsPixels() {
+		ArrayList<InputData> allImagesAsPixels = new ArrayList<InputData>();
 		allImagesAsPixels = getMultipleImagesAsPixels(60000);
 		return allImagesAsPixels;
 	}
