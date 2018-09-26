@@ -3,10 +3,12 @@ package neumeroverkko;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -27,8 +29,12 @@ public class Gui extends Application {
 	private Button clear;
 	private Button submit;
 	private Button train;
+	private Button right;
+	private Button wrong;
 	private Group root;
 	private BorderPane borderPane;
+	private Label title;
+	
 
 	public Gui() {
 		this.controller = new ControllerImpl(this);
@@ -39,12 +45,21 @@ public class Gui extends Application {
 		this.clear = new Button("Clear");
 		this.submit = new Button("Submit");
 		this.train = new Button("Train neural network");
+		this.right = new Button("Right");
+		this.wrong = new Button("Wrong");
 		this.root = new Group();
 		this.borderPane = new BorderPane();
+		this.title = new Label("Predictions");
+		
 	}
 
 	@Override
 	public void start(Stage primaryStage) {
+		vBox.setPrefSize(100, 280);
+		vBox.setStyle("-fx-background-color: lightgrey;");
+		vBox.setMargin(flow, new Insets(10,10,10,10));
+		vBox.setMargin(title, new Insets(10,10,10,10));
+		title.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
 		canvas.draw();
 		borderPane.setCenter(canvas);
 		hBox.getChildren().addAll(clear, submit, train);
@@ -67,7 +82,7 @@ public class Gui extends Application {
             public void handle(ActionEvent event) {
             	canvas.clearScreen();
             	flow.getChildren().clear();
-            	vBox.getChildren().clear();
+            	//vBox.getChildren().clear();
             }
         });
 		submit.setOnAction(new EventHandler<ActionEvent>() {
@@ -76,6 +91,7 @@ public class Gui extends Application {
             	flow.getChildren().clear();
             	vBox.getChildren().clear();
             	flow = showPredictions(controller.makePrediction(canvas.getPixels()));
+            	vBox.getChildren().add(title);
             	vBox.getChildren().add(flow);
             }
         });
@@ -86,14 +102,14 @@ public class Gui extends Application {
     	Text bText = new Text();
     	Text text1 = new Text();
     	Text text2 = new Text();
-    	String t = "Predictions:\n";
+    	String t = "";
     	for (int i = 0; i < predictions.length; i++) {
     		if (predictions[i] != max) {
     			t = t + i + ": " + predictions[i] + "\n";
     		} else {
     			text1.setText(t);
             	bText.setText(i + ": " + Double.toString(max) + "\n");
-            	bText.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+            	bText.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
             	t = "";
     		}
     		text2.setText(t);
