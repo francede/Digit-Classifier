@@ -1,4 +1,4 @@
-package neumeroverkko;
+package model;
 
 public class InputDataNumberImages implements InputData{
 

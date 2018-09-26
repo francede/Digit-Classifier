@@ -1,4 +1,4 @@
-package neumeroverkko;
+package controller;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -9,6 +9,8 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+
+import model.InputDataNumberImages;
 
 /**
 * This piece of code is based on a IDX file reader presented in Stackoverflow
@@ -82,7 +84,7 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 
 		InputDataNumberImages imageAsPixelsAndLabel = null;
 		int numberOfPixels = numberOfRows * numberOfColumns;
-		int[] pixelsOfImage = new int[numberOfPixels];
+		double[] pixelsOfImage = new double[numberOfPixels];
 
 		try {
 

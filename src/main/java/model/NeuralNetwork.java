@@ -1,4 +1,4 @@
-package neumeroverkko;
+package model;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ public interface NeuralNetwork {
 	 * @return predictions as probabilities for each number 0-9.
 	 * @throws MatrixException
 	 */
-	public double[] makePrediction(InputData input);
+	public Matrix makePrediction(InputData input);
 
 
 	/**

@@ -8,9 +8,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import neumeroverkko.IDXImageFileReader;
-import neumeroverkko.IDXImageFileReaderImpl;
-import neumeroverkko.InputDataNumberImages;
+import controller.IDXImageFileReader;
+import controller.IDXImageFileReaderImpl;
+import model.InputDataNumberImages;
 
 public class IDXImageFileReaderImplTest {
 	
@@ -24,15 +24,15 @@ public class IDXImageFileReaderImplTest {
 		System.out.println("---Test: get one image as pixels---");
 		InputDataNumberImages imageAsPixels;
 		imageAsPixels = IDXReader.getSingleImageAsPixels();
-		assertEquals("The image int[] length is wrong. ", 784, imageAsPixels.getPixels().length, 0.1);
+		assertEquals("The image double[] length is wrong. ", 784, imageAsPixels.getInput().length, 0.1);
 		checkPixelValues(imageAsPixels);
 
 	}
 	
 	public void checkPixelValues(InputDataNumberImages imageAsPixels) {
-		for (int i : imageAsPixels.getPixels()) {
+		for (double i : imageAsPixels.getInput()) {
 			assertTrue("The pixel value is below 0", i >= 0);
-			assertTrue("The pixel value is greater than 255", i <= 255);
+			assertTrue("The pixel value is greater than 1", i <= 1);
 		}
 	}
 	

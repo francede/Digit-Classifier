@@ -1,8 +1,8 @@
-package neumeroverkko;
+package model;
 
 import java.util.ArrayList;
 
-import neumeroverkko.Matrix.MapOperation;
+import model.Matrix.MapOperation;
 
 public class NeuralNetworkImpl implements NeuralNetwork{
 	private Matrix[] weights;
@@ -117,7 +117,6 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 			output.map(activationFunction);
 			layerOutputs[i] = Matrix.clone(output);
 		}
-		System.out.println(output);
 		return output;
 	}
 
@@ -130,10 +129,10 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 	 * @throws MatrixException
 	 */
 	private Matrix[][] backpropagate(Matrix inputs, Matrix outputs, Matrix target){
-		Matrix[] errors = createErrors(target, outputs, this.weights);
+		Matrix[] errors = createErrors(target, Matrix.clone(outputs), this.weights);
 		Matrix[] gradients = createGradients(errors);
 		Matrix[] weightDeltas = createDeltas(gradients, inputs);
-		//bias deltas = gradients
+		//bias deltas are the gradients
 		return new Matrix[][]{weightDeltas, gradients};
 	}
 
@@ -183,16 +182,12 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 
 
 	@Override
-	public double[] makePrediction(InputData input){
+	public Matrix makePrediction(InputData input){
 
 		Matrix image = Matrix.arrayToMatrix(input.getInput());
 		Matrix output = feedForward(image);
 
-		double[] output_array = new double[output.getRows()];
-		for(int i = 0; i < output_array.length; i++){
-			output_array[i] = output.getData()[i][0];
-		}
-		return output_array;
+		return output;
 	}
 
 	public void train(InputData trainginData) {
@@ -212,6 +207,7 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 	public void trainWithaTrainingSet(ArrayList<InputData> trainingSet){
 		Matrix[] averageWeightDeltas = new Matrix[actualLayers];
 		Matrix[] averageBiasDeltas = new Matrix[actualLayers];
+
 		for(InputData data : trainingSet){
 			Matrix input = Matrix.arrayToMatrix(data.getInput());
 			Matrix target = Matrix.arrayToMatrix(data.getTarget());
@@ -220,8 +216,13 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 			Matrix[] weightDeltas = deltas[0];
 			Matrix[] biasDeltas = deltas[1];
 			for(int layer = 0; layer < actualLayers; layer++){
-				averageWeightDeltas[layer].add(weightDeltas[layer]);
-				averageBiasDeltas[layer].add(biasDeltas[layer]);
+				if(averageWeightDeltas[layer] == null){
+					averageWeightDeltas[layer] = Matrix.clone(weightDeltas[layer]);
+					averageBiasDeltas[layer] = Matrix.clone(biasDeltas[layer]);
+				}else{
+					averageWeightDeltas[layer].add(weightDeltas[layer]);
+					averageBiasDeltas[layer].add(biasDeltas[layer]);
+				}
 			}
 		}
 
