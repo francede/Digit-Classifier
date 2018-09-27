@@ -148,7 +148,7 @@ public class Gui extends Application {
 
 		ToggleGroup toggleGroup = new ToggleGroup();
 		Label label = new Label("The right answer: ");
-
+		
         RadioButton button0 = new RadioButton("0");
         RadioButton button1 = new RadioButton("1");
         RadioButton button2 = new RadioButton("2");

@@ -31,10 +31,6 @@ public class ControllerImpl implements Controller {
 	public double[] makePrediction(int[] ImageAsPixels) {
 		// Waiting for neural network to be finished, returns now a random double[] for testing purposes
 		return new double[] {1, 0.1, 0.2, 0.4, 0.564, 0.543, 0.143, 0.2, 0.5, 0.113};
-<<<<<<< HEAD:src/main/java/neumeroverkko/ControllerImpl.java
-
-=======
->>>>>>> 21705c3bbf5238417871ad8aa85965ae7f14e7da:src/main/java/controller/ControllerImpl.java
 
 //		double[] predictions = null;
 //		predictions = neuralNetwork(ImageAsPixels);
@@ -42,10 +38,6 @@ public class ControllerImpl implements Controller {
 	}
 
 	@Override
-<<<<<<< HEAD:src/main/java/neumeroverkko/ControllerImpl.java
-=======
-
->>>>>>> 21705c3bbf5238417871ad8aa85965ae7f14e7da:src/main/java/controller/ControllerImpl.java
 	public void trainNetwork(int amountOfTrainingImages) {
 		ArrayList<InputDataNumberImages> trainingSet;
 		int amountOfImagesProcessedAtaTime = 10;
@@ -66,10 +58,6 @@ public class ControllerImpl implements Controller {
 //		DAOController.putWeightsAndBiasesToDatabase(weights, biases);
 	}
 
-<<<<<<< HEAD:src/main/java/neumeroverkko/ControllerImpl.java
-
-=======
->>>>>>> 21705c3bbf5238417871ad8aa85965ae7f14e7da:src/main/java/controller/ControllerImpl.java
 	@Override
 	public void loadNetwork() {
 		Matrix[] weights = null;
