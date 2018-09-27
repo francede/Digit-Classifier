@@ -21,7 +21,7 @@ public class ControllerImpl implements Controller {
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
-	private final int[] NETWORK_LAYER_SIZES = { 2, 2, 1 };
+	private final int[] NETWORK_LAYER_SIZES = {784, 8, 8, 10};
 
 	public ControllerImpl(Gui gui) {
 		this.gui = gui;
@@ -34,8 +34,9 @@ public class ControllerImpl implements Controller {
 	public double[] makePrediction(double[] imageAsPixels) {
 		double[] predictions = null;
 		InputData inputData = new InputDataNumberImages(imageAsPixels);
-		predictions = Matrix.matrixToArray(neuralNetwork.makePrediction(inputData));
-		//double[] predictions = new double[] {0.1, 0.4, 0.5, 1.0, 0.4, 0.2, 0.3, 0.9, 0.8};
+		Matrix matrix = neuralNetwork.makePrediction(inputData);
+		predictions = Matrix.matrixToArray(matrix);
+		//double[] predictions = new double[] {0.1, 0.4, 0.5, 1.0, 0.4, 0.2, 0.3, 0.9, 0.8, 0.4};
 		return predictions;
 	}
 
