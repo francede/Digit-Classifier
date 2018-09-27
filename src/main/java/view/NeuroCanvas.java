@@ -122,17 +122,16 @@ public class NeuroCanvas extends Canvas {
 	public void showImage(WritableImage wimg) {
 		gc.drawImage(wimg, 0, 0);
 	}
-	
+
 	public WritableImage takeSnapShot() {
 		WritableImage wimg = new WritableImage((int)this.getWidth(), (int)this.getHeight());
 		this.snapshot(new SnapshotParameters(), wimg);
 		return wimg;
 	}
-	
+
 
 	public double[] getPixels() {
-		BufferedImage originalImage = canvasToBimg();
-		BufferedImage scaledImage = scale(crop(originalImage), insideImgSize, backGroundImgSize);
+		BufferedImage scaledImage = scale(crop(canvasToBimg()), insideImgSize, backGroundImgSize);
 		int [] tempRgbArray = new int[scaledImage.getWidth()*scaledImage.getHeight()];
 		tempRgbArray = scaledImage.getRGB(0, 0, scaledImage.getWidth(), scaledImage.getHeight(), null, 0, scaledImage.getWidth());
 		double [] rgbArray = new double[scaledImage.getWidth()*scaledImage.getHeight()];

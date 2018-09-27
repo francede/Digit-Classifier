@@ -27,14 +27,16 @@ public class Gui extends Application {
 
 	private ControllerImpl controller;
 	private NeuroCanvas canvas;
-	private Stage predictionPWindow;
-	private Stage rButtonWindow;
+	private Stage predictionWindow;
+	private Stage correctWindow;
+	private Stage trainingWindow;
 
 	public Gui() {
 		this.controller = new ControllerImpl(this);
 		this.canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 10);
-		this.rButtonWindow = new Stage();
-		this.predictionPWindow = new Stage();
+		this.correctWindow = new Stage();
+		this.predictionWindow = new Stage();
+		this.trainingWindow = new Stage();
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class Gui extends Application {
 		train.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
-
+	        	 trainingPage();
 		    }
 		});
 	}
@@ -71,30 +73,85 @@ public class Gui extends Application {
 		right.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
-	        	predictionPWindow.close();
+	        	predictionWindow.close();
 	        	canvas.clearScreen();
 		    }
 		});
 		wrong.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
-	        	 rButtonPage();
+	        	 correctPage();
 	         }
 		});
 	}
 
-	private void handleRBPageButtons(Button submitAnswer, ToggleGroup toggleGroup) {
+	private void handleCorrectPageButtons(Button submitAnswer, ToggleGroup toggleGroup) {
 		submitAnswer.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
 	        	 RadioButton selectedRadioButton = (RadioButton)toggleGroup.getSelectedToggle();
 	        	 int toogleGroupValue = Integer.parseInt(selectedRadioButton.getText());
 	        	 System.out.println(toogleGroupValue);
-	        	 rButtonWindow.close();
-	        	 predictionPWindow.close();
+	        	 correctWindow.close();
+	        	 predictionWindow.close();
 	        	 canvas.clearScreen();
 		    }
 		});
+	}
+
+	private void handleTrainPageButtons(Button train, Button back, ToggleGroup toggleGroup) {
+		train.setOnAction(new EventHandler<ActionEvent>() {
+	         @Override
+	         public void handle(ActionEvent event) {
+	        	 RadioButton selectedRadioButton = (RadioButton)toggleGroup.getSelectedToggle();
+	        	 int toggleGroupValue = Integer.parseInt(selectedRadioButton.getText());
+	        	 controller.trainNetwork(toggleGroupValue);
+	         }
+	    });
+		back.setOnAction(new EventHandler<ActionEvent>() {
+			 @Override
+	         public void handle(ActionEvent event) {
+	        	 trainingWindow.close();
+		    }
+		});
+	}
+
+	private void trainingPage() {
+		ToggleGroup toggleGroup = new ToggleGroup();
+
+		Label label = new Label("How many pictures?");
+        RadioButton b100 = new RadioButton("100");
+        RadioButton b500 = new RadioButton("500");
+        RadioButton b1000 = new RadioButton("1000");
+        RadioButton b5000 = new RadioButton("5000");
+        RadioButton b10000 = new RadioButton("10000");
+        RadioButton b30000 = new RadioButton("30000");
+        RadioButton b60000 = new RadioButton("60000");
+
+        b100.setToggleGroup(toggleGroup);
+        b500.setToggleGroup(toggleGroup);
+        b1000.setToggleGroup(toggleGroup);
+        b5000.setToggleGroup(toggleGroup);
+        b10000.setToggleGroup(toggleGroup);
+        b30000.setToggleGroup(toggleGroup);
+        b60000.setToggleGroup(toggleGroup);
+
+        Button train = new Button("Train");
+        Button back = new Button("Back");
+
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(10));
+        vBox.setSpacing(5);
+        vBox.getChildren().addAll(label, b100, b500, b1000, b5000, b10000, b30000, b60000);
+        vBox.getChildren().addAll(train, back);
+
+        handleTrainPageButtons(train, back, toggleGroup);
+
+        Scene scene = new Scene(vBox, 200, 300);
+        scene.setRoot(vBox);
+        trainingWindow.setScene(scene);
+        trainingWindow.setTitle("Training");
+        trainingWindow.show();
 	}
 
 	private void startPage(Stage primaryStage) {
@@ -138,17 +195,17 @@ public class Gui extends Application {
     	vBox.setMargin(textFlow, new Insets(10,10,10,10));
 		vBox.setMargin(title, new Insets(10,10,10,10));
         root.getChildren().add(borderPane);
-        predictionPWindow.setTitle("Second Stage");
-        predictionPWindow.setScene(new Scene(root));
-        predictionPWindow.show();
+        predictionWindow.setTitle("Predictions");
+        predictionWindow.setScene(new Scene(root));
+        predictionWindow.show();
         handlePredictionsPageButtons(right, wrong);
 	}
 
-	private void rButtonPage() {
+	private void correctPage() {
 
 		ToggleGroup toggleGroup = new ToggleGroup();
 		Label label = new Label("The right answer: ");
-		
+
         RadioButton button0 = new RadioButton("0");
         RadioButton button1 = new RadioButton("1");
         RadioButton button2 = new RadioButton("2");
@@ -175,19 +232,19 @@ public class Gui extends Application {
 
         Button submitAnswer = new Button("Submit");
 
-        HBox rButtonHBox = new HBox();
-        rButtonHBox.setPadding(new Insets(10));
-        rButtonHBox.setSpacing(5);
-        rButtonHBox.getChildren().addAll(label, button0, button1, button2, button3, button4, button5, button6, button7, button8, button9, buttonNone);
-        rButtonHBox.getChildren().add(submitAnswer);
+        HBox hBox = new HBox();
+        hBox.setPadding(new Insets(10));
+        hBox.setSpacing(5);
+        hBox.getChildren().addAll(label, button0, button1, button2, button3, button4, button5, button6, button7, button8, button9, buttonNone);
+        hBox.getChildren().add(submitAnswer);
 
-        handleRBPageButtons(submitAnswer, toggleGroup);
+        handleCorrectPageButtons(submitAnswer, toggleGroup);
 
-        Scene rButtonScene = new Scene(rButtonHBox, 600, 100);
-        rButtonScene.setRoot(rButtonHBox);
-        rButtonWindow.setScene(rButtonScene);
-        rButtonWindow.setTitle("The right answer");
-        rButtonWindow.show();
+        Scene scene = new Scene(hBox, 600, 100);
+        scene.setRoot(hBox);
+        correctWindow.setScene(scene);
+        correctWindow.setTitle("The right answer");
+        correctWindow.show();
 	}
 
 	private TextFlow showPredictions(double[] predictions, TextFlow flow) {
