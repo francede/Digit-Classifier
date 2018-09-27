@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import controller.IDXImageFileReader;
 import controller.IDXImageFileReaderImpl;
+import model.InputData;
 import model.InputDataNumberImages;
 
 public class IDXImageFileReaderImplTest {
@@ -22,14 +23,14 @@ public class IDXImageFileReaderImplTest {
 	
 	@Test public void getOneImageAsPixels() {
 		System.out.println("---Test: get one image as pixels---");
-		InputDataNumberImages imageAsPixels;
+		InputData imageAsPixels;
 		imageAsPixels = IDXReader.getSingleImageAsPixels();
 		assertEquals("The image double[] length is wrong. ", 784, imageAsPixels.getInput().length, 0.1);
 		checkPixelValues(imageAsPixels);
 
 	}
 	
-	public void checkPixelValues(InputDataNumberImages imageAsPixels) {
+	public void checkPixelValues(InputData imageAsPixels) {
 		for (double i : imageAsPixels.getInput()) {
 			assertTrue("The pixel value is below 0", i >= 0);
 			assertTrue("The pixel value is greater than 1", i <= 1);
@@ -43,7 +44,7 @@ public class IDXImageFileReaderImplTest {
 	
 	@Test public void checkLabelValues() {
 		System.out.println("---Test: check label values from 5 first images in the training set---");
-		ArrayList<InputDataNumberImages> multipleImagesAsPixels;
+		ArrayList<InputData> multipleImagesAsPixels;
 		int amountOfImages = 5;
 		int[] rightLabels = {5,0,4,1,9};
 		multipleImagesAsPixels = IDXReader.getMultipleImagesAsPixels(amountOfImages);
@@ -55,11 +56,11 @@ public class IDXImageFileReaderImplTest {
 	
 	@Test public void getMultipleImagesAsPixels() {
 		System.out.println("---Test: get multiple images as pixels---");
-		ArrayList<InputDataNumberImages> multipleImagesAsPixels;
+		ArrayList<InputData> multipleImagesAsPixels;
 		int amountOfImages = 5;
 		multipleImagesAsPixels = IDXReader.getMultipleImagesAsPixels(amountOfImages);
 		assertNotNull("The image Arraylist is null", multipleImagesAsPixels);
-		for (InputDataNumberImages imageAsPixels : multipleImagesAsPixels) {
+		for (InputData imageAsPixels : multipleImagesAsPixels) {
 			checkPixelValues(imageAsPixels);
 		}
 	}
@@ -67,10 +68,10 @@ public class IDXImageFileReaderImplTest {
 	@Ignore("Test takes a lot of time")
 	@Test public void getAllImagesAsPixels() {
 		System.out.println("---Test: get all images as pixels---");
-		ArrayList<InputDataNumberImages> allImagesAsPixels;
+		ArrayList<InputData> allImagesAsPixels;
 		allImagesAsPixels = IDXReader.getAllImagesAsPixels();
 		assertNotNull("The image Arraylist is null", allImagesAsPixels);
-		for (InputDataNumberImages imageAsPixels : allImagesAsPixels) {
+		for (InputData imageAsPixels : allImagesAsPixels) {
 			checkPixelValues(imageAsPixels);
 		}
 	}

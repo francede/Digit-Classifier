@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 
+import model.InputData;
 import model.InputDataNumberImages;
 
 /**
@@ -19,18 +20,18 @@ public interface IDXImageFileReader {
 	/**
 	 * Returns one ImageAsPixelsAndLabel object constructed from the training set. 
 	 */	
-	public InputDataNumberImages getSingleImageAsPixels();
+	public InputData getSingleImageAsPixels();
 	
 	/**
 	 * Returns X amount of ImageAsPixelsAndLabel objects constructed from the training set as a ArrayList.
 	 */
-	public ArrayList<InputDataNumberImages> getMultipleImagesAsPixels(int amountOfImages);
+	public ArrayList<InputData> getMultipleImagesAsPixels(int amountOfImages);
 	
 	/**
 	 * Returns all 60000 number images as ImageAsPixelsAndLabel objects 
 	 * from the training set as an ArrayList.
 	 */
-	public ArrayList<InputDataNumberImages> getAllImagesAsPixels();
+	public ArrayList<InputData> getAllImagesAsPixels();
 	
 	/**
 	 * If you want to verify the numbers from the training set. 

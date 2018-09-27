@@ -1,10 +1,13 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import model.InputData;
 import model.InputDataNumberImages;
 import model.Matrix;
 import model.NeuralNetwork;
+import model.NeuralNetworkImpl;
 import orm.DAOController;
 import orm.DAOControllerImpl;
 import view.Gui;
@@ -22,30 +25,29 @@ public class ControllerImpl implements Controller {
 
 	public ControllerImpl(Gui gui) {
 		this.gui = gui;
-//		this.neuralNetwork = new NeuralNetworkImpl(LAYER_SIZES);
+		this.neuralNetwork = new NeuralNetworkImpl(NETWORK_LAYER_SIZES);
 		this.IDXImageFileReader = new IDXImageFileReaderImpl();
 		this.DAOController = new DAOControllerImpl();
 	}
 
 	@Override
-	public double[] makePrediction(int[] ImageAsPixels) {
-		// Waiting for neural network to be finished, returns now a random double[] for testing purposes
-		return new double[] {1, 0.1, 0.2, 0.4, 0.564, 0.543, 0.143, 0.2, 0.5, 0.113};
-
-//		double[] predictions = null;
-//		predictions = neuralNetwork(ImageAsPixels);
-//		return predictions;
+	public double[] makePrediction(int[] imageAsPixels) {
+		double[] imageAsDoublePixels = Arrays.stream(imageAsPixels).asDoubleStream().toArray();
+		double[] predictions = null;
+		InputData inputData = new InputDataNumberImages(imageAsDoublePixels);
+		predictions = Matrix.matrixToArray(neuralNetwork.makePrediction(inputData));
+		return predictions;
 	}
 
 	@Override
 	public void trainNetwork(int amountOfTrainingImages) {
-		ArrayList<InputDataNumberImages> trainingSet;
+		ArrayList<InputData> trainingSet;
 		int amountOfImagesProcessedAtaTime = 10;
 		for (int i = 0, j = 0; i <= amountOfTrainingImages; i++, j++) {
 			if (j == amountOfImagesProcessedAtaTime | i == amountOfTrainingImages) {
 				trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(j);
-//				neuralNetwork.trainWithaTrainingSet(trainingSet);
-//				gui.showProgress(i, amountOfTrainingNumbers);
+				neuralNetwork.trainWithaTrainingSet(trainingSet);
+//				gui.show(i, amountOfTrainingNumbers);
 				j = 0;
 			}
 		}
