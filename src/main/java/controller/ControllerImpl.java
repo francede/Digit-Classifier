@@ -32,11 +32,10 @@ public class ControllerImpl implements Controller {
 
 	@Override
 	public double[] makePrediction(double[] imageAsPixels) {
-		//double[] imageAsDoublePixels = Arrays.stream(imageAsPixels).asDoubleStream().toArray();
-		//double[] predictions = null;
+		double[] predictions = null;
 		InputData inputData = new InputDataNumberImages(imageAsPixels);
-		//predictions = Matrix.matrixToArray(neuralNetwork.makePrediction(inputData));
-		double[] predictions = new double[] {0.1, 0.4, 0.5, 1.0, 0.4, 0.2, 0.3, 0.9, 0.8};
+		predictions = Matrix.matrixToArray(neuralNetwork.makePrediction(inputData));
+		//double[] predictions = new double[] {0.1, 0.4, 0.5, 1.0, 0.4, 0.2, 0.3, 0.9, 0.8};
 		return predictions;
 	}
 
