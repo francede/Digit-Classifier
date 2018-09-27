@@ -119,6 +119,16 @@ public class NeuroCanvas extends Canvas {
 //	public void test() {
 //		getPixels();
 //}
+	public void showImage(WritableImage wimg) {
+		gc.drawImage(wimg, 0, 0);
+	}
+	
+	public WritableImage takeSnapShot() {
+		WritableImage wimg = new WritableImage((int)this.getWidth(), (int)this.getHeight());
+		this.snapshot(new SnapshotParameters(), wimg);
+		return wimg;
+	}
+	
 
 	public int[] getPixels() {
 		BufferedImage originalImage = canvasToBimg();
