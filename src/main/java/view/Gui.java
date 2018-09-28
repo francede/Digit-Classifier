@@ -1,8 +1,13 @@
 package view;
 
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 import controller.ControllerImpl;
 import javafx.stage.Window;
 import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -24,6 +29,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
 
 
 public class Gui extends Application {
@@ -66,10 +72,68 @@ public class Gui extends Application {
         showProgressWindow.setScene(scene);
         showProgressWindow.setTitle("Progress Control");
         scene.setRoot(hBox);
-        showProgressWindow.show();      
+        showProgressWindow.show();
     }
-	
-	private void handleStartPageButtons(Button clear, Button submit, Button train) {
+
+	private void trainingPage() {
+		Slider slider = new Slider();
+	    slider.setMin(0);
+	    slider.setMax(60000);
+		Label label = new Label("How many pictures?");
+		Label value = new Label(Integer.toString((int)slider.getValue()));
+
+        Button train = new Button("Train");
+        Button back = new Button("Back");
+
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(10));
+        vBox.setSpacing(5);
+        vBox.getChildren().addAll(label, slider, value);
+        vBox.getChildren().addAll(train, back);
+
+        Scene scene = new Scene(vBox, 200, 300);
+        scene.setRoot(vBox);
+        trainingWindow.setScene(scene);
+        trainingWindow.setTitle("Training");
+        trainingWindow.show();
+
+        train.setOnAction(new EventHandler<ActionEvent>() {
+	         @Override
+	         public void handle(ActionEvent event) {
+	        	 int slidervalue = (int)slider.getValue();
+	        	 System.out.println(slidervalue);
+	        	 controller.trainNetwork(slidervalue);
+	         }
+	    });
+
+		back.setOnAction(new EventHandler<ActionEvent>() {
+			 @Override
+	         public void handle(ActionEvent event) {
+	        	 trainingWindow.close();
+		    }
+		});
+
+		slider.valueProperty().addListener(new ChangeListener<Number>() {
+           @Override
+           public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+        	   value.setText(Integer.toString(arg2.intValue()));
+           }
+
+       });
+	}
+
+	private void startPage(Stage primaryStage) {
+		Group root  = new Group();
+		BorderPane borderPane = new BorderPane();
+		HBox buttonPane = new HBox();
+		borderPane.setCenter(canvas);
+		Button clear = new Button("Clear");
+		Button submit = new Button("Submit");
+		Button train = new Button("Train neural network");
+		buttonPane.getChildren().addAll(clear, submit, train);
+		borderPane.setBottom(buttonPane);
+		root.getChildren().add(borderPane);
+		canvas.draw();
 		clear.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -88,107 +152,7 @@ public class Gui extends Application {
 	        	 trainingPage();
 		    }
 		});
-	}
 
-	private void handlePredictionsPageButtons(Button right, Button wrong) {
-		right.setOnAction(new EventHandler<ActionEvent>() {
-	         @Override
-	         public void handle(ActionEvent event) {
-	        	predictionWindow.close();
-	        	canvas.clearScreen();
-		    }
-		});
-		wrong.setOnAction(new EventHandler<ActionEvent>() {
-	         @Override
-	         public void handle(ActionEvent event) {
-	        	 correctPage();
-	         }
-		});
-	}
-
-	private void handleCorrectPageButtons(Button submitAnswer, ToggleGroup toggleGroup) {
-		submitAnswer.setOnAction(new EventHandler<ActionEvent>() {
-	         @Override
-	         public void handle(ActionEvent event) {
-	        	 RadioButton selectedRadioButton = (RadioButton)toggleGroup.getSelectedToggle();
-	        	 int toogleGroupValue = Integer.parseInt(selectedRadioButton.getText());
-	        	 System.out.println(toogleGroupValue);
-	        	 correctWindow.close();
-	        	 predictionWindow.close();
-	        	 canvas.clearScreen();
-		    }
-		});
-	}
-
-	private void handleTrainPageButtons(Button train, Button back, ToggleGroup toggleGroup) {
-		train.setOnAction(new EventHandler<ActionEvent>() {
-	         @Override
-	         public void handle(ActionEvent event) {
-	        	 RadioButton selectedRadioButton = (RadioButton)toggleGroup.getSelectedToggle();
-	        	 int toggleGroupValue = Integer.parseInt(selectedRadioButton.getText());
-	        	 System.out.println(toggleGroupValue); 
-	        	 controller.trainNetwork(toggleGroupValue);
-	         }
-	    });
-		back.setOnAction(new EventHandler<ActionEvent>() {
-			 @Override
-	         public void handle(ActionEvent event) {
-	        	 trainingWindow.close();
-		    }
-		});
-	}
-	
-	private void trainingPage() {
-		ToggleGroup toggleGroup = new ToggleGroup();
-		Label label = new Label("How many pictures?");
-
-        RadioButton b100 = new RadioButton("100");
-        RadioButton b500 = new RadioButton("500");
-        RadioButton b1000 = new RadioButton("1000");
-        RadioButton b5000 = new RadioButton("5000");
-        RadioButton b10000 = new RadioButton("10000");
-        RadioButton b30000 = new RadioButton("30000");
-        RadioButton b60000 = new RadioButton("60000");
-
-        b100.setToggleGroup(toggleGroup);
-        b500.setToggleGroup(toggleGroup);
-        b1000.setToggleGroup(toggleGroup);
-        b5000.setToggleGroup(toggleGroup);
-        b10000.setToggleGroup(toggleGroup);
-        b30000.setToggleGroup(toggleGroup);
-        b60000.setToggleGroup(toggleGroup);
-
-        Button train = new Button("Train");
-        Button back = new Button("Back");
-
-        VBox vBox = new VBox();
-        vBox.setPadding(new Insets(10));
-        vBox.setSpacing(5);
-        vBox.getChildren().addAll(label, b100, b500, b1000, b5000, b10000, b30000, b60000);
-        vBox.getChildren().addAll(train, back);
-
-        handleTrainPageButtons(train, back, toggleGroup);
-
-        Scene scene = new Scene(vBox, 200, 300);
-        scene.setRoot(vBox);
-        trainingWindow.setScene(scene);
-        trainingWindow.setTitle("Training");
-        trainingWindow.show();
-	}
-
-	private void startPage(Stage primaryStage) {
-		Group root  = new Group();
-		BorderPane borderPane = new BorderPane();
-		HBox buttonPane = new HBox();
-		borderPane.setCenter(canvas);
-		Button clear = new Button("Clear");
-		Button submit = new Button("Submit");
-		Button train = new Button("Train neural network");
-		buttonPane.getChildren().addAll(clear, submit, train);
-		borderPane.setBottom(buttonPane);
-		root.getChildren().add(borderPane);
-		canvas.draw();
-		handleStartPageButtons(clear, submit, train);
 		primaryStage.setTitle("NeuroCanvas");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
@@ -220,54 +184,60 @@ public class Gui extends Application {
         predictionWindow.setTitle("Predictions");
         predictionWindow.setScene(new Scene(root));
         predictionWindow.show();
-        handlePredictionsPageButtons(right, wrong);
+        right.setOnAction(new EventHandler<ActionEvent>() {
+	         @Override
+	         public void handle(ActionEvent event) {
+	        	predictionWindow.close();
+	        	canvas.clearScreen();
+		    }
+		});
+		wrong.setOnAction(new EventHandler<ActionEvent>() {
+	         @Override
+	         public void handle(ActionEvent event) {
+	        	 correctPage();
+	         }
+		});
 	}
 
 	private void correctPage() {
-
-		ToggleGroup toggleGroup = new ToggleGroup();
+		String[] values = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "None"};
+    	RadioButton buttons [] = new RadioButton [values.length];
+    	ToggleGroup toggleGroup = new ToggleGroup();
 		Label label = new Label("The right answer: ");
+		Button submitAnswer = new Button("Submit");
 
-        RadioButton button0 = new RadioButton("0");
-        RadioButton button1 = new RadioButton("1");
-        RadioButton button2 = new RadioButton("2");
-        RadioButton button3 = new RadioButton("3");
-        RadioButton button4 = new RadioButton("4");
-        RadioButton button5 = new RadioButton("5");
-        RadioButton button6 = new RadioButton("6");
-        RadioButton button7 = new RadioButton("7");
-        RadioButton button8 = new RadioButton("8");
-        RadioButton button9 = new RadioButton("9");
-        RadioButton buttonNone = new RadioButton("None");
-
-        button0.setToggleGroup(toggleGroup);
-        button1.setToggleGroup(toggleGroup);
-        button2.setToggleGroup(toggleGroup);
-        button3.setToggleGroup(toggleGroup);
-        button4.setToggleGroup(toggleGroup);
-        button5.setToggleGroup(toggleGroup);
-        button6.setToggleGroup(toggleGroup);
-        button7.setToggleGroup(toggleGroup);
-        button8.setToggleGroup(toggleGroup);
-        button9.setToggleGroup(toggleGroup);
-        buttonNone.setToggleGroup(toggleGroup);
-
-        Button submitAnswer = new Button("Submit");
+        for (int i = 0; i < values.length; i++) {
+        	RadioButton button = new RadioButton(values[i]);
+        	button.setToggleGroup(toggleGroup);
+        	buttons[i] = button;
+        }
 
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(10));
         hBox.setSpacing(5);
-        hBox.getChildren().addAll(label, button0, button1, button2, button3, button4, button5, button6, button7, button8, button9, buttonNone);
+        hBox.getChildren().add(label);
+        hBox.getChildren().addAll(buttons);
         hBox.getChildren().add(submitAnswer);
 
-        handleCorrectPageButtons(submitAnswer, toggleGroup);
-        
-        Scene scene = new Scene(hBox, 600, 100);
-        scene.setRoot(hBox);
-        correctWindow.setScene(scene);
-        correctWindow.setTitle("The right answer");
-        correctWindow.show();
-	}
+        submitAnswer.setOnAction(new EventHandler<ActionEvent>() {
+	         @Override
+	         public void handle(ActionEvent event) {
+	        	 RadioButton selectedRadioButton = (RadioButton)toggleGroup.getSelectedToggle();
+	        	 int toggleGroupValue = Integer.parseInt(selectedRadioButton.getText());
+	        	 System.out.println(toggleGroupValue);
+	        	 correctWindow.close();
+	        	 predictionWindow.close();
+	        	 canvas.clearScreen();
+		    }
+		});
+
+       Scene scene = new Scene(hBox, 600, 100);
+       scene.setRoot(hBox);
+       correctWindow.setScene(scene);
+       correctWindow.setTitle("The right answer");
+       correctWindow.show();
+    }
+
 
 	private TextFlow showPredictions(double[] predictions, TextFlow flow) {
     	double max = max(predictions);
