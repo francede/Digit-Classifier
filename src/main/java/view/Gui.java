@@ -6,11 +6,14 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -30,6 +33,7 @@ public class Gui extends Application {
 	private Stage predictionWindow;
 	private Stage correctWindow;
 	private Stage trainingWindow;
+	private Stage showProgressWindow;
 
 	public Gui() {
 		this.controller = new ControllerImpl(this);
@@ -37,6 +41,7 @@ public class Gui extends Application {
 		this.correctWindow = new Stage();
 		this.predictionWindow = new Stage();
 		this.trainingWindow = new Stage();
+		this.showProgressWindow = new Stage();
 	}
 
 	@Override
@@ -48,6 +53,22 @@ public class Gui extends Application {
 		launch(args);
 	}
 
+	public void showProgress(int i, int amountOfTrainingNumbers) {
+		Float value = new Float(i/amountOfTrainingNumbers);
+		Group root = new Group();
+		ProgressBar pb = new ProgressBar(0);
+        pb.setProgress(value);
+        ProgressIndicator pin = new ProgressIndicator();
+        pin.setProgress(value);
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(pb, pin);
+        Scene scene = new Scene(root, 300, 150);
+        showProgressWindow.setScene(scene);
+        showProgressWindow.setTitle("Progress Control");
+        scene.setRoot(hBox);
+        showProgressWindow.show();      
+    }
+	
 	private void handleStartPageButtons(Button clear, Button submit, Button train) {
 		clear.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -105,6 +126,7 @@ public class Gui extends Application {
 	         public void handle(ActionEvent event) {
 	        	 RadioButton selectedRadioButton = (RadioButton)toggleGroup.getSelectedToggle();
 	        	 int toggleGroupValue = Integer.parseInt(selectedRadioButton.getText());
+	        	 System.out.println(toggleGroupValue); 
 	        	 controller.trainNetwork(toggleGroupValue);
 	         }
 	    });
@@ -115,11 +137,11 @@ public class Gui extends Application {
 		    }
 		});
 	}
-
+	
 	private void trainingPage() {
 		ToggleGroup toggleGroup = new ToggleGroup();
-
 		Label label = new Label("How many pictures?");
+
         RadioButton b100 = new RadioButton("100");
         RadioButton b500 = new RadioButton("500");
         RadioButton b1000 = new RadioButton("1000");
@@ -239,7 +261,7 @@ public class Gui extends Application {
         hBox.getChildren().add(submitAnswer);
 
         handleCorrectPageButtons(submitAnswer, toggleGroup);
-
+        
         Scene scene = new Scene(hBox, 600, 100);
         scene.setRoot(hBox);
         correctWindow.setScene(scene);
