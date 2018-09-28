@@ -169,16 +169,16 @@ public class Gui extends Application {
     	BorderPane borderPane = new BorderPane();
     	borderPane.setCenter(imageCanvas);
         borderPane.setBottom(buttonPane);
-        TextFlow textFlow = new TextFlow();
-    	textFlow = showPredictions(controller.makePrediction(canvas.getPixels()), textFlow);
+        //TextFlow textFlow = new TextFlow();
+    	VBox predictions = showPredictions(controller.makePrediction(canvas.getPixels()));
     	VBox vBox = new VBox();
     	borderPane.setLeft(vBox);
 		vBox.setPrefSize(100, 280);
 		Label title = new Label("Predictions");
 		title.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
     	vBox.getChildren().add(title);
-    	vBox.getChildren().add(textFlow);
-    	vBox.setMargin(textFlow, new Insets(10,10,10,10));
+    	vBox.getChildren().add(predictions);
+    	vBox.setMargin(predictions, new Insets(10,10,10,10));
 		vBox.setMargin(title, new Insets(10,10,10,10));
         root.getChildren().add(borderPane);
         predictionWindow.setTitle("Predictions");
@@ -239,27 +239,23 @@ public class Gui extends Application {
     }
 
 
-	private TextFlow showPredictions(double[] predictions, TextFlow flow) {
+	private VBox showPredictions(double[] predictions) {
+		VBox vBox = new VBox();
     	double max = max(predictions);
-    	Text bText = new Text();
-    	Text text1 = new Text();
-    	Text text2 = new Text();
-    	String t = "";
+    	HBox[] hBoxes = new HBox[predictions.length];
     	for (int i = 0; i < predictions.length; i++) {
-    		if (predictions[i] != max) {
-    			t = t + i + ": " + predictions[i] + "\n";
-    		} else {
-    			text1.setText(t);
-            	bText.setText(i + ": " + Double.toString(max) + "\n");
-            	bText.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-            	t = "";
+    		Label label = new Label(Double.toString(i) + ": ");
+    		Text text = new Text(String.format("%.2f", predictions[i]));
+    		if (predictions[i] == max) {
+    			text.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+    			label.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
     		}
-    		text2.setText(t);
+    		HBox hBox = new HBox();
+    		hBox.getChildren().addAll(label, text);
+    		hBoxes[i] = hBox;
     	}
-    	flow.getChildren().add(text1);
-    	flow.getChildren().add(bText);
-    	flow.getChildren().add(text2);
-    	return flow;
+    	vBox.getChildren().addAll(hBoxes);
+    	return vBox;
 	}
 
 	private double max(double[] arr) {
