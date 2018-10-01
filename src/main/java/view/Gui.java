@@ -243,7 +243,7 @@ public class Gui extends Application {
     	double max = max(predictions);
     	HBox[] hBoxes = new HBox[predictions.length];
     	for (int i = 0; i < predictions.length; i++) {
-    		Label label = new Label(Double.toString(i) + ": ");
+    		Label label = new Label(Integer.toString(i) + ": ");
     		Text text = new Text(String.format("%.2f", predictions[i]));
     		if (predictions[i] == max) {
     			text.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
