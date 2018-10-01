@@ -1,18 +1,33 @@
 package orm;
 
+import java.util.ArrayList;
+
 import model.Matrix;
 
 public class DAOControllerImpl implements DAOController {
 	
-	// TODO: intantiate NodeAndSynapseAccessObject
+	private NodeAndSynapseAccessObject nodeAndSynapseAccessObject;
 	
-	public void DAOController() {
+	public DAOControllerImpl() {
+		nodeAndSynapseAccessObject = new NodeAndSynapseAccessObject();
 	}
 
 	@Override
 	public void putWeightsAndBiasesToDatabase(Matrix[] weights, Matrix[] biases) {
+		for (Matrix layer : weights) {
+			double[] weightsOfLayer = Matrix.matrixToArray(layer);
+		}
+	}
+	
+	public void putWeightsAndBiasesToDatabaseTest() {
+		ArrayList<double[]> weights = new ArrayList<>();
+
+		weights.add(new double[] {1,2});
+		weights.add(new double[] {1,2,3,4});
+		nodeAndSynapseAccessObject.createAllNodes(weights);	
 		
 	}
+
 
 	@Override
 	public Matrix[] getWeightsFromDatabase() {

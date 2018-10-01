@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Node {
 	
 	private int nodeId;
-	private int number;
+	private int nodeOrdinal;
 	private int layer;
 	private double bias;
 	
@@ -17,7 +17,7 @@ public class Node {
 	public Node(int nodeId, int number, int layer, double bias) {
 		super();
 		this.nodeId = nodeId;
-		this.number = number;
+		this.nodeOrdinal = number;
 		this.layer = layer;
 		this.bias = bias;
 	}
@@ -27,7 +27,7 @@ public class Node {
 	}
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column (name = "NodeId")
 	public int getNodeId() {
 		return nodeId;
@@ -37,13 +37,13 @@ public class Node {
 		this.nodeId = nodeId;
 	}
 
-	@Column (name = "Number")
-	public int getNumber() {
-		return number;
+	@Column (name = "NodeOrdinal")
+	public int getNodeOrdinal() {
+		return nodeOrdinal;
 	}
 
-	public void setNumber(int number) {
-		this.number = number;
+	public void setNodeOrdinal(int nodeOrdinal) {
+		this.nodeOrdinal = nodeOrdinal;
 	}
 
 	@Column (name = "Layer")
