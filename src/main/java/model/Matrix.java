@@ -134,7 +134,7 @@ public class Matrix {
     	double[] array = new double[matrix.cols*matrix.rows];
     	for(int i = 0; i < matrix.rows; i++){
     		for(int j = 0; j < matrix.cols; j++){
-    			array[i*j + j] = matrix.data[i][j];
+    			array[i*matrix.cols + j] = matrix.data[i][j];
     		}
     	}
     	return array;

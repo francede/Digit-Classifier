@@ -10,7 +10,17 @@ import model.NeuralNetworkImpl;
 
 public class DevTestClass {
 	public static void main(String[] args){
-		testDimensions();
+		testMatrixToArray();
+	}
+
+	public static void testMatrixToArray(){
+		double[][] a = {{1,2,3}, {4,5,6}};
+		Matrix m = Matrix.arrayToMatrix(a);
+		System.out.println(m);
+		double[] out = Matrix.matrixToArray(m);
+		for(double o : out){
+			System.out.println(o);
+		}
 	}
 
 	public static void testNN(){

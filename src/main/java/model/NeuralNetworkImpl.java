@@ -56,6 +56,9 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		this.learningRate = newRate;
 	}
 
+	/**
+	 * Sets the weights of the network
+	 */
 	public void setWeights(Matrix[] weights){
 		if(this.weights.length != weights.length) throw new MatrixException("weights[] length must match.");
 		for(int i = 0; i < this.weights.length; i++){
@@ -67,6 +70,9 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		}
 	}
 
+	/**
+	 * Sets the biases of the network
+	 */
 	public void setBiases(Matrix[] biases){
 		if(this.biases.length != biases.length) throw new MatrixException("biases[] length must match.");
 		for(int i = 0; i < this.biases.length; i++){
@@ -78,6 +84,9 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		}
 	}
 
+	/**
+	 * Gets the weights of the network
+	 */
 	public Matrix[] getWeights() {
 		Matrix[] weightsClone = new Matrix[weights.length];
 		for(int i = 0; i < weightsClone.length; i++){
@@ -86,6 +95,9 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		return weightsClone;
 	}
 
+	/**
+	 * Gets the biases of the network
+	 */
 	public Matrix[] getBiases() {
 		Matrix[] biasesClone = new Matrix[biases.length];
 		for(int i = 0; i < biasesClone.length; i++){
@@ -121,11 +133,11 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 	}
 
 	/**
-	 *
+	 * Uses the backpropagation algorithm to calculate weights' and biases' changes
 	 * @param inputs
 	 * @param outputs
 	 * @param target
-	 * @return return[0] is weightDeltas, return[1] is gradients
+	 * @return return[0] is weight deltas as a table of matrices, return[1] is gradients
 	 * @throws MatrixException
 	 */
 	private Matrix[][] backpropagate(Matrix inputs, Matrix outputs, Matrix target){
@@ -180,7 +192,9 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		return deltaWeights;
 	}
 
-
+	/**
+	 * Uses the feedforward algorithm to generate a guess based on the current weights and biases and the input
+	 */
 	@Override
 	public Matrix makePrediction(InputData input){
 
@@ -190,10 +204,14 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		return output;
 	}
 
-	public void train(InputData trainginData) {
-		Matrix input = Matrix.arrayToMatrix(trainginData.getInput());
-		Matrix target = Matrix.arrayToMatrix(trainginData.getTarget());
+	/**
+	 * Trains the network once based on the training data
+	 */
+	public void train(InputData trainingData) {
+		Matrix input = Matrix.arrayToMatrix(trainingData.getInput());
+		Matrix target = Matrix.arrayToMatrix(trainingData.getTarget());
 		Matrix output = this.feedForward(input);
+
 		Matrix[][] changes = this.backpropagate(input, output, target);
 		Matrix[] weightDeltas = changes[0];
 		Matrix[] biasDeltas = changes[1];
@@ -204,6 +222,9 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		}
 	}
 
+	/**
+	 * Trains the network data with the average of the gradients generated from the individual training datas in trainingSet
+	 */
 	public void trainWithaTrainingSet(ArrayList<InputData> trainingSet){
 		Matrix[] averageWeightDeltas = new Matrix[actualLayers];
 		Matrix[] averageBiasDeltas = new Matrix[actualLayers];
