@@ -18,7 +18,7 @@ public class DAOControllerImplTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		DAOController.getWeightsFromDatabase();
 	}
 
 }
