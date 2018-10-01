@@ -48,7 +48,7 @@ public class ControllerImpl implements Controller {
 			if (j == amountOfImagesProcessedAtaTime | i == amountOfTrainingImages) {
 				trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(j);
 				neuralNetwork.trainWithaTrainingSet(trainingSet);
-				gui.showProgress(i, amountOfTrainingImages);
+				//gui.showProgress(i, amountOfTrainingImages);
 				j = 0;
 			}
 		}

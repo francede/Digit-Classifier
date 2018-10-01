@@ -3,15 +3,11 @@ package view;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-
 import controller.ControllerImpl;
-import javafx.stage.Window;
 import javafx.application.Application;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -26,7 +22,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
@@ -40,6 +35,8 @@ public class Gui extends Application {
 	private Stage correctWindow;
 	private Stage trainingWindow;
 	private Stage showProgressWindow;
+	private ProgressIndicator progressIndicator;
+	private ProgressBar progressBar;
 
 	public Gui() {
 		this.controller = new ControllerImpl(this);
@@ -48,6 +45,8 @@ public class Gui extends Application {
 		this.predictionWindow = new Stage();
 		this.trainingWindow = new Stage();
 		this.showProgressWindow = new Stage();
+		this.progressIndicator = new ProgressIndicator(0);
+		this.progressBar = new ProgressBar(0);
 	}
 
 	@Override
@@ -59,20 +58,21 @@ public class Gui extends Application {
 		launch(args);
 	}
 
-	public void showProgress(int i, int amountOfTrainingNumbers) {
-		Float value = new Float(i/amountOfTrainingNumbers);
+	private void progressPage() {
 		Group root = new Group();
-		ProgressBar pb = new ProgressBar(0);
-        pb.setProgress(value);
-        ProgressIndicator pin = new ProgressIndicator();
-        pin.setProgress(value);
-        HBox hBox = new HBox();
-        hBox.getChildren().addAll(pb, pin);
-        Scene scene = new Scene(root, 300, 150);
+		HBox hBox = new HBox();
+		hBox.getChildren().addAll(progressBar, progressIndicator);
+		Scene scene = new Scene(root, 300, 150);
         showProgressWindow.setScene(scene);
         showProgressWindow.setTitle("Progress Control");
         scene.setRoot(hBox);
         showProgressWindow.show();
+	}
+
+	public void showProgress(int i, int amountOfTrainingNumbers) {
+		Float value = new Float(i/amountOfTrainingNumbers);
+		progressBar.setProgress(value);
+        progressIndicator.setProgress(value);
     }
 
 	private void trainingPage() {
@@ -100,9 +100,9 @@ public class Gui extends Application {
         train.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
+	        	 progressPage();
 	        	 int slidervalue = (int)slider.getValue();
-	        	 System.out.println(slidervalue);
-	        	 controller.trainNetwork(slidervalue);
+	        	 //controller.trainNetwork(slidervalue);
 	         }
 	    });
 
@@ -169,7 +169,6 @@ public class Gui extends Application {
     	BorderPane borderPane = new BorderPane();
     	borderPane.setCenter(imageCanvas);
         borderPane.setBottom(buttonPane);
-        //TextFlow textFlow = new TextFlow();
     	VBox predictions = showPredictions(controller.makePrediction(canvas.getPixels()));
     	VBox vBox = new VBox();
     	borderPane.setLeft(vBox);
