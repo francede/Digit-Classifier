@@ -5,6 +5,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import controller.ControllerImpl;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -76,19 +77,24 @@ public class Gui extends Application {
     }
 
 	private void trainingPage() {
-		Slider slider = new Slider();
-	    slider.setMin(0);
-	    slider.setMax(60000);
-		Label label = new Label("How many pictures?");
-		Label value = new Label(Integer.toString((int)slider.getValue()));
-
+		Label labelP = new Label("How many pictures?");
+		Slider sliderP = new Slider();
+	    sliderP.setMin(0);
+	    sliderP.setMax(60000);
+	    Label valueP = new Label(Integer.toString((int)sliderP.getValue()));
+	    Label labelLR = new Label("Learning rate");
+	    Slider sliderLR = new Slider();
+	    sliderLR.setMin(0.01);
+	    sliderLR.setMax(1);
+	    sliderLR.setValue(0.1);
+	    Label valueLR = new Label(Double.toString(sliderLR.getValue()));
         Button train = new Button("Train");
         Button back = new Button("Back");
 
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(10));
         vBox.setSpacing(5);
-        vBox.getChildren().addAll(label, slider, value);
+        vBox.getChildren().addAll(labelP, sliderP, valueP, labelLR, sliderLR, valueLR);
         vBox.getChildren().addAll(train, back);
 
         Scene scene = new Scene(vBox, 200, 300);
@@ -101,8 +107,10 @@ public class Gui extends Application {
 	         @Override
 	         public void handle(ActionEvent event) {
 	        	 progressPage();
-	        	 int slidervalue = (int)slider.getValue();
-	        	 //controller.trainNetwork(slidervalue);
+	        	 int slidervalueP = (int)sliderP.getValue();
+                 //controller.trainNetwork(slidervalueP);
+	        	 double slidervalueLR = sliderLR.getValue();
+	        	 //controller.setLearningRate(slidervalueLR);
 	         }
 	    });
 
@@ -113,13 +121,19 @@ public class Gui extends Application {
 		    }
 		});
 
-		slider.valueProperty().addListener(new ChangeListener<Number>() {
+		sliderP.valueProperty().addListener(new ChangeListener<Number>() {
            @Override
            public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-        	   value.setText(Integer.toString(arg2.intValue()));
+        	   valueP.setText(Integer.toString(arg2.intValue()));
            }
+		});
 
-       });
+		sliderLR.valueProperty().addListener(new ChangeListener<Number>() {
+	        @Override
+	        public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+	        	valueLR.setText(String.format("%.2f", arg2));
+	        }
+	    });
 	}
 
 	private void startPage(Stage primaryStage) {

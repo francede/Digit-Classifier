@@ -6,20 +6,13 @@ import org.hibernate.*;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.*;
 
-
-
-
-
 public class NodeAndSynapseAccessObject {
 	private static SessionFactory factory= null;
 	
 	@SuppressWarnings({ })
 	private static SessionFactory session;
 
-	public static void main(String[] args) {
-
-
-		
+	public static void main(String[] args) {		
 
 		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
 
