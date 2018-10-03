@@ -87,9 +87,13 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		InputData imageAsPixelsAndLabel = null;
 		int numberOfPixels = numberOfRows * numberOfColumns;
 		double[] pixelsOfImage = new double[numberOfPixels];
+		
 
 		try {
+			
 
+				
+			
 			// Read the pixels of the image
 			for (int p = 0; p < numberOfPixels; p++) {
 				int pixelValue = inImage.read();
@@ -98,9 +102,10 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 
 			// Read the label of the number
 			int labelValue = inLabel.read();
-
+			
 			// Assign the pixels and label to a new object
 			imageAsPixelsAndLabel = new InputDataNumberImages(pixelsOfImage, labelValue);
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();

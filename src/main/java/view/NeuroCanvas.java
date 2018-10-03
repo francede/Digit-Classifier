@@ -1,8 +1,10 @@
 package view;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.event.EventHandler;
 import java.awt.Image;
 import java.awt.Graphics;
@@ -30,7 +32,15 @@ public class NeuroCanvas extends Canvas {
 		gc = this.getGraphicsContext2D();
 		gc.setFill(bgColor);
         gc.fillRect(0, 0, w, h);
-        gc.setStroke(sColor);
+//        gc.setStroke(sColor);
+        gc.setStroke(Color.rgb(0, 0, 0, 0.5));
+        gc.setLineCap(StrokeLineCap.ROUND);
+        
+        DropShadow ds = new DropShadow();
+        ds.setRadius(10);
+        ds.setColor(Color.rgb(0, 0, 0, 0.5));
+        gc.setEffect(ds);
+
         gc.setLineWidth(lineWidth);
 	}
 
@@ -143,7 +153,10 @@ public class NeuroCanvas extends Canvas {
 		double [] rgbArray = new double[scaledImage.getWidth()*scaledImage.getHeight()];
 		for (int i = 0; i < rgbArray.length; i++) {
 			rgbArray[i] = 255 - getRGBblue(tempRgbArray[i]);
-			System.out.println(rgbArray[i]);
+//			System.out.println(rgbArray[i]);
+			if(rgbArray[i] == 255) {
+				rgbArray[i] = rgbArray[i]*0.9987;
+			}
 		}
 		return rgbArray;
 	}

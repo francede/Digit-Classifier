@@ -49,10 +49,6 @@ public class InputDataNumberImages implements InputData{
 			System.out.println("NumberofRows: " + numberOfRows);
 			System.out.println("numberOfColumns: " + numberOfColumns);
 
-			
-
-
-
 				for (int p = 0; p < numberOfPixels; p++) {
 					int gray = (int)(255 * this.input[p]);
 					imgPixels[p] = 0xFF000000 | (gray << 16) | (gray << 8) | gray;
@@ -60,7 +56,7 @@ public class InputDataNumberImages implements InputData{
 
 				image.setRGB(0, 0, numberOfColumns, numberOfRows, imgPixels, 0, numberOfColumns);
 
-				File outputfile = new File(outputPath + pngCount + ".png");
+				File outputfile = new File(outputPath + pngCount + "_user.png");
 				pngCount++;
 
 				ImageIO.write(image, "png", outputfile);
