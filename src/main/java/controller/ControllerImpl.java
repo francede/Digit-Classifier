@@ -21,11 +21,12 @@ public class ControllerImpl implements Controller {
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
-	private final int[] NETWORK_LAYER_SIZES = {784, 8, 8, 10};
+	private final int[] NETWORK_LAYER_SIZES = {784, 16, 16, 10};
 
 	public ControllerImpl(Gui gui) {
 		this.gui = gui;
 		this.neuralNetwork = new NeuralNetworkImpl(NETWORK_LAYER_SIZES);
+		//this.neuralNetwork.reset();
 		this.IDXImageFileReader = new IDXImageFileReaderImpl();
 		this.DAOController = new DAOControllerImpl();
 	}
@@ -35,10 +36,13 @@ public class ControllerImpl implements Controller {
 		double[] predictions = null;
 		InputData inputData = new InputDataNumberImages(imageAsPixels);
 		Matrix matrix = neuralNetwork.makePrediction(inputData);
+		System.out.println(matrix.getData()[1][0]);
 		predictions = Matrix.matrixToArray(matrix);
+		System.out.println(predictions[1]);
 		//double[] predictions = new double[] {0.1, 0.4, 0.5, 1.0, 0.4, 0.2, 0.3, 0.9, 0.8, 0.4};
 		return predictions;
 	}
+
 
 	@Override
 	public void trainNetwork(int amountOfTrainingImages) {
@@ -48,10 +52,14 @@ public class ControllerImpl implements Controller {
 			if (j == amountOfImagesProcessedAtaTime | i == amountOfTrainingImages) {
 				trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(j);
 				neuralNetwork.trainWithaTrainingSet(trainingSet);
-				//gui.showProgress(i, amountOfTrainingImages);
+				gui.showProgress(i, amountOfTrainingImages);
 				j = 0;
 			}
 		}
+	}
+
+	public void setLearningRate(double learningRate) {
+		neuralNetwork.setLearningRate(learningRate);
 	}
 
 	@Override
@@ -74,7 +82,7 @@ public class ControllerImpl implements Controller {
 
 	@Override
 	public void resetNetwork() {
-		// neuralNetwork.reset();
+		neuralNetwork.reset();
 	}
 
 }

@@ -8,16 +8,13 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.*;
 import org.hibernate.cfg.Configuration;
 
-
-
-
-
 public class NodeAndSynapseAccessObject {
 	private static SessionFactory factory= null;
-	
+
 	@SuppressWarnings({ })
 	private static SessionFactory session;
-	
+
+
 	public NodeAndSynapseAccessObject()  {
 		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
 		try{
@@ -28,9 +25,9 @@ public class NodeAndSynapseAccessObject {
 			StandardServiceRegistryBuilder.destroy( registry );
 			e.printStackTrace();
 		}
-	}	
-	
-	public void createAllNodes(ArrayList<double[]> weightsOfLayers) {	
+	}
+
+	public void createAllNodes(ArrayList<double[]> weightsOfLayers) {
 		Session session = factory.openSession();
 		Transaction transaction = null;
 
@@ -53,15 +50,15 @@ public class NodeAndSynapseAccessObject {
 		session.close();
 		}
 		}
-		
-	
+
+
 	public void createAllSynapses() {
 		Session session = factory.openSession();
 		Transaction transaction = null;
 		//thän metodi jolla luodaan kaikki synapsit
-		
+
 	}
-	
+
 	public void getAllBiasesfromDB() {
 		Session session = factory.openSession();
 		Transaction transaction = null;
@@ -80,9 +77,9 @@ public class NodeAndSynapseAccessObject {
 				session.close();
 				}
 		}
-		
-		
-	public void getAllWeightsfromBD() {	
+
+
+	public void getAllWeightsfromBD() {
 		Session session = factory.openSession();
 		Transaction transaction = null;
 
@@ -99,10 +96,10 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
-		
+
 		}
-	
-	
+
+
 	public void getBiasesFromDB() {
 		Session session = factory.openSession();
 		int x;
@@ -110,7 +107,7 @@ public class NodeAndSynapseAccessObject {
 		try{
 			transaction = session.beginTransaction();
 			String sql = "select * from Node where Layer='x'";
-			
+
 			List result = session.createQuery(sql).list();
 			for ( Node n : (List<Node>) result ) {
 				System.out.println(n.getBias());
@@ -122,10 +119,10 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
-		
+
 	}
-	
-	
+
+
 	public void getWeightsFromDB() {
 		Session session = factory.openSession();
 		int y;
@@ -133,7 +130,7 @@ public class NodeAndSynapseAccessObject {
 		try{
 			transaction = session.beginTransaction();
 			String sql = "select * from Node where Layer='y'";
-			
+
 			List result = session.createQuery( "from Node" ).list();
 			for ( Synapse s : (List<Synapse>) result ) {
 				System.out.println(s.getWeight());
@@ -145,8 +142,8 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
-		
+
 	}
-	
+
 	}
 

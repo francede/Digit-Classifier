@@ -136,7 +136,7 @@ public class NeuroCanvas extends Canvas {
 		tempRgbArray = scaledImage.getRGB(0, 0, scaledImage.getWidth(), scaledImage.getHeight(), null, 0, scaledImage.getWidth());
 		double [] rgbArray = new double[scaledImage.getWidth()*scaledImage.getHeight()];
 		for (int i = 0; i < rgbArray.length; i++) {
-			rgbArray[i] = getRGBblue(tempRgbArray[i]);
+			rgbArray[i] = 255 - getRGBblue(tempRgbArray[i]);
 			System.out.println(rgbArray[i]);
 		}
 		return rgbArray;

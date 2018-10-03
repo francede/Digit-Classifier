@@ -39,4 +39,6 @@ public interface NeuralNetwork {
 	public void setWeights(Matrix[] weights);
 	public void setBiases(Matrix[] biases);
 
+	public void setLearningRate(double newRate);
+
 }
