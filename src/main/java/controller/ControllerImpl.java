@@ -87,6 +87,7 @@ public class ControllerImpl implements Controller {
 				j = 0;
 			}
 		}
+		learningRate = 1.0;
 	}
 
 	public void setLearningRate(double learningRate) {
