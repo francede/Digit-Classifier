@@ -160,7 +160,7 @@ public class NeuroCanvas extends Canvas {
 			rgbArray[i] = 255 - getRGBblue(tempArray[i]);
 //			System.out.println(rgbArray[i]);
 			if (rgbArray[i] == 255) {
-				rgbArray[i] = rgbArray[i] * 0.9987;
+				rgbArray[i] = rgbArray[i] - 5 * Math.random();
 			}
 
 		}
