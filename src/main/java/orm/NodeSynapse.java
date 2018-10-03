@@ -11,7 +11,7 @@ public class NodeSynapse {
 	private int NodeSynapseId;
 	private Node nodeId;
 	private Synapse synapseId;
-	private String dir; // Unnecessary, can be removed
+	private String dir; // Unnecessary, can be removed.
 	
 	public NodeSynapse() {
 	}
