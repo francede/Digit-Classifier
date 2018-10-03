@@ -90,12 +90,13 @@ public class Gui extends Application {
 	    Label valueLR = new Label(Double.toString(sliderLR.getValue()));
         Button train = new Button("Train");
         Button back = new Button("Back");
+        Button reset = new Button("Reset");
 
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(10));
         vBox.setSpacing(5);
         vBox.getChildren().addAll(labelP, sliderP, valueP, labelLR, sliderLR, valueLR);
-        vBox.getChildren().addAll(train, back);
+        vBox.getChildren().addAll(train, reset, back);
 
         Scene scene = new Scene(vBox, 200, 300);
         scene.setRoot(vBox);
@@ -118,6 +119,13 @@ public class Gui extends Application {
 			 @Override
 	         public void handle(ActionEvent event) {
 	        	 trainingWindow.close();
+		    }
+		});
+
+		reset.setOnAction(new EventHandler<ActionEvent>() {
+			 @Override
+	         public void handle(ActionEvent event) {
+	        	 controller.resetNetwork();
 		    }
 		});
 
