@@ -32,13 +32,14 @@ public class DAOControllerImplTest {
 		Matrix[] biases = neuralNetwork.getBiases();
 		for (int i = 0; i < biases.length; i++) {
 			double[] layerAsDoubles = Matrix.matrixToArray(biases[i]);
-			System.out.println("Layer "+ i +" weights: ");
+			System.out.println("Layer "+ i +" biases: ");
 			for (int j = 0; j < layerAsDoubles.length; j++) {
 				System.out.println("[" + j + "]: " + layerAsDoubles[j] );
 			}
 		}
 		System.out.println("TEST END: getBiasesFromNeuralNetworkAndPutThemToDataBase()");
 		DAOController.putBiasesToDatabase(biases);
+		DAOController.getBiasesFromDatabase();
 	}
 	
 	@Test

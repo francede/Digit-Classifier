@@ -43,7 +43,7 @@ public class Gui extends Application {
 
 	public Gui() {
 		this.controller = new ControllerImpl(this);
-		this.canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 10);
+		this.canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 20);
 		this.startWindow = new Stage();
 		this.correctWindow = new Stage();
 		this.predictionWindow = new Stage();

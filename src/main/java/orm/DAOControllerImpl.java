@@ -55,16 +55,18 @@ public class DAOControllerImpl implements DAOController {
 
 	@Override
 	public Matrix[] getBiasesFromDatabase() {
-		int amountOfLayers = 2; 
-		// int amountOfLayers = nodeAndSynapseObject.getAmountOfLayers();
-		Matrix[] biasesAsMatrix = new Matrix[amountOfLayers - 1];
-		
-		for (int i = 0; i < amountOfLayers - 1; i++) {
-			double[] biases = new double[2]; 
-			// double[] biases = nodeAndSynapseObject.getBiasesOfLayer(i)
-			biasesAsMatrix[i] = Matrix.arrayToMatrix(biases);
-		}
-		return biasesAsMatrix;
+//		int amountOfLayers = 2; 
+//		// int amountOfLayers = nodeAndSynapseObject.getAmountOfLayers();
+//		Matrix[] biasesAsMatrix = new Matrix[amountOfLayers - 1];
+//		
+//		for (int i = 0; i < amountOfLayers - 1; i++) {
+//			double[] biases = new double[2]; 
+//			// double[] biases = nodeAndSynapseObject.getBiasesOfLayer(i)
+//			biasesAsMatrix[i] = Matrix.arrayToMatrix(biases);
+//		}
+//		return biasesAsMatrix;
+		nodeAndSynapseAccessObject.getAllBiasesfromDB();
+		return null;
 	}
 
 }
