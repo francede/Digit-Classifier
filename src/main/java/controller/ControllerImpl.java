@@ -26,7 +26,7 @@ public class ControllerImpl implements Controller {
 	public ControllerImpl(Gui gui) {
 		this.gui = gui;
 		this.neuralNetwork = new NeuralNetworkImpl(NETWORK_LAYER_SIZES);
-		//this.neuralNetwork.reset();
+		this.neuralNetwork.reset();
 		this.IDXImageFileReader = new IDXImageFileReaderImpl();
 		this.DAOController = new DAOControllerImpl();
 	}
@@ -52,7 +52,7 @@ public class ControllerImpl implements Controller {
 			if (j == amountOfImagesProcessedAtaTime | i == amountOfTrainingImages) {
 				trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(j);
 				neuralNetwork.trainWithaTrainingSet(trainingSet);
-				//gui.showProgress(i, amountOfTrainingImages);
+				gui.showProgress(i, amountOfTrainingImages);
 				j = 0;
 			}
 		}

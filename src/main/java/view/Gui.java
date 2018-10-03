@@ -108,7 +108,7 @@ public class Gui extends Application {
 	         public void handle(ActionEvent event) {
 	        	 progressPage();
 	        	 int slidervalueP = (int)sliderP.getValue();
-                 //controller.trainNetwork(slidervalueP);
+                 controller.trainNetwork(slidervalueP);
 	        	 double slidervalueLR = sliderLR.getValue();
 	        	 //controller.setLearningRate(slidervalueLR);
 	         }
