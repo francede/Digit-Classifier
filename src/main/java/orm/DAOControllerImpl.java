@@ -19,13 +19,22 @@ public class DAOControllerImpl implements DAOController {
 		}
 	}
 	
-	public void putWeightsAndBiasesToDatabaseTest() {
-		ArrayList<double[]> weights = new ArrayList<>();
-
-		weights.add(new double[] {1,2});
-		weights.add(new double[] {1,2,3,4});
-		nodeAndSynapseAccessObject.createAllNodes(weights);	
-		
+	public void putBiasesToDatabase(Matrix[] biasesAsMatrix) {
+		ArrayList<double[]> biasesAsArrayList = new ArrayList<>();
+		for (Matrix layerAsMatrix : biasesAsMatrix) {
+			double[] layerAsDoubles = Matrix.matrixToArray(layerAsMatrix);
+			biasesAsArrayList.add(layerAsDoubles);
+		}
+		nodeAndSynapseAccessObject.createAllNodes(biasesAsArrayList);		
+	}
+	
+	public void putWeightsToDatabase(Matrix[] weightsAsMatrix) {
+		ArrayList<double[]> weightsAsArrayList = new ArrayList<>();
+		for (Matrix synapseAsMatrix : weightsAsMatrix) {
+			double[] synapseAsDoubles = Matrix.matrixToArray(synapseAsMatrix);
+			weightsAsArrayList.add(synapseAsDoubles);
+		}
+		nodeAndSynapseAccessObject.createAllNodes(weightsAsArrayList);
 	}
 
 

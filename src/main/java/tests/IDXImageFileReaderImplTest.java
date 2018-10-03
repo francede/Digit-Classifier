@@ -37,8 +37,8 @@ public class IDXImageFileReaderImplTest {
 		}
 	}
 	
+	@Ignore("It is not necessary to create PNG files unless you want to validate the pictures visually")
 	@Test public void createPNGfiles() {
-		IDXReader.createPNGFiles(5);
 		IDXReader.createPNGFiles(5);
 	}
 	
@@ -46,7 +46,7 @@ public class IDXImageFileReaderImplTest {
 		System.out.println("---Test: check label values from 5 first images in the training set---");
 		ArrayList<InputData> multipleImagesAsPixels;
 		int amountOfImages = 5;
-		int[] rightLabels = {5,0,4,1,9};
+		String[] rightLabels = {"5","0","4","1","9"};
 		multipleImagesAsPixels = IDXReader.getMultipleImagesAsPixels(amountOfImages);
 		for (int i = 0; i < amountOfImages; i++) {
 //			System.out.println("label: " + multipleImagesAsPixels.get(i).getLabel());
