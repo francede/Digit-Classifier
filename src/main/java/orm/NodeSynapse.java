@@ -6,12 +6,12 @@ import javax.persistence.*;
 @Entity
 @Table (name= "NodeSynapse") 
 
-public class NodeSynapse {  // id, NodeId, SynapseId , in/out
+public class NodeSynapse { 
 	
 	private int NodeSynapseId;
 	private Node nodeId;
 	private Synapse synapseId;
-	private String dir; //direction, in or out
+	private String dir; // Unnecessary, can be removed.
 	
 	public NodeSynapse() {
 	}
@@ -25,7 +25,7 @@ public class NodeSynapse {  // id, NodeId, SynapseId , in/out
 	}
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column (name = "NodeSynapse")
 	public int getNodeSynapseId() {
 		return NodeSynapseId;
