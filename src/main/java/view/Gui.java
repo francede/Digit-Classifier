@@ -32,6 +32,7 @@ public class Gui extends Application {
 
 	private ControllerImpl controller;
 	private NeuroCanvas canvas;
+	private Stage startWindow;
 	private Stage predictionWindow;
 	private Stage correctWindow;
 	private Stage trainingWindow;
@@ -42,6 +43,7 @@ public class Gui extends Application {
 	public Gui() {
 		this.controller = new ControllerImpl(this);
 		this.canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 10);
+		this.startWindow = new Stage();
 		this.correctWindow = new Stage();
 		this.predictionWindow = new Stage();
 		this.trainingWindow = new Stage();
@@ -52,7 +54,8 @@ public class Gui extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		startPage(primaryStage);
+		primaryStage = this.startWindow;
+		startPage(startWindow);
 	}
 
 	public static void main(String[] args) {
@@ -203,6 +206,8 @@ public class Gui extends Application {
 		vBox.setMargin(title, new Insets(10,10,10,10));
         root.getChildren().add(borderPane);
         predictionWindow.setTitle("Predictions");
+        predictionWindow.setX(startWindow.getX() + 300);
+        predictionWindow.setY(startWindow.getY());
         predictionWindow.setScene(new Scene(root));
         predictionWindow.show();
         right.setOnAction(new EventHandler<ActionEvent>() {
