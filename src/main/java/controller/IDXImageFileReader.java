@@ -39,5 +39,11 @@ public interface IDXImageFileReader {
 	 */
 	public void createPNGFiles(int amount);
 	
+	/**
+	 * For testing if the neural network can predict correctly the same number it learned from.
+	 */
+	public InputData getTheFirstNumberFromTrainingFile();
+	public ArrayList<InputData> getTheFirstXAmountOfNumbersFromTrainingFile(int amount);
+	
 
 }

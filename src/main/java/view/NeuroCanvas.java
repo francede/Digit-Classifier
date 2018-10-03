@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import java.awt.Image;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+
 import java.util.Arrays;
 
 import javafx.scene.SnapshotParameters;

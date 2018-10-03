@@ -3,7 +3,7 @@ package orm;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "synapse")//id, layer, weight
+@Table(name = "synapse")
 
 public class Synapse {
 	
@@ -21,7 +21,7 @@ public class Synapse {
 	}
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "SynapseId")
 	public int getSynapseId() {
 		return synapseId;

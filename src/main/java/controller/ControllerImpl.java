@@ -26,7 +26,8 @@ public class ControllerImpl implements Controller {
 	public ControllerImpl(Gui gui) {
 		this.gui = gui;
 		this.neuralNetwork = new NeuralNetworkImpl(NETWORK_LAYER_SIZES);
-		//this.neuralNetwork.reset();
+		this.neuralNetwork.setLearningRate(0.5);
+		this.neuralNetwork.reset();
 		this.IDXImageFileReader = new IDXImageFileReaderImpl();
 		this.DAOController = new DAOControllerImpl();
 	}
@@ -35,24 +36,49 @@ public class ControllerImpl implements Controller {
 	public double[] makePrediction(double[] imageAsPixels) {
 		double[] predictions = null;
 		InputData inputData = new InputDataNumberImages(imageAsPixels);
+//		InputData inputData = IDXImageFileReader.getTheFirstNumberFromTrainingFile();
 		Matrix matrix = neuralNetwork.makePrediction(inputData);
-		System.out.println(matrix.getData()[1][0]);
+//		System.out.println(matrix.getData()[1][0]);
 		predictions = Matrix.matrixToArray(matrix);
-		System.out.println(predictions[1]);
-		//double[] predictions = new double[] {0.1, 0.4, 0.5, 1.0, 0.4, 0.2, 0.3, 0.9, 0.8, 0.4};
+//		System.out.println(predictions[1]);
+//		printPixelsOfOneImage(inputData);
+		return predictions;
+	}
+	
+	public double[] makePrediction(InputData inputData) {
+		double[] predictions = null;
+		Matrix matrix = neuralNetwork.makePrediction(inputData);
+		predictions = Matrix.matrixToArray(matrix);
 		return predictions;
 	}
 
+
+	private void printPixelsOfOneImage(InputData inputData) {
+		InputData singleImage = IDXImageFileReader.getSingleImageAsPixels();
+		System.out.println("Pixels of image from file:");
+		for (double pixel : singleImage.getInput()) {
+			System.out.println(pixel);
+		}
+		System.out.println("Pixels of image from drawn number:");
+		for (double pixel : inputData.getInput()) {
+			System.out.println(pixel);
+		}
+		
+	}
 
 	@Override
 	public void trainNetwork(int amountOfTrainingImages) {
 		ArrayList<InputData> trainingSet;
 		int amountOfImagesProcessedAtaTime = 10;
 		for (int i = 0, j = 0; i <= amountOfTrainingImages; i++, j++) {
+			if (i % 100 == 0) {
+				System.out.println("ControllerImpl: images processed " + i);
+			}
+			
 			if (j == amountOfImagesProcessedAtaTime | i == amountOfTrainingImages) {
 				trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(j);
 				neuralNetwork.trainWithaTrainingSet(trainingSet);
-				gui.showProgress(i, amountOfTrainingImages);
+//				gui.showProgress(i, amountOfTrainingImages);
 				j = 0;
 			}
 		}
@@ -83,6 +109,10 @@ public class ControllerImpl implements Controller {
 	@Override
 	public void resetNetwork() {
 		neuralNetwork.reset();
+	}
+	
+	public IDXImageFileReader getIDXImageFileReader() {
+		return IDXImageFileReader;
 	}
 
 }
