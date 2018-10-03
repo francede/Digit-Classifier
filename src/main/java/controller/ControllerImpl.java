@@ -21,7 +21,7 @@ public class ControllerImpl implements Controller {
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
-	private final int[] NETWORK_LAYER_SIZES = {784, 8, 8, 10};
+	private final int[] NETWORK_LAYER_SIZES = {784, 16, 16, 10};
 
 	public ControllerImpl(Gui gui) {
 		this.gui = gui;
@@ -58,9 +58,9 @@ public class ControllerImpl implements Controller {
 		}
 	}
 
-//	public void setLearningRate(double learningRate) {
-//		neuralNetwork.setLearningRate(learningRate);
-//	}
+	public void setLearningRate(double learningRate) {
+		neuralNetwork.setLearningRate(learningRate);
+	}
 
 	@Override
 	public void saveNetwork() {

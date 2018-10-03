@@ -3,6 +3,7 @@ package view;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import controller.Controller;
 import controller.ControllerImpl;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -30,7 +31,7 @@ import javafx.scene.control.Slider;
 
 public class Gui extends Application {
 
-	private ControllerImpl controller;
+	private Controller controller;
 	private NeuroCanvas canvas;
 	private Stage startWindow;
 	private Stage predictionWindow;
