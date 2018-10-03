@@ -58,9 +58,9 @@ public class ControllerImpl implements Controller {
 		}
 	}
 
-//	public void setLearningRate(double learningRate) {
-//		neuralNetwork.setLearningRate(learningRate);
-//	}
+	public void setLearningRate(double learningRate) {
+		neuralNetwork.setLearningRate(learningRate);
+	}
 
 	@Override
 	public void saveNetwork() {
