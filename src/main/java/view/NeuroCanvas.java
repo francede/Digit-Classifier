@@ -7,8 +7,11 @@ import javafx.event.EventHandler;
 import java.awt.Image;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.embed.swing.SwingFXUtils;
 
@@ -73,7 +76,7 @@ public class NeuroCanvas extends Canvas {
 		return bimg;
 	}
 
-	public int getRGBblue(int color ){
+	public int getRGBblue(int color){
 		return color & 0xff;
     }
 
@@ -111,14 +114,6 @@ public class NeuroCanvas extends Canvas {
 		return newImage;
 	}
 
-//	public WritableImage bimgToWimg(BufferedImage image) {
-//		WritableImage wimg = SwingFXUtils.toFXImage(image, null);
-//		return wimg;
-//	}
-
-//	public void test() {
-//		getPixels();
-//}
 	public void showImage(WritableImage wimg) {
 		gc.drawImage(wimg, 0, 0);
 	}
@@ -129,15 +124,26 @@ public class NeuroCanvas extends Canvas {
 		return wimg;
 	}
 
+	public WritableImage writePixels(int[] pixelarray) {
+		WritableImage wimg = new WritableImage(28, 28);
+	    PixelWriter pixelWriter = wimg.getPixelWriter();
+	    int k = 0;
+	    for (int y = 0; y < 28; y++) {
+	        for (int x = 0; x < 28; x++) {
+	            pixelWriter.setArgb(x, y, pixelarray[k]);
+	            k++;
+	        }
+	    }
+	    return wimg;
+	}
 
 	public double[] getPixels() {
 		BufferedImage scaledImage = scale(crop(canvasToBimg()), insideImgSize, backGroundImgSize);
-		int [] tempRgbArray = new int[scaledImage.getWidth()*scaledImage.getHeight()];
-		tempRgbArray = scaledImage.getRGB(0, 0, scaledImage.getWidth(), scaledImage.getHeight(), null, 0, scaledImage.getWidth());
-		double [] rgbArray = new double[scaledImage.getWidth()*scaledImage.getHeight()];
+		int [] tempArray = new int[scaledImage.getWidth()*scaledImage.getHeight()];
+		tempArray = scaledImage.getRGB(0, 0, scaledImage.getWidth(), scaledImage.getHeight(), null, 0, scaledImage.getWidth());
+		double[] rgbArray = Arrays.stream(tempArray).asDoubleStream().toArray();
 		for (int i = 0; i < rgbArray.length; i++) {
-			rgbArray[i] = 255 - getRGBblue(tempRgbArray[i]);
-			System.out.println(rgbArray[i]);
+			rgbArray[i] = 255 - getRGBblue(tempArray[i]);
 		}
 		return rgbArray;
 	}

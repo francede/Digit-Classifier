@@ -25,6 +25,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 
@@ -43,7 +45,7 @@ public class Gui extends Application {
 
 	public Gui() {
 		this.controller = new ControllerImpl(this);
-		this.canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 10);
+		this.canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 20);
 		this.startWindow = new Stage();
 		this.correctWindow = new Stage();
 		this.predictionWindow = new Stage();
@@ -169,7 +171,8 @@ public class Gui extends Application {
 		submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	predictionsPage();
+            	predictionsPage(canvas.takeSnapShot());
+            	canvas.clearScreen();
             }
         });
 		train.setOnAction(new EventHandler<ActionEvent>() {
@@ -184,14 +187,14 @@ public class Gui extends Application {
 		primaryStage.show();
 	}
 
-	private void predictionsPage() {
+	private void predictionsPage(WritableImage image) {
 		Button right = new Button("Right");
 		Button wrong = new Button("Wrong");
 		HBox buttonPane = new HBox();
 		buttonPane.getChildren().addAll(right, wrong);
 		Group root = new Group();
-		NeuroCanvas imageCanvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 10);
-		imageCanvas.showImage(canvas.takeSnapShot());
+		NeuroCanvas imageCanvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 20);
+		imageCanvas.showImage(image);
     	BorderPane borderPane = new BorderPane();
     	borderPane.setCenter(imageCanvas);
         borderPane.setBottom(buttonPane);
