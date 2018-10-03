@@ -5,6 +5,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import controller.ControllerImpl;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -31,6 +32,7 @@ public class Gui extends Application {
 
 	private ControllerImpl controller;
 	private NeuroCanvas canvas;
+	private Stage startWindow;
 	private Stage predictionWindow;
 	private Stage correctWindow;
 	private Stage trainingWindow;
@@ -41,6 +43,7 @@ public class Gui extends Application {
 	public Gui() {
 		this.controller = new ControllerImpl(this);
 		this.canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 10);
+		this.startWindow = new Stage();
 		this.correctWindow = new Stage();
 		this.predictionWindow = new Stage();
 		this.trainingWindow = new Stage();
@@ -51,7 +54,8 @@ public class Gui extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		startPage(primaryStage);
+		primaryStage = this.startWindow;
+		startPage(startWindow);
 	}
 
 	public static void main(String[] args) {
@@ -76,20 +80,26 @@ public class Gui extends Application {
     }
 
 	private void trainingPage() {
-		Slider slider = new Slider();
-	    slider.setMin(0);
-	    slider.setMax(60000);
-		Label label = new Label("How many pictures?");
-		Label value = new Label(Integer.toString((int)slider.getValue()));
-
+		Label labelP = new Label("How many pictures?");
+		Slider sliderP = new Slider();
+	    sliderP.setMin(0);
+	    sliderP.setMax(60000);
+	    Label valueP = new Label(Integer.toString((int)sliderP.getValue()));
+	    Label labelLR = new Label("Learning rate");
+	    Slider sliderLR = new Slider();
+	    sliderLR.setMin(0.01);
+	    sliderLR.setMax(1);
+	    sliderLR.setValue(0.1);
+	    Label valueLR = new Label(Double.toString(sliderLR.getValue()));
         Button train = new Button("Train");
         Button back = new Button("Back");
+        Button reset = new Button("Reset");
 
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(10));
         vBox.setSpacing(5);
-        vBox.getChildren().addAll(label, slider, value);
-        vBox.getChildren().addAll(train, back);
+        vBox.getChildren().addAll(labelP, sliderP, valueP, labelLR, sliderLR, valueLR);
+        vBox.getChildren().addAll(train, reset, back);
 
         Scene scene = new Scene(vBox, 200, 300);
         scene.setRoot(vBox);
@@ -101,8 +111,10 @@ public class Gui extends Application {
 	         @Override
 	         public void handle(ActionEvent event) {
 	        	 progressPage();
-	        	 int slidervalue = (int)slider.getValue();
-	        	 //controller.trainNetwork(slidervalue);
+	        	 int slidervalueP = (int)sliderP.getValue();
+                 controller.trainNetwork(slidervalueP);
+	        	 double slidervalueLR = sliderLR.getValue();
+	        	 //controller.setLearningRate(slidervalueLR);
 	         }
 	    });
 
@@ -113,13 +125,26 @@ public class Gui extends Application {
 		    }
 		});
 
-		slider.valueProperty().addListener(new ChangeListener<Number>() {
+		reset.setOnAction(new EventHandler<ActionEvent>() {
+			 @Override
+	         public void handle(ActionEvent event) {
+	        	 controller.resetNetwork();
+		    }
+		});
+
+		sliderP.valueProperty().addListener(new ChangeListener<Number>() {
            @Override
            public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-        	   value.setText(Integer.toString(arg2.intValue()));
+        	   valueP.setText(Integer.toString(arg2.intValue()));
            }
+		});
 
-       });
+		sliderLR.valueProperty().addListener(new ChangeListener<Number>() {
+	        @Override
+	        public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+	        	valueLR.setText(String.format("%.2f", arg2));
+	        }
+	    });
 	}
 
 	private void startPage(Stage primaryStage) {
@@ -181,6 +206,8 @@ public class Gui extends Application {
 		vBox.setMargin(title, new Insets(10,10,10,10));
         root.getChildren().add(borderPane);
         predictionWindow.setTitle("Predictions");
+        predictionWindow.setX(startWindow.getX() + 300);
+        predictionWindow.setY(startWindow.getY());
         predictionWindow.setScene(new Scene(root));
         predictionWindow.show();
         right.setOnAction(new EventHandler<ActionEvent>() {

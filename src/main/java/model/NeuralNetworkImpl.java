@@ -9,7 +9,6 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 	private Matrix[] biases;
 	private Matrix[] layerOutputs;
 	private Matrix[] layerWeightedSums;
-
 	private int actualLayers;
 	private double 	learningRate = 0.1;
 

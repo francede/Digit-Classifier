@@ -10,7 +10,7 @@ import orm.DAOControllerImpl;
 
 public class DAOControllerImplTest {
 	
-	public static DAOController DAOController;
+	public static DAOControllerImpl DAOController;
 	
 	@BeforeClass public static void initTest(){
 		DAOController = new DAOControllerImpl();
@@ -18,7 +18,7 @@ public class DAOControllerImplTest {
 
 	@Test
 	public void test() {
-		DAOController.getWeightsFromDatabase();
+		DAOController.putWeightsAndBiasesToDatabaseTest();
 	}
 
 }
