@@ -40,17 +40,18 @@ public class DAOControllerImpl implements DAOController {
 
 	@Override
 	public Matrix[] getWeightsFromDatabase() {
-		int amountOfLayers = 2; // nodeAndSynapseObject.getAmountOfLayers();
-		Matrix[] weightsAsMatrix = new Matrix[amountOfLayers - 1];
-		
-		for (int i = 0; i < amountOfLayers - 1; i++) {
-			double[][] weights = new double[4][2];// nodeAndSynapseObject.getWeightsFrom(i, i+1)
-			weightsAsMatrix[i] = Matrix.arrayToMatrix(weights);
-		}
-//		int layer0Size = 2;
-//		int layer1Size = 4;
-//		double[][] weightsFrom0to1 = new double[4][2]; // [rivit], [sarakkeet]
-		return weightsAsMatrix;
+//		int amountOfLayers = 2; // nodeAndSynapseObject.getAmountOfLayers();
+//		Matrix[] weightsAsMatrix = new Matrix[amountOfLayers - 1];
+//		
+//		for (int i = 0; i < amountOfLayers - 1; i++) {
+//			double[][] weights = new double[4][2];// nodeAndSynapseObject.getWeightsFrom(i, i+1)
+//			weightsAsMatrix[i] = Matrix.arrayToMatrix(weights);
+//		}
+////		int layer0Size = 2;
+////		int layer1Size = 4;
+////		double[][] weightsFrom0to1 = new double[4][2]; // [rivit], [sarakkeet]
+//		return weightsAsMatrix;
+		return null;
 	}
 
 	@Override
