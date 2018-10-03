@@ -52,12 +52,30 @@ public class NodeAndSynapseAccessObject {
 		}
 
 
-	public void createAllSynapses() {
+	public void createAllSynapses(ArrayList<double[]> biasesOfLayers) {
 		Session session = factory.openSession();
 		Transaction transaction = null;
-		//thän metodi jolla luodaan kaikki synapsit
+		try{
+			transaction = session.beginTransaction();
+			for (int i = 0 ; i < biasesOfLayers.size(); i++) {
+				double[] biasesOfLayer = biasesOfLayers.get(i);
+				for (int j = 0 ; j < biasesOfLayer.length; j++) {
+					   Synapse s = new Synapse(0, i, biasesOfLayer[j]);
+			         session.saveOrUpdate(s);
+			         }
+				}
+			transaction.commit();
+			}
+		catch(Exception e){
+			if (transaction!=null) transaction.rollback();
+			throw e;
+			}
+	finally{
+		session.close();
+		}
+		}
 
-	}
+	
 
 	public void getAllBiasesfromDB() {
 		Session session = factory.openSession();
