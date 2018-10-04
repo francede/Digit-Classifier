@@ -23,11 +23,12 @@ public class ControllerImpl implements Controller {
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
 	private final int[] NETWORK_LAYER_SIZES = {784, 16, 16, 10};
+	private double learningRate = 1;
 
 	public ControllerImpl(Gui gui) {
 		this.gui = gui;
 		this.neuralNetwork = new NeuralNetworkImpl(NETWORK_LAYER_SIZES);
-		this.neuralNetwork.setLearningRate(0.5);
+		this.neuralNetwork.setLearningRate(learningRate);
 		this.neuralNetwork.reset();
 		this.IDXImageFileReader = new IDXImageFileReaderImpl();
 		this.DAOController = new DAOControllerImpl();
@@ -37,12 +38,9 @@ public class ControllerImpl implements Controller {
 	public double[] makePrediction(double[] imageAsPixels) {
 		double[] predictions = null;
 		InputData inputData = new InputDataNumberImages(imageAsPixels);
-//		InputData inputData = IDXImageFileReader.getTheFirstNumberFromTrainingFile();
 		Matrix matrix = neuralNetwork.makePrediction(inputData);
-//		System.out.println(matrix.getData()[1][0]);
 		predictions = Matrix.matrixToArray(matrix);
-//		System.out.println(predictions[1]);
-//		printPixelsOfOneImage(inputData);
+		printPixelsOfOneImage(inputData);
 		return predictions;
 	}
 
@@ -64,7 +62,6 @@ public class ControllerImpl implements Controller {
 		for (double pixel : inputData.getInput()) {
 			System.out.println(pixel);
 		}
-
 	}
 
 	@Override
@@ -78,6 +75,14 @@ public class ControllerImpl implements Controller {
             		if (this.isCancelled()) {
         				break;
         			}
+            		if (i % 10000 == 0) {
+        				if (learningRate - 0.2 <= 0) {
+        					learningRate *= 0.5;
+        				} else {
+        					learningRate -= 0.2;
+        				}
+        				neuralNetwork.setLearningRate(learningRate);
+        			}
         			if (i % 100 == 0) {
         				System.out.println("ControllerImpl: images processed " + i);
         			}
@@ -88,6 +93,7 @@ public class ControllerImpl implements Controller {
         				j = 0;
         			}
         		}
+            	learningRate = 1.0;
             	return true;
             }
         };

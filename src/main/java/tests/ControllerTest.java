@@ -33,7 +33,7 @@ public class ControllerTest {
 	public void tryPredictionsWithFiveFirstTrainNumbers() {
 		System.out.println("tryPredictionsWithFiveFirstTrainNumbers");
 		controller.resetNetwork();
-		controller.trainNetwork(50000);
+		controller.trainNetwork(20000);
 		ArrayList<InputData> inputdataList = controller.getIDXImageFileReader().getTheFirstXAmountOfNumbersFromTrainingFile(3000);
 		int amountOfPredictionsThatGotRight = 0;
 		int[] predictionsThatGotRight = new int[10];
