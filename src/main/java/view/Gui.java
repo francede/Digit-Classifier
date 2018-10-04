@@ -65,32 +65,43 @@ public class Gui extends Application {
 
 	private void progressPage(Task task) {
 		Group root = new Group();
-		Scene scene = new Scene(root, 300, 150);
-		BorderPane borderPane = new BorderPane();
-		ProgressIndicator progressIndicator = new ProgressIndicator(0);
+		Scene scene = new Scene(root);
+
+		Label title = new Label("Learning...");
+
 		ProgressBar progressBar = new ProgressBar(0);
-		progressBar.autosize();
 		progressBar.progressProperty().unbind();
         progressBar.progressProperty().bind(task.progressProperty());
-        progressIndicator.progressProperty().unbind();
-        progressIndicator.progressProperty().bind(task.progressProperty());
-		HBox hBox = new HBox();
-		hBox.getChildren().addAll(progressBar, progressIndicator);
+        progressBar.setPrefWidth(250);
+        Label value = new Label(String.format("%.0f%%", progressBar.getProgress()*100));
+
+        HBox hBox = new HBox();
+		hBox.getChildren().addAll(progressBar, value);
+
 		Button cancelButton = new Button("Cancel");
-		borderPane.setCenter(hBox);
-		borderPane.setBottom(cancelButton);
+
+		VBox vBox = new VBox();
+		vBox.setPadding(new Insets(10));
+        vBox.setSpacing(5);
+		vBox.getChildren().addAll(title, hBox, cancelButton);
+
+		progressBar.progressProperty().addListener(new ChangeListener<Number>() {
+	        @Override
+	        public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+	        	value.setText(String.format("%.0f%%", (arg2.doubleValue()*100)));
+	        }
+	    });
         new Thread(task).start();
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 task.cancel(true);
                 progressBar.progressProperty().unbind();
-                progressIndicator.progressProperty().unbind();
                 //progressWindow.close();
             }
         });
         progressWindow.setScene(scene);
         progressWindow.setTitle("Progress Control");
-        scene.setRoot(borderPane);
+        scene.setRoot(vBox);
         progressWindow.show();
 	}
 
