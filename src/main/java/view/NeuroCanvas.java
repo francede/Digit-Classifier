@@ -138,10 +138,14 @@ public class NeuroCanvas extends Canvas {
 	    return wimg;
 	}
 
+	public int[] getImagePixels(BufferedImage image) {
+		int [] RGBArray = new int[image.getWidth()*image.getHeight()];
+		RGBArray = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+		return RGBArray;
+	}
+
 	public double[] getPixels() {
-		BufferedImage scaledImage = scale(crop(canvasToBimg()), insideImgSize, backGroundImgSize);
-		int [] tempArray = new int[scaledImage.getWidth()*scaledImage.getHeight()];
-		tempArray = scaledImage.getRGB(0, 0, scaledImage.getWidth(), scaledImage.getHeight(), null, 0, scaledImage.getWidth());
+		int [] tempArray = getImagePixels(scale(crop(canvasToBimg()), insideImgSize, backGroundImgSize));
 		double[] rgbArray = Arrays.stream(tempArray).asDoubleStream().toArray();
 		for (int i = 0; i < rgbArray.length; i++) {
 			rgbArray[i] = 255 - getRGBblue(tempArray[i]);
@@ -192,6 +196,8 @@ public class NeuroCanvas extends Canvas {
 		}
 		return 0;
 	}
+	
+	
 
 }
 

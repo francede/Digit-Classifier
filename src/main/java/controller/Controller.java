@@ -2,6 +2,8 @@ package controller;
 
 import java.util.ArrayList;
 
+import javafx.concurrent.Task;
+
 public interface Controller {
 
 	/**
@@ -16,7 +18,7 @@ public interface Controller {
 	 * Reads the training set, trains the network with them and
 	 * updates GUI to show progress.
 	 */
-	public void trainNetwork(int amountOfTrainingImages);
+	public Task trainNetwork(int amountOfTrainingImages);
 
 	/**
 	 * Resets the neural network by randomizing all the weights and biases

@@ -3,6 +3,7 @@ package view;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import controller.Controller;
 import controller.ControllerImpl;
 import javafx.application.Application;
@@ -10,6 +11,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -39,9 +41,7 @@ public class Gui extends Application {
 	private Stage predictionWindow;
 	private Stage correctWindow;
 	private Stage trainingWindow;
-	private Stage showProgressWindow;
-	private ProgressIndicator progressIndicator;
-	private ProgressBar progressBar;
+	private Stage progressWindow;
 
 	public Gui() {
 		this.controller = new ControllerImpl(this);
@@ -50,9 +50,7 @@ public class Gui extends Application {
 		this.correctWindow = new Stage();
 		this.predictionWindow = new Stage();
 		this.trainingWindow = new Stage();
-		this.showProgressWindow = new Stage();
-		this.progressIndicator = new ProgressIndicator(0);
-		this.progressBar = new ProgressBar(0);
+		this.progressWindow = new Stage();
 	}
 
 	@Override
@@ -65,22 +63,36 @@ public class Gui extends Application {
 		launch(args);
 	}
 
-	private void progressPage() {
+	private void progressPage(Task task) {
 		Group root = new Group();
+		Scene scene = new Scene(root, 300, 150);
+		BorderPane borderPane = new BorderPane();
+		ProgressIndicator progressIndicator = new ProgressIndicator(0);
+		ProgressBar progressBar = new ProgressBar(0);
+		progressBar.autosize();
+		progressBar.progressProperty().unbind();
+        progressBar.progressProperty().bind(task.progressProperty());
+        progressIndicator.progressProperty().unbind();
+        progressIndicator.progressProperty().bind(task.progressProperty());
 		HBox hBox = new HBox();
 		hBox.getChildren().addAll(progressBar, progressIndicator);
-		Scene scene = new Scene(root, 300, 150);
-        showProgressWindow.setScene(scene);
-        showProgressWindow.setTitle("Progress Control");
-        scene.setRoot(hBox);
-        showProgressWindow.show();
+		Button cancelButton = new Button("Cancel");
+		borderPane.setCenter(hBox);
+		borderPane.setBottom(cancelButton);
+        new Thread(task).start();
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                task.cancel(true);
+                progressBar.progressProperty().unbind();
+                progressIndicator.progressProperty().unbind();
+                //progressWindow.close();
+            }
+        });
+        progressWindow.setScene(scene);
+        progressWindow.setTitle("Progress Control");
+        scene.setRoot(borderPane);
+        progressWindow.show();
 	}
-
-	public void showProgress(int i, int amountOfTrainingNumbers) {
-		Float value = new Float(i/amountOfTrainingNumbers);
-		progressBar.setProgress(value);
-        progressIndicator.setProgress(value);
-    }
 
 	private void trainingPage() {
 		Label labelP = new Label("How many pictures?");
@@ -113,9 +125,8 @@ public class Gui extends Application {
         train.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
-	        	 progressPage();
 	        	 int slidervalueP = (int)sliderP.getValue();
-                 controller.trainNetwork(slidervalueP);
+	        	 progressPage(controller.trainNetwork(slidervalueP));
 	        	 double slidervalueLR = sliderLR.getValue();
 	        	 //controller.setLearningRate(slidervalueLR);
 	         }

@@ -3,6 +3,7 @@ package controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javafx.concurrent.Task;
 import model.InputData;
 import model.InputDataNumberImages;
 import model.Matrix;
@@ -44,7 +45,7 @@ public class ControllerImpl implements Controller {
 //		printPixelsOfOneImage(inputData);
 		return predictions;
 	}
-	
+
 	public double[] makePrediction(InputData inputData) {
 		double[] predictions = null;
 		Matrix matrix = neuralNetwork.makePrediction(inputData);
@@ -63,25 +64,33 @@ public class ControllerImpl implements Controller {
 		for (double pixel : inputData.getInput()) {
 			System.out.println(pixel);
 		}
-		
+
 	}
 
 	@Override
-	public void trainNetwork(int amountOfTrainingImages) {
-		ArrayList<InputData> trainingSet;
+	public Task trainNetwork(int amountOfTrainingImages) {
 		int amountOfImagesProcessedAtaTime = 10;
-		for (int i = 0, j = 0; i <= amountOfTrainingImages; i++, j++) {
-			if (i % 100 == 0) {
-				System.out.println("ControllerImpl: images processed " + i);
-			}
-			
-			if (j == amountOfImagesProcessedAtaTime | i == amountOfTrainingImages) {
-				trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(j);
-				neuralNetwork.trainWithaTrainingSet(trainingSet);
-//				gui.showProgress(i, amountOfTrainingImages);
-				j = 0;
-			}
-		}
+		return new Task() {
+			ArrayList<InputData> trainingSet;
+            @Override
+            protected Object call() throws Exception {
+            	for (int i = 0, j = 0; i <= amountOfTrainingImages; i++, j++) {
+            		if (this.isCancelled()) {
+        				break;
+        			}
+        			if (i % 100 == 0) {
+        				System.out.println("ControllerImpl: images processed " + i);
+        			}
+        			if (j == amountOfImagesProcessedAtaTime | i == amountOfTrainingImages) {
+        				trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(j);
+        				neuralNetwork.trainWithaTrainingSet(trainingSet);
+        				updateProgress(i, amountOfTrainingImages);
+        				j = 0;
+        			}
+        		}
+            	return true;
+            }
+        };
 	}
 
 	public void setLearningRate(double learningRate) {
@@ -110,7 +119,7 @@ public class ControllerImpl implements Controller {
 	public void resetNetwork() {
 		neuralNetwork.reset();
 	}
-	
+
 	public IDXImageFileReader getIDXImageFileReader() {
 		return IDXImageFileReader;
 	}
