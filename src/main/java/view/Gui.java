@@ -89,6 +89,9 @@ public class Gui extends Application {
 	        @Override
 	        public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 	        	value.setText(String.format("%.0f%%", (arg2.doubleValue()*100)));
+	        	if (arg2.doubleValue() == 1) {
+	        		progressWindow.close();
+	        	}
 	        }
 	    });
         new Thread(task).start();
@@ -96,7 +99,7 @@ public class Gui extends Application {
             public void handle(ActionEvent event) {
                 task.cancel(true);
                 progressBar.progressProperty().unbind();
-                //progressWindow.close();
+                progressWindow.close();
             }
         });
         progressWindow.setScene(scene);
@@ -252,6 +255,7 @@ public class Gui extends Application {
 	}
 
 	private void correctPage() {
+		Group root  = new Group();
 		String[] values = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "None"};
     	RadioButton buttons [] = new RadioButton [values.length];
     	ToggleGroup toggleGroup = new ToggleGroup();
@@ -264,12 +268,14 @@ public class Gui extends Application {
         	buttons[i] = button;
         }
 
-        HBox hBox = new HBox();
-        hBox.setPadding(new Insets(10));
-        hBox.setSpacing(5);
-        hBox.getChildren().add(label);
-        hBox.getChildren().addAll(buttons);
-        hBox.getChildren().add(submitAnswer);
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(10));
+        vBox.setSpacing(5);
+        vBox.getChildren().add(label);
+        vBox.getChildren().addAll(buttons);
+        vBox.getChildren().add(submitAnswer);
+        
+        root.getChildren().add(vBox);
 
         submitAnswer.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
@@ -279,13 +285,10 @@ public class Gui extends Application {
 	        	 System.out.println(toggleGroupValue);
 	        	 correctWindow.close();
 	        	 predictionWindow.close();
-	        	 canvas.clearScreen();
 		    }
 		});
 
-       Scene scene = new Scene(hBox, 600, 100);
-       scene.setRoot(hBox);
-       correctWindow.setScene(scene);
+       correctWindow.setScene(new Scene(root));
        correctWindow.setTitle("The right answer");
        correctWindow.show();
     }

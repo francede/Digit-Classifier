@@ -77,8 +77,7 @@ public class NeuroCanvas extends Canvas {
 
 	public BufferedImage canvasToBimg() {
 		WritableImage wimg = new WritableImage((int) this.getWidth(), (int) this.getHeight());
-		BufferedImage bimg = new BufferedImage((int) this.getWidth(), (int) this.getHeight(),
-				BufferedImage.TYPE_INT_RGB);
+		BufferedImage bimg = new BufferedImage((int) this.getWidth(), (int) this.getHeight(), BufferedImage.TYPE_INT_RGB);
 		this.snapshot(new SnapshotParameters(), wimg);
 		Image img = SwingFXUtils.fromFXImage(wimg, null);
 		Graphics graphics = bimg.getGraphics();
@@ -157,9 +156,10 @@ public class NeuroCanvas extends Canvas {
 
 	public double[] getPixels() {
 		int [] tempArray = getImagePixels(scale(crop(canvasToBimg()), insideImgSize, backGroundImgSize));
-		double[] rgbArray = Arrays.stream(tempArray).asDoubleStream().toArray();
+		double[] rgbArray = new double[tempArray.length];
 		for (int i = 0; i < rgbArray.length; i++) {
 			rgbArray[i] = 255 - getRGBblue(tempArray[i]);
+			System.out.println(rgbArray[i]);
 			if (rgbArray[i] == 255) {
 				rgbArray[i] = rgbArray[i] - 5 * Math.random();
 			}
