@@ -24,21 +24,18 @@ public class NeuroCanvas extends Canvas {
 	private final double insideImgSize = 20;
 	private final double backGroundImgSize = 28;
 
-	public NeuroCanvas(int w, int h, Color bgColor, Color sColor, int lineWidth) {
+	public NeuroCanvas(int w, int h) {
 		super(w, h);
 		gc = this.getGraphicsContext2D();
-		gc.setFill(bgColor);
+		gc.setFill(Color.WHITE);
 		gc.fillRect(0, 0, w, h);
-//        gc.setStroke(sColor);
 		gc.setStroke(Color.rgb(0, 0, 0, 0.5));
 		gc.setLineCap(StrokeLineCap.ROUND);
-
 		DropShadow ds = new DropShadow();
 		ds.setRadius(10);
 		ds.setColor(Color.rgb(0, 0, 0, 0.5));
 		gc.setEffect(ds);
-
-		gc.setLineWidth(lineWidth);
+		gc.setLineWidth(20);
 	}
 
 	public void draw() {
@@ -76,8 +73,8 @@ public class NeuroCanvas extends Canvas {
 	}
 
 	public BufferedImage canvasToBimg() {
-		WritableImage wimg = new WritableImage((int) this.getWidth(), (int) this.getHeight());
-		BufferedImage bimg = new BufferedImage((int) this.getWidth(), (int) this.getHeight(), BufferedImage.TYPE_INT_RGB);
+		WritableImage wimg = new WritableImage((int)this.getWidth(), (int)this.getHeight());
+		BufferedImage bimg = new BufferedImage((int)this.getWidth(), (int)this.getHeight(), BufferedImage.TYPE_INT_RGB);
 		this.snapshot(new SnapshotParameters(), wimg);
 		Image img = SwingFXUtils.fromFXImage(wimg, null);
 		Graphics graphics = bimg.getGraphics();
@@ -101,7 +98,7 @@ public class NeuroCanvas extends Canvas {
 		return croppedImage;
 	}
 
-	public BufferedImage scale(BufferedImage sourceImg, double insideImgSize, double backGroundImgSize) {
+	public BufferedImage scale(BufferedImage sourceImg) {
 		double height;
 		double width;
 		if (sourceImg.getWidth() <= sourceImg.getHeight()) {
@@ -155,7 +152,7 @@ public class NeuroCanvas extends Canvas {
 	}
 
 	public double[] getPixels() {
-		int [] tempArray = getImagePixels(scale(crop(canvasToBimg()), insideImgSize, backGroundImgSize));
+		int [] tempArray = getImagePixels(scale(crop(canvasToBimg())));
 		double[] rgbArray = new double[tempArray.length];
 		for (int i = 0; i < rgbArray.length; i++) {
 			rgbArray[i] = 255 - getRGBblue(tempArray[i]);
@@ -163,7 +160,6 @@ public class NeuroCanvas extends Canvas {
 			if (rgbArray[i] == 255) {
 				rgbArray[i] = rgbArray[i] - 5 * Math.random();
 			}
-
 		}
 		return rgbArray;
 	}

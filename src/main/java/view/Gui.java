@@ -1,33 +1,27 @@
 package view;
 
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import controller.Controller;
 import controller.ControllerImpl;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
@@ -45,7 +39,7 @@ public class Gui extends Application {
 
 	public Gui() {
 		this.controller = new ControllerImpl(this);
-		this.canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 20);
+		this.canvas = new NeuroCanvas(280, 280);
 		this.startWindow = new Stage();
 		this.correctWindow = new Stage();
 		this.predictionWindow = new Stage();
@@ -91,6 +85,7 @@ public class Gui extends Application {
 	        	value.setText(String.format("%.0f%%", (arg2.doubleValue()*100)));
 	        	if (arg2.doubleValue() == 1) {
 	        		progressWindow.close();
+	        		trainingWindow.close();
 	        	}
 	        }
 	    });
@@ -143,6 +138,7 @@ public class Gui extends Application {
 	        	 progressPage(controller.trainNetwork(slidervalueP));
 	        	 double slidervalueLR = sliderLR.getValue();
 	        	 //controller.setLearningRate(slidervalueLR);
+	        	 trainingWindow.close();
 	         }
 	    });
 
@@ -218,7 +214,7 @@ public class Gui extends Application {
 		HBox buttonPane = new HBox();
 		buttonPane.getChildren().addAll(right, wrong);
 		Group root = new Group();
-		NeuroCanvas imageCanvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 20);
+		NeuroCanvas imageCanvas = new NeuroCanvas(280, 280);
 		imageCanvas.showImage(image);
     	BorderPane borderPane = new BorderPane();
     	borderPane.setCenter(imageCanvas);
@@ -274,7 +270,7 @@ public class Gui extends Application {
         vBox.getChildren().add(label);
         vBox.getChildren().addAll(buttons);
         vBox.getChildren().add(submitAnswer);
-        
+
         root.getChildren().add(vBox);
 
         submitAnswer.setOnAction(new EventHandler<ActionEvent>() {
