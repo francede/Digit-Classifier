@@ -77,16 +77,22 @@ public class NodeAndSynapseAccessObject {
 
 	
 
-	public void getAllBiasesfromDB() {
+	public Double[] getAllBiasesfromDB() {
+		List<Double> biasList = new ArrayList<Double>();
+		Double[] biasArray = new Double[(biasList.size())];
 		Session session = factory.openSession();
 		Transaction transaction = null;
+		
 
 		try{
 			transaction = session.beginTransaction();
 			List result = session.createQuery( "from Node" ).list();
 			for ( Node n : (List<Node>) result ) {
-				System.out.println(n.getBias());
-			}transaction.commit();
+				biasList.add(n.getBias());
+				}
+			biasArray = biasList.toArray(biasArray);
+			
+			transaction.commit();
 			}catch(Exception e){
 				if (transaction!=null) transaction.rollback();
 				throw e;
@@ -94,10 +100,13 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
+		return biasArray;
 		}
 
 
-	public void getAllWeightsfromBD() {
+	public Double[] getAllWeightsfromBD() {
+		List<Double> weightList = new ArrayList<Double>();
+		Double[] weightArray = new Double[(weightList.size())];
 		Session session = factory.openSession();
 		Transaction transaction = null;
 
@@ -105,8 +114,10 @@ public class NodeAndSynapseAccessObject {
 			transaction = session.beginTransaction();
 			List result = session.createQuery( "from Synapse" ).list();
 			for ( Synapse s : (List<Synapse>) result ) {
-				System.out.println(s.getWeight());
-				}transaction.commit();
+				weightList.add(s.getWeight());
+				}
+			weightArray = weightList.toArray(weightArray);
+			transaction.commit();
 			}catch(Exception e){
 				if (transaction!=null) transaction.rollback();
 				throw e;
@@ -114,11 +125,12 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
+		return weightArray;
 
 		}
 
 
-	public void getBiasesFromDB() {
+	/*public void getBiasesFromDB() {
 		Session session = factory.openSession();
 		int x;
 		Transaction transaction = null;
@@ -138,10 +150,10 @@ public class NodeAndSynapseAccessObject {
 				session.close();
 				}
 
-	}
+	}*/
 
 
-	public void getWeightsFromDB() {
+	/*public void getWeightsFromDB() {
 		Session session = factory.openSession();
 		int y;
 		Transaction transaction = null;
@@ -160,8 +172,7 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
-
-	}
+		}*/
 
 	}
 
