@@ -2,6 +2,7 @@ package orm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.hibernate.*;
 import org.hibernate.boot.MetadataSources;
@@ -27,16 +28,16 @@ public class NodeAndSynapseAccessObject {
 		}
 	}
 
-	public void createAllNodes(ArrayList<double[]> weightsOfLayers) {
+	public void createAllNodes(ArrayList<double[]> biasesOfLayers) {
 		Session session = factory.openSession();
 		Transaction transaction = null;
 
 		try{
 			transaction = session.beginTransaction();
-			for (int i = 0 ; i < weightsOfLayers.size(); i++) {
-				double[] weightsOfLayer = weightsOfLayers.get(i);
-				for (int j = 0 ; j < weightsOfLayer.length; j++) {
-					   Node n = new Node(0, j, i, weightsOfLayer[j]);
+			for (int i = 0 ; i < biasesOfLayers.size(); i++) {
+				double[] biasesOfLayer = biasesOfLayers.get(i);
+				for (int j = 0 ; j < biasesOfLayer.length; j++) {
+					   Node n = new Node(0, j, i, biasesOfLayer[j]);
 			         session.saveOrUpdate(n);
 			         }
 				}
@@ -52,15 +53,15 @@ public class NodeAndSynapseAccessObject {
 		}
 
 
-	public void createAllSynapses(ArrayList<double[]> biasesOfLayers) {
+	public void createAllSynapses(ArrayList<double[]> weightsOfLayers) {
 		Session session = factory.openSession();
 		Transaction transaction = null;
 		try{
 			transaction = session.beginTransaction();
-			for (int i = 0 ; i < biasesOfLayers.size(); i++) {
-				double[] biasesOfLayer = biasesOfLayers.get(i);
-				for (int j = 0 ; j < biasesOfLayer.length; j++) {
-					   Synapse s = new Synapse(0, i, biasesOfLayer[j]);
+			for (int i = 0 ; i < weightsOfLayers.size(); i++) {
+				double[] weightsOfLayer = weightsOfLayers.get(i);
+				for (int j = 0 ; j < weightsOfLayer.length; j++) {
+					   Synapse s = new Synapse(0, i, weightsOfLayer[j]);
 			         session.saveOrUpdate(s);
 			         }
 				}
@@ -77,22 +78,32 @@ public class NodeAndSynapseAccessObject {
 
 	
 
-	public Double[] getAllBiasesfromDB() {
+	public ArrayList<double[]> getAllBiasesfromDB() {
 		List<Double> biasList = new ArrayList<Double>();
-		Double[] biasArray = new Double[(biasList.size())];
+		ArrayList<double[]> biasArrayList = new ArrayList<double[]>();
 		Session session = factory.openSession();
 		Transaction transaction = null;
+		int layer = 0;
 		
 
 		try{
-			transaction = session.beginTransaction();
-			List result = session.createQuery( "from Node" ).list();
-			for ( Node n : (List<Node>) result ) {
-				biasList.add(n.getBias());
-				}
-			biasArray = biasList.toArray(biasArray);
 			
-			transaction.commit();
+			List result = null;
+			do {
+				String sql = "from Node where Layer='" + layer + "'";
+				result = session.createQuery(sql).list();
+				transaction = session.beginTransaction();
+				Double[] arr = new Double[result.size()];
+				for ( Node n : (List<Node>) result ) {
+					biasList.add(n.getBias());
+					}
+				arr = biasList.toArray(arr);
+				biasArrayList.add(Stream.of(arr).mapToDouble(Double::doubleValue).toArray());
+				transaction.commit();
+				layer++;
+				biasList = new ArrayList<Double>();
+			} while (!result.isEmpty());
+			
 			}catch(Exception e){
 				if (transaction!=null) transaction.rollback();
 				throw e;
@@ -100,24 +111,36 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
-		return biasArray;
+		return biasArrayList;
 		}
 
 
-	public Double[] getAllWeightsfromBD() {
+	public ArrayList<double[]> getAllWeightsfromBD() {
 		List<Double> weightList = new ArrayList<Double>();
-		Double[] weightArray = new Double[(weightList.size())];
+		ArrayList<double[]> weightArrayList = new ArrayList<double[]>();
 		Session session = factory.openSession();
 		Transaction transaction = null;
+		int layer = 0;
 
 		try{
-			transaction = session.beginTransaction();
-			List result = session.createQuery( "from Synapse" ).list();
-			for ( Synapse s : (List<Synapse>) result ) {
-				weightList.add(s.getWeight());
-				}
-			weightArray = weightList.toArray(weightArray);
-			transaction.commit();
+			
+			List result = null;
+			
+			do {
+				String sql = "from Synapse where Layer='" + layer + "'";
+				result = session.createQuery(sql).list();
+				transaction = session.beginTransaction();
+				Double[] arr = new Double[result.size()];
+				for ( Synapse s : (List<Synapse>) result ) {
+					weightList.add(s.getWeight());
+					}
+				arr = weightList.toArray(arr);
+				weightArrayList.add(Stream.of(arr).mapToDouble(Double::doubleValue).toArray());
+				transaction.commit();
+				layer++;
+				weightList = new ArrayList<Double>();
+			} while (!result.isEmpty());
+
 			}catch(Exception e){
 				if (transaction!=null) transaction.rollback();
 				throw e;
@@ -125,7 +148,7 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
-		return weightArray;
+		return weightArrayList;
 
 		}
 
