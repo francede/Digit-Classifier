@@ -3,6 +3,7 @@ package controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javafx.concurrent.Task;
 import model.InputData;
 import model.InputDataNumberImages;
 import model.Matrix;
@@ -21,11 +22,13 @@ public class ControllerImpl implements Controller {
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
-	private final int[] NETWORK_LAYER_SIZES = {784, 8, 8, 10};
+	private int[] network_layer_sizes = {784, 16, 16, 10};
+	private double learningRate = 1;
 
 	public ControllerImpl(Gui gui) {
 		this.gui = gui;
-		this.neuralNetwork = new NeuralNetworkImpl(NETWORK_LAYER_SIZES);
+		this.neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
+		this.neuralNetwork.setLearningRate(learningRate);
 		this.neuralNetwork.reset();
 		this.IDXImageFileReader = new IDXImageFileReaderImpl();
 		this.DAOController = new DAOControllerImpl();
@@ -36,31 +39,103 @@ public class ControllerImpl implements Controller {
 		double[] predictions = null;
 		InputData inputData = new InputDataNumberImages(imageAsPixels);
 		Matrix matrix = neuralNetwork.makePrediction(inputData);
-		System.out.println(matrix.getData()[1][0]);
 		predictions = Matrix.matrixToArray(matrix);
-		System.out.println(predictions[1]);
-		//double[] predictions = new double[] {0.1, 0.4, 0.5, 1.0, 0.4, 0.2, 0.3, 0.9, 0.8, 0.4};
+		printPixelsOfOneImage(inputData);
 		return predictions;
 	}
 
+	public double[] makePrediction(InputData inputData) {
+		double[] predictions = null;
+		Matrix matrix = neuralNetwork.makePrediction(inputData);
+		predictions = Matrix.matrixToArray(matrix);
+		return predictions;
+	}
 
-	@Override
-	public void trainNetwork(int amountOfTrainingImages) {
-		ArrayList<InputData> trainingSet;
-		int amountOfImagesProcessedAtaTime = 10;
-		for (int i = 0, j = 0; i <= amountOfTrainingImages; i++, j++) {
-			if (j == amountOfImagesProcessedAtaTime | i == amountOfTrainingImages) {
-				trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(j);
-				neuralNetwork.trainWithaTrainingSet(trainingSet);
-				gui.showProgress(i, amountOfTrainingImages);
-				j = 0;
-			}
+	private void printPixelsOfOneImage(InputData inputData) {
+		InputData singleImage = IDXImageFileReader.getSingleImageAsPixels();
+		System.out.println("Pixels of image from file:");
+		for (double pixel : singleImage.getInput()) {
+			System.out.println(pixel);
+		}
+		System.out.println("Pixels of image from drawn number:");
+		for (double pixel : inputData.getInput()) {
+			System.out.println(pixel);
 		}
 	}
 
-//	public void setLearningRate(double learningRate) {
-//		neuralNetwork.setLearningRate(learningRate);
-//	}
+	@Override
+	public Task trainNetwork(int amountOfTrainingImages) {
+		int amountOfImagesProcessedAtaTime = 10;
+		return new Task() {
+			ArrayList<InputData> trainingSet;
+            @Override
+            protected Object call() throws Exception {
+            	for (int i = 0, j = 0; i <= amountOfTrainingImages; i++, j++) {
+            		if (this.isCancelled()) {
+        				break;
+        			}
+            		if (i % 10000 == 0) {
+        				if (learningRate - 0.2 <= 0) {
+        					learningRate *= 0.5;
+        				} else {
+        					learningRate -= 0.2;
+        				}
+        				neuralNetwork.setLearningRate(learningRate);
+        			}
+        			if (i % 100 == 0) {
+        				System.out.println("ControllerImpl: images processed " + i);
+        			}
+        			if (j == amountOfImagesProcessedAtaTime | i == amountOfTrainingImages) {
+        				trainingSet = IDXImageFileReader.getMultipleImagesAsPixels(j);
+        				neuralNetwork.trainWithaTrainingSet(trainingSet);
+        				updateProgress(i, amountOfTrainingImages);
+        				j = 0;
+        			}
+        		}
+            	learningRate = 1.0;
+            	return true;
+            }
+        };
+	}
+
+	/**
+	 * Trains the network with a trainingset that is initialized in another class.
+	 * This is useful if you want to train different networks quickly as the
+	 * initialization (reading from a file) takes a lot of time.
+	 * @param trainingSet
+	 */
+	public void trainNetworkTimeEfficiently(ArrayList<InputData> trainingSet) {
+		int amountOfImagesProcessedAtaTime = 10;
+		ArrayList<InputData> partial_trainingSet = new ArrayList<InputData>();
+    	for (int i = 0, j = 0; i < trainingSet.size(); i++, j++) {
+    		if (i % 10000 == 0) {
+				if (learningRate - 0.2 <= 0) {
+					learningRate *= 0.5;
+				} else {
+					learningRate -= 0.2;
+				}
+				neuralNetwork.setLearningRate(learningRate);
+			}
+			partial_trainingSet.add(trainingSet.get(i));
+			if (j == amountOfImagesProcessedAtaTime | i == trainingSet.size()) {
+				neuralNetwork.trainWithaTrainingSet(partial_trainingSet);
+				j = 0;
+				partial_trainingSet.clear();
+			}
+		}
+    	learningRate = 1.0;
+	}
+
+	public void setLearningRate(double learningRate) {
+		neuralNetwork.setLearningRate(learningRate);
+	}
+
+	public void setNetwork_layer_sizes(int[] network_layer_sizes) {
+		this.network_layer_sizes = network_layer_sizes;
+		this.neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
+		this.neuralNetwork.setLearningRate(learningRate);
+		this.neuralNetwork.reset();
+	}
 
 	@Override
 	public void saveNetwork() {
@@ -83,6 +158,10 @@ public class ControllerImpl implements Controller {
 	@Override
 	public void resetNetwork() {
 		neuralNetwork.reset();
+	}
+
+	public IDXImageFileReader getIDXImageFileReader() {
+		return IDXImageFileReader;
 	}
 
 }

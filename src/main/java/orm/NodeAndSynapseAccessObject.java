@@ -52,23 +52,47 @@ public class NodeAndSynapseAccessObject {
 		}
 
 
-	public void createAllSynapses() {
+	public void createAllSynapses(ArrayList<double[]> biasesOfLayers) {
 		Session session = factory.openSession();
 		Transaction transaction = null;
-		//thän metodi jolla luodaan kaikki synapsit
+		try{
+			transaction = session.beginTransaction();
+			for (int i = 0 ; i < biasesOfLayers.size(); i++) {
+				double[] biasesOfLayer = biasesOfLayers.get(i);
+				for (int j = 0 ; j < biasesOfLayer.length; j++) {
+					   Synapse s = new Synapse(0, i, biasesOfLayer[j]);
+			         session.saveOrUpdate(s);
+			         }
+				}
+			transaction.commit();
+			}
+		catch(Exception e){
+			if (transaction!=null) transaction.rollback();
+			throw e;
+			}
+	finally{
+		session.close();
+		}
+		}
 
-	}
+	
 
-	public void getAllBiasesfromDB() {
+	public Double[] getAllBiasesfromDB() {
+		List<Double> biasList = new ArrayList<Double>();
+		Double[] biasArray = new Double[(biasList.size())];
 		Session session = factory.openSession();
 		Transaction transaction = null;
+		
 
 		try{
 			transaction = session.beginTransaction();
 			List result = session.createQuery( "from Node" ).list();
 			for ( Node n : (List<Node>) result ) {
-				System.out.println(n.getBias());
-			}transaction.commit();
+				biasList.add(n.getBias());
+				}
+			biasArray = biasList.toArray(biasArray);
+			
+			transaction.commit();
 			}catch(Exception e){
 				if (transaction!=null) transaction.rollback();
 				throw e;
@@ -76,10 +100,13 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
+		return biasArray;
 		}
 
 
-	public void getAllWeightsfromBD() {
+	public Double[] getAllWeightsfromBD() {
+		List<Double> weightList = new ArrayList<Double>();
+		Double[] weightArray = new Double[(weightList.size())];
 		Session session = factory.openSession();
 		Transaction transaction = null;
 
@@ -87,8 +114,10 @@ public class NodeAndSynapseAccessObject {
 			transaction = session.beginTransaction();
 			List result = session.createQuery( "from Synapse" ).list();
 			for ( Synapse s : (List<Synapse>) result ) {
-				System.out.println(s.getWeight());
-				}transaction.commit();
+				weightList.add(s.getWeight());
+				}
+			weightArray = weightList.toArray(weightArray);
+			transaction.commit();
 			}catch(Exception e){
 				if (transaction!=null) transaction.rollback();
 				throw e;
@@ -96,11 +125,12 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
+		return weightArray;
 
 		}
 
 
-	public void getBiasesFromDB() {
+	/*public void getBiasesFromDB() {
 		Session session = factory.openSession();
 		int x;
 		Transaction transaction = null;
@@ -120,10 +150,10 @@ public class NodeAndSynapseAccessObject {
 				session.close();
 				}
 
-	}
+	}*/
 
 
-	public void getWeightsFromDB() {
+	/*public void getWeightsFromDB() {
 		Session session = factory.openSession();
 		int y;
 		Transaction transaction = null;
@@ -142,8 +172,7 @@ public class NodeAndSynapseAccessObject {
 			finally{
 				session.close();
 				}
-
-	}
+		}*/
 
 	}
 

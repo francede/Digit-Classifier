@@ -1,17 +1,22 @@
 package view;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.event.EventHandler;
 import java.awt.Image;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+
+import java.util.Arrays;
+
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.embed.swing.SwingFXUtils;
-
 
 public class NeuroCanvas extends Canvas {
 
@@ -19,41 +24,46 @@ public class NeuroCanvas extends Canvas {
 	private final double insideImgSize = 20;
 	private final double backGroundImgSize = 28;
 
-	public NeuroCanvas(int w, int h, Color bgColor, Color sColor, int lineWidth) {
+	public NeuroCanvas(int w, int h) {
 		super(w, h);
 		gc = this.getGraphicsContext2D();
-		gc.setFill(bgColor);
-        gc.fillRect(0, 0, w, h);
-        gc.setStroke(sColor);
-        gc.setLineWidth(lineWidth);
+		gc.setFill(Color.WHITE);
+		gc.fillRect(0, 0, w, h);
+		gc.setStroke(Color.rgb(0, 0, 0, 0.5));
+		gc.setLineCap(StrokeLineCap.ROUND);
+		DropShadow ds = new DropShadow();
+		ds.setRadius(10);
+		ds.setColor(Color.rgb(0, 0, 0, 0.5));
+		gc.setEffect(ds);
+		gc.setLineWidth(20);
 	}
 
 	public void draw() {
-		this.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>(){
-		    @Override
-		    public void handle(MouseEvent event) {
-		        gc.beginPath();
-		        gc.moveTo(event.getX(), event.getY());
-		        gc.stroke();
-		    }
+		this.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				gc.beginPath();
+				gc.moveTo(event.getX(), event.getY());
+				gc.stroke();
+			}
 		});
-		this.addEventHandler(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>(){
-		    @Override
-		    public void handle(MouseEvent event) {
-		        gc.lineTo(event.getX(), event.getY());
-		        gc.stroke();
-		        gc.closePath();
-		        gc.beginPath();
-		        gc.moveTo(event.getX(), event.getY());
-		    }
+		this.addEventHandler(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				gc.lineTo(event.getX(), event.getY());
+				gc.stroke();
+				gc.closePath();
+				gc.beginPath();
+				gc.moveTo(event.getX(), event.getY());
+			}
 		});
-		this.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>(){
-		    @Override
-		    public void handle(MouseEvent event) {
-		        gc.lineTo(event.getX(), event.getY());
-		        gc.stroke();
-		        gc.closePath();
-		    }
+		this.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				gc.lineTo(event.getX(), event.getY());
+				gc.stroke();
+				gc.closePath();
+			}
 		});
 	}
 
@@ -73,78 +83,90 @@ public class NeuroCanvas extends Canvas {
 		return bimg;
 	}
 
-	public int getRGBblue(int color ){
+	public int getRGBblue(int color) {
 		return color & 0xff;
-    }
+	}
 
 	public BufferedImage crop(BufferedImage image) {
 		int yMin = yMin(image);
 		int xMin = xMin(image);
 		int yMax = yMax(image);
 		int xMax = xMax(image);
-		int width = xMax-xMin+1;
-		int height = yMax-yMin+1;
+		int width = xMax - xMin + 1;
+		int height = yMax - yMin + 1;
 		BufferedImage croppedImage = image.getSubimage(xMin, yMin, width, height);
 		return croppedImage;
 	}
 
-	public BufferedImage scale(BufferedImage sourceImg, double insideImgSize, double backGroundImgSize) {
-			double height;
-			double width;
+	public BufferedImage scale(BufferedImage sourceImg) {
+		double height;
+		double width;
 		if (sourceImg.getWidth() <= sourceImg.getHeight()) {
-			double scale = insideImgSize/sourceImg.getHeight();
+			double scale = insideImgSize / sourceImg.getHeight();
 			height = insideImgSize;
-			width = sourceImg.getWidth()*scale;
+			width = sourceImg.getWidth() * scale;
 		} else {
-			double scale = insideImgSize/sourceImg.getWidth();
-			height = sourceImg.getHeight()*scale;
+			double scale = insideImgSize / sourceImg.getWidth();
+			height = sourceImg.getHeight() * scale;
 			width = insideImgSize;
 		}
-		double dx = (backGroundImgSize - width)/2;
-		double dy = (backGroundImgSize - height)/2;
-		BufferedImage newImage = new BufferedImage((int)backGroundImgSize, (int)backGroundImgSize, BufferedImage.TYPE_INT_RGB);
+		double dx = (backGroundImgSize - width) / 2;
+		double dy = (backGroundImgSize - height) / 2;
+		BufferedImage newImage = new BufferedImage((int) backGroundImgSize, (int) backGroundImgSize,
+				BufferedImage.TYPE_INT_RGB);
 		Graphics graphics = newImage.getGraphics();
 		graphics.setColor(java.awt.Color.WHITE);
-		graphics.fillRect(0, 0, (int)backGroundImgSize, (int)backGroundImgSize);
-		graphics.drawImage(sourceImg, (int)dx, (int)dy, (int)width, (int)height, null);
+		graphics.fillRect(0, 0, (int) backGroundImgSize, (int) backGroundImgSize);
+		graphics.drawImage(sourceImg, (int) dx, (int) dy, (int) width, (int) height, null);
 		graphics.dispose();
 		return newImage;
 	}
 
-//	public WritableImage bimgToWimg(BufferedImage image) {
-//		WritableImage wimg = SwingFXUtils.toFXImage(image, null);
-//		return wimg;
-//	}
-
-//	public void test() {
-//		getPixels();
-//}
 	public void showImage(WritableImage wimg) {
 		gc.drawImage(wimg, 0, 0);
 	}
 
 	public WritableImage takeSnapShot() {
-		WritableImage wimg = new WritableImage((int)this.getWidth(), (int)this.getHeight());
+		WritableImage wimg = new WritableImage((int) this.getWidth(), (int) this.getHeight());
 		this.snapshot(new SnapshotParameters(), wimg);
 		return wimg;
 	}
 
+	public WritableImage writePixels(int[] pixelarray) {
+		WritableImage wimg = new WritableImage(28, 28);
+		PixelWriter pixelWriter = wimg.getPixelWriter();
+		int k = 0;
+		for (int y = 0; y < 28; y++) {
+			for (int x = 0; x < 28; x++) {
+				pixelWriter.setArgb(x, y, pixelarray[k]);
+				k++;
+			}
+		}
+		return wimg;
+	}
+
+	public int[] getImagePixels(BufferedImage image) {
+		int [] RGBArray = new int[image.getWidth()*image.getHeight()];
+		RGBArray = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+		return RGBArray;
+	}
 
 	public double[] getPixels() {
-		BufferedImage scaledImage = scale(crop(canvasToBimg()), insideImgSize, backGroundImgSize);
-		int [] tempRgbArray = new int[scaledImage.getWidth()*scaledImage.getHeight()];
-		tempRgbArray = scaledImage.getRGB(0, 0, scaledImage.getWidth(), scaledImage.getHeight(), null, 0, scaledImage.getWidth());
-		double [] rgbArray = new double[scaledImage.getWidth()*scaledImage.getHeight()];
+		int [] tempArray = getImagePixels(scale(crop(canvasToBimg())));
+		double[] rgbArray = new double[tempArray.length];
 		for (int i = 0; i < rgbArray.length; i++) {
-			rgbArray[i] = getRGBblue(tempRgbArray[i]);
+			rgbArray[i] = 255 - getRGBblue(tempArray[i]);
 			System.out.println(rgbArray[i]);
+			if (rgbArray[i] == 255) {
+				rgbArray[i] = rgbArray[i] - 5 * Math.random();
+			}
 		}
 		return rgbArray;
 	}
 
 	public int yMin(BufferedImage image) {
-		for (int y=0; y < (int)image.getHeight(); y++) {
-			for (int x=0; x < (int)image.getWidth(); x++) {
+		for (int y = 0; y < (int) image.getHeight(); y++) {
+			for (int x = 0; x < (int) image.getWidth(); x++) {
 				if (getRGBblue(image.getRGB(x, y)) != 255) {
 					return y;
 				}
@@ -154,8 +176,8 @@ public class NeuroCanvas extends Canvas {
 	}
 
 	public int xMin(BufferedImage image) {
-		for (int x=0; x < (int)image.getWidth(); x++) {
-			for (int y=0; y < (int)image.getHeight(); y++) {
+		for (int x = 0; x < (int) image.getWidth(); x++) {
+			for (int y = 0; y < (int) image.getHeight(); y++) {
 				if (getRGBblue(image.getRGB(x, y)) != 255) {
 					return x;
 				}
@@ -165,8 +187,8 @@ public class NeuroCanvas extends Canvas {
 	}
 
 	public int yMax(BufferedImage image) {
-		for (int y = (int)image.getHeight()-1; y > 0; y--) {
-			for (int x=0; x < (int)image.getWidth(); x++) {
+		for (int y = (int) image.getHeight() - 1; y > 0; y--) {
+			for (int x = 0; x < (int) image.getWidth(); x++) {
 				if (getRGBblue(image.getRGB(x, y)) != 255) {
 					return y;
 				}
@@ -176,8 +198,8 @@ public class NeuroCanvas extends Canvas {
 	}
 
 	public int xMax(BufferedImage image) {
-		for (int x=(int)image.getWidth()-1; x > 0; x--) {
-			for (int y=0; y < (int)image.getWidth(); y++) {
+		for (int x = (int) image.getWidth() - 1; x > 0; x--) {
+			for (int y = 0; y < (int) image.getWidth(); y++) {
 				if (getRGBblue(image.getRGB(x, y)) != 255) {
 					return x;
 				}
@@ -186,5 +208,6 @@ public class NeuroCanvas extends Canvas {
 		return 0;
 	}
 
-}
 
+
+}

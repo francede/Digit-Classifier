@@ -79,9 +79,10 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	}
 
 	private InputData readImageFiles() {
-		if (numberOfImagesRead > numberOfImages) {
+		if (numberOfImagesRead >= numberOfImages) {
 			resetStream();
 		}
+		numberOfImagesRead++;
 
 		InputData imageAsPixelsAndLabel = null;
 		int numberOfPixels = numberOfRows * numberOfColumns;
@@ -140,7 +141,7 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			singleImageAsPixels = readImageFiles();
 			multipleImagesAsPixels.add(singleImageAsPixels);
 		}
-		System.out.println("IDXImageFileReaderImpl: Number of images processed: " + amountOfImages);
+//		System.out.println("IDXImageFileReaderImpl: Number of images processed: " + amountOfImages);
 		return multipleImagesAsPixels;
 	}
 
@@ -185,11 +186,15 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 				int label = inLabel.read();
 
 				hashMap[label]++;
-				File outputfile = new File(outputPath + label + "_0" + hashMap[label] + ".png");
 
-				System.out.println("Created file " + outputPath + label + "_0" + hashMap[label] + ".png");
+				if (label == 9 | label == 4) {
+					File outputfile = new File(outputPath + label + "_0" + hashMap[label] + ".png");
 
-				ImageIO.write(image, "png", outputfile);
+					System.out.println("Created file " + outputPath + label + "_0" + hashMap[label] + ".png");
+
+					ImageIO.write(image, "png", outputfile);
+				}
+
 			}
 
 		} catch (FileNotFoundException e) {
@@ -199,6 +204,21 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public InputData getTheFirstNumberFromTrainingFile() {
+		resetStream();
+		return readImageFiles();
+	}
+
+	public ArrayList<InputData> getTheFirstXAmountOfNumbersFromTrainingFile(int amount) {
+		this.inputImagePath = "data/train-images/testset-images.idx3-ubyte";
+		this.inputLabelPath = "data/train-images/testset-labels.idx1-ubyte";
+		resetStream();
+		ArrayList<InputData> multipleImagesAsPixels = getMultipleImagesAsPixels(amount);
+		this.inputImagePath = "data/train-images/train-images.idx3-ubyte";
+		this.inputLabelPath = "data/train-images/train-labels.idx1-ubyte";
+		return multipleImagesAsPixels;
 	}
 
 }

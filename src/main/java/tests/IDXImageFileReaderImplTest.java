@@ -32,21 +32,22 @@ public class IDXImageFileReaderImplTest {
 	
 	public void checkPixelValues(InputData imageAsPixels) {
 		for (double i : imageAsPixels.getInput()) {
+			System.out.println(i);
 			assertTrue("The pixel value is below 0", i >= 0);
 			assertTrue("The pixel value is greater than 1", i <= 1);
 		}
 	}
 	
+	@Ignore("It is not necessary to create PNG files unless you want to validate the pictures visually")
 	@Test public void createPNGfiles() {
-		IDXReader.createPNGFiles(5);
-		IDXReader.createPNGFiles(5);
+		IDXReader.createPNGFiles(1000);
 	}
 	
 	@Test public void checkLabelValues() {
 		System.out.println("---Test: check label values from 5 first images in the training set---");
 		ArrayList<InputData> multipleImagesAsPixels;
 		int amountOfImages = 5;
-		int[] rightLabels = {5,0,4,1,9};
+		String[] rightLabels = {"5","0","4","1","9"};
 		multipleImagesAsPixels = IDXReader.getMultipleImagesAsPixels(amountOfImages);
 		for (int i = 0; i < amountOfImages; i++) {
 //			System.out.println("label: " + multipleImagesAsPixels.get(i).getLabel());

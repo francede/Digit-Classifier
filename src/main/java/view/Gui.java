@@ -1,11 +1,11 @@
 package view;
 
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import controller.Controller;
 import controller.ControllerImpl;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,41 +15,36 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.WritableImage;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 
 
 public class Gui extends Application {
 
-	private ControllerImpl controller;
+	private Controller controller;
 	private NeuroCanvas canvas;
 	private Stage startWindow;
 	private Stage predictionWindow;
 	private Stage correctWindow;
 	private Stage trainingWindow;
-	private Stage showProgressWindow;
-	private ProgressIndicator progressIndicator;
-	private ProgressBar progressBar;
+	private Stage progressWindow;
 
 	public Gui() {
 		this.controller = new ControllerImpl(this);
-		this.canvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 10);
+		this.canvas = new NeuroCanvas(280, 280);
 		this.startWindow = new Stage();
 		this.correctWindow = new Stage();
 		this.predictionWindow = new Stage();
 		this.trainingWindow = new Stage();
-		this.showProgressWindow = new Stage();
-		this.progressIndicator = new ProgressIndicator(0);
-		this.progressBar = new ProgressBar(0);
+		this.progressWindow = new Stage();
 	}
 
 	@Override
@@ -62,22 +57,51 @@ public class Gui extends Application {
 		launch(args);
 	}
 
-	private void progressPage() {
+	private void progressPage(Task task) {
 		Group root = new Group();
-		HBox hBox = new HBox();
-		hBox.getChildren().addAll(progressBar, progressIndicator);
-		Scene scene = new Scene(root, 300, 150);
-        showProgressWindow.setScene(scene);
-        showProgressWindow.setTitle("Progress Control");
-        scene.setRoot(hBox);
-        showProgressWindow.show();
-	}
+		Scene scene = new Scene(root);
 
-	public void showProgress(int i, int amountOfTrainingNumbers) {
-		Float value = new Float(i/amountOfTrainingNumbers);
-		progressBar.setProgress(value);
-        progressIndicator.setProgress(value);
-    }
+		Label title = new Label("Learning...");
+
+		ProgressBar progressBar = new ProgressBar(0);
+		progressBar.progressProperty().unbind();
+        progressBar.progressProperty().bind(task.progressProperty());
+        progressBar.setPrefWidth(250);
+        Label value = new Label(String.format("%.0f%%", progressBar.getProgress()*100));
+
+        HBox hBox = new HBox();
+		hBox.getChildren().addAll(progressBar, value);
+
+		Button cancelButton = new Button("Cancel");
+
+		VBox vBox = new VBox();
+		vBox.setPadding(new Insets(10));
+        vBox.setSpacing(5);
+		vBox.getChildren().addAll(title, hBox, cancelButton);
+
+		progressBar.progressProperty().addListener(new ChangeListener<Number>() {
+	        @Override
+	        public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+	        	value.setText(String.format("%.0f%%", (arg2.doubleValue()*100)));
+	        	if (arg2.doubleValue() == 1) {
+	        		progressWindow.close();
+	        		trainingWindow.close();
+	        	}
+	        }
+	    });
+        new Thread(task).start();
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                task.cancel(true);
+                progressBar.progressProperty().unbind();
+                progressWindow.close();
+            }
+        });
+        progressWindow.setScene(scene);
+        progressWindow.setTitle("Progress Control");
+        scene.setRoot(vBox);
+        progressWindow.show();
+	}
 
 	private void trainingPage() {
 		Label labelP = new Label("How many pictures?");
@@ -110,11 +134,11 @@ public class Gui extends Application {
         train.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
-	        	 progressPage();
 	        	 int slidervalueP = (int)sliderP.getValue();
-                 controller.trainNetwork(slidervalueP);
+	        	 progressPage(controller.trainNetwork(slidervalueP));
 	        	 double slidervalueLR = sliderLR.getValue();
 	        	 //controller.setLearningRate(slidervalueLR);
+	        	 trainingWindow.close();
 	         }
 	    });
 
@@ -168,7 +192,8 @@ public class Gui extends Application {
 		submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	predictionsPage();
+            	predictionsPage(canvas.takeSnapShot());
+            	canvas.clearScreen();
             }
         });
 		train.setOnAction(new EventHandler<ActionEvent>() {
@@ -183,14 +208,14 @@ public class Gui extends Application {
 		primaryStage.show();
 	}
 
-	private void predictionsPage() {
+	private void predictionsPage(WritableImage image) {
 		Button right = new Button("Right");
 		Button wrong = new Button("Wrong");
 		HBox buttonPane = new HBox();
 		buttonPane.getChildren().addAll(right, wrong);
 		Group root = new Group();
-		NeuroCanvas imageCanvas = new NeuroCanvas(280, 280, Color.WHITE, Color.BLACK, 10);
-		imageCanvas.showImage(canvas.takeSnapShot());
+		NeuroCanvas imageCanvas = new NeuroCanvas(280, 280);
+		imageCanvas.showImage(image);
     	BorderPane borderPane = new BorderPane();
     	borderPane.setCenter(imageCanvas);
         borderPane.setBottom(buttonPane);
@@ -226,6 +251,7 @@ public class Gui extends Application {
 	}
 
 	private void correctPage() {
+		Group root  = new Group();
 		String[] values = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "None"};
     	RadioButton buttons [] = new RadioButton [values.length];
     	ToggleGroup toggleGroup = new ToggleGroup();
@@ -238,12 +264,14 @@ public class Gui extends Application {
         	buttons[i] = button;
         }
 
-        HBox hBox = new HBox();
-        hBox.setPadding(new Insets(10));
-        hBox.setSpacing(5);
-        hBox.getChildren().add(label);
-        hBox.getChildren().addAll(buttons);
-        hBox.getChildren().add(submitAnswer);
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(10));
+        vBox.setSpacing(5);
+        vBox.getChildren().add(label);
+        vBox.getChildren().addAll(buttons);
+        vBox.getChildren().add(submitAnswer);
+
+        root.getChildren().add(vBox);
 
         submitAnswer.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
@@ -253,13 +281,10 @@ public class Gui extends Application {
 	        	 System.out.println(toggleGroupValue);
 	        	 correctWindow.close();
 	        	 predictionWindow.close();
-	        	 canvas.clearScreen();
 		    }
 		});
 
-       Scene scene = new Scene(hBox, 600, 100);
-       scene.setRoot(hBox);
-       correctWindow.setScene(scene);
+       correctWindow.setScene(new Scene(root));
        correctWindow.setTitle("The right answer");
        correctWindow.show();
     }
