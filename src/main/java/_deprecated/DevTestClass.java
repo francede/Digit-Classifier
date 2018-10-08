@@ -10,7 +10,7 @@ import model.NeuralNetworkImpl;
 
 public class DevTestClass {
 	public static void main(String[] args){
-		testMatrixToArray();
+		testNNLarger();
 	}
 
 	public static void testMatrixToArray(){
@@ -23,17 +23,17 @@ public class DevTestClass {
 		}
 	}
 
-	public static void testNN(){
+	public static double[] testNN(double min, double max, double lr, int iterations){
 		NeuralNetworkImpl nn = new NeuralNetworkImpl(new int[]{2,2,1});
-		nn.reset();
-		nn.setLearningRate(0.1);
+		nn.reset(min, max);
+		nn.setLearningRate(lr);
 		ArrayList<InputData> trainingData = new ArrayList<InputData>();
 		trainingData.add(new InputDataBoolean(new double[]{1,1},false));
 		trainingData.add(new InputDataBoolean(new double[]{1,0},true));
 		trainingData.add(new InputDataBoolean(new double[]{0,1},true));
 		trainingData.add(new InputDataBoolean(new double[]{0,0},false));
 
-		for(int i = 0; i < 100000; i++){
+		for(int i = 0; i < iterations; i++){
 			int r = new Random().nextInt(4);
 			switch(r){
 			case 0:
@@ -50,42 +50,78 @@ public class DevTestClass {
 				break;
 			}
 		}
-		System.out.println("TT");
-		nn.train(trainingData.get(0));
-		System.out.println("TF");
-		nn.train(trainingData.get(1));
-		System.out.println("FT");
-		nn.train(trainingData.get(2));
-		System.out.println("FF");
-		nn.train(trainingData.get(3));
+		double[] predictions = new double[trainingData.size()];
+		for(int i = 0; i < trainingData.size(); i++){
+			predictions[i] = nn.makePrediction(trainingData.get(i)).getData()[0][0];
+		}
+		return predictions;
 	}
 
 	public static void testNNLarger(){
-		NeuralNetworkImpl nn = new NeuralNetworkImpl(new int[]{2,2,1});
-		nn.reset();
-		nn.setLearningRate(0.15);
-		ArrayList<InputData> trainingData = new ArrayList<InputData>();
-		trainingData.add(new InputDataBoolean(new double[]{1,1},false));
-		trainingData.add(new InputDataBoolean(new double[]{1,0},true));
-		trainingData.add(new InputDataBoolean(new double[]{0,1},true));
-		trainingData.add(new InputDataBoolean(new double[]{0,0},false));
+		System.out.println("#\tmin\tmax\tLR\titers\tTT\tTF\tFT\tFF");
+		System.out.println("--------------------------------------------------------------------");
+		String best = null;
+		double bestError = -1;
+		String worst = null;
+		double worstError = -1;
+		double error = 0;
+		int testNum = 1;
+		double[] mins = {-2,-1,0};
+		double[] maxs = {0,1,2};
+		double[] lrs = {0.2,0.5,0.75};
+		int[] iterations = {30000};
+		double[] targets = {0,1,1,0};
+ 		for(double min : mins){
+ 			for(double max : maxs){
+ 				if(min == max) continue;
+ 				for(double lr : lrs){
+ 					for(int itr : iterations){
+ 						double[] averages = new double[4];
+ 						int tests = 25;
+ 						for(int i = 0; i < tests; i++){
+ 							double[] outs = testNN(min,max,lr,itr);
 
-		for(int i = 0; i < 100000; i++){
-			ArrayList<InputData> dataSet = new ArrayList<InputData>();
-			for(int j = 0; j < 20; j++){
-				int r = new Random().nextInt(4);
-				dataSet.add(trainingData.get(r));
-			}
-			nn.trainWithaTrainingSet(dataSet);
-		}
-		System.out.println("TT");
-		System.out.println(nn.makePrediction(trainingData.get(0)));
-		System.out.println("TF");
-		System.out.println(nn.makePrediction(trainingData.get(1)));
-		System.out.println("FT");
-		System.out.println(nn.makePrediction(trainingData.get(2)));
-		System.out.println("FF");
-		System.out.println(nn.makePrediction(trainingData.get(3)));
+
+ 							for(int out = 0; out < outs.length; out++){
+ 								averages[out] += outs[out];
+ 							}
+ 						}
+ 						String output = "";
+ 						error = 0;
+ 						for(int avrg = 0; avrg < averages.length; avrg++){
+ 							averages[avrg] /= tests;
+ 							output = output + String.format("%.2f", averages[avrg]) + "\t";
+ 							error += Math.abs((targets[avrg] - averages[avrg]));
+ 						}
+ 						error /= 4;
+
+ 						System.out.println(testNum + "\t" + min+"\t"+max+"\t"+lr+"\t"+itr+"\t"+output);
+ 						if(bestError == -1){
+ 							bestError = error;
+ 							best = testNum + "\t" + min+"\t"+max+"\t"+lr+"\t"+itr+"\t"+output;
+ 						}else if(error < bestError){
+ 							bestError = error;
+ 							best = testNum + "\t" + min+"\t"+max+"\t"+lr+"\t"+itr+"\t"+output;
+ 						}
+ 						if(worstError == -1){
+ 							worstError = error;
+ 							worst = testNum + "\t" + min+"\t"+max+"\t"+lr+"\t"+itr+"\t"+output;
+ 						}else if(error > worstError){
+ 							worstError = error;
+ 							worst = testNum + "\t" + min+"\t"+max+"\t"+lr+"\t"+itr+"\t"+output;
+ 						}
+ 						testNum++;
+ 					}
+ 				}
+ 			}
+ 		}
+ 		System.out.println("--------------------------------------------------------------------");
+ 		System.out.println("Done");
+ 		System.out.println("Best result(Error = " +String.format("%.2f", bestError)+ "):");
+ 		System.out.println(best);
+ 		System.out.println("Worst result(Error = " + String.format("%.2f", worstError)+ "):");
+ 		System.out.println(worst);
+
 	}
 
 	public static void testMatrixDimensions(){

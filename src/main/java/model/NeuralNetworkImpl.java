@@ -105,12 +105,16 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 		return biasesClone;
 	}
 
+	public void reset(){
+		this.reset(0,1);
+	}
+
 	/**
 	 * Randomizes this neural network's weights and biases
 	 */
-	public void reset(){
-		for(Matrix w : weights)	w.randomize();
-		for(Matrix b : biases )	b.randomize();
+	public void reset(double min, double max){
+		for(Matrix w : weights)	w.randomize(min, max);
+		for(Matrix b : biases )	b.randomize(min, max);
 	}
 
 	/**

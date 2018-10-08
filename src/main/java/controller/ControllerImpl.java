@@ -97,13 +97,13 @@ public class ControllerImpl implements Controller {
             }
         };
 	}
-	
+
 	/**
 	 * Trains the network with a trainingset that is initialized in another class.
 	 * This is useful if you want to train different networks quickly as the
 	 * initialization (reading from a file) takes a lot of time.
 	 * @param trainingSet
-	 */	
+	 */
 	public void trainNetworkTimeEfficiently(ArrayList<InputData> trainingSet) {
 		int amountOfImagesProcessedAtaTime = 10;
 		ArrayList<InputData> partial_trainingSet = new ArrayList<InputData>();
@@ -129,7 +129,7 @@ public class ControllerImpl implements Controller {
 	public void setLearningRate(double learningRate) {
 		neuralNetwork.setLearningRate(learningRate);
 	}
-	
+
 	public void setNetwork_layer_sizes(int[] network_layer_sizes) {
 		this.network_layer_sizes = network_layer_sizes;
 		this.neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
