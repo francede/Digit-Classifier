@@ -38,9 +38,9 @@ public class IDXImageFileReaderImplTest {
 		}
 	}
 	
-//	@Ignore("It is not necessary to create PNG files unless you want to validate the pictures visually")
+	@Ignore("It is not necessary to create PNG files unless you want to validate the pictures visually")
 	@Test public void createPNGfiles() {
-		IDXReader.createPNGFiles(2000);
+		IDXReader.createPNGFiles(1000);
 	}
 	
 	@Test public void checkLabelValues() {

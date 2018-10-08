@@ -22,12 +22,12 @@ public class ControllerImpl implements Controller {
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
-	private final int[] NETWORK_LAYER_SIZES = {784, 16, 16, 10};
+	private int[] network_layer_sizes = {784, 16, 16, 10};
 	private double learningRate = 1;
 
 	public ControllerImpl(Gui gui) {
 		this.gui = gui;
-		this.neuralNetwork = new NeuralNetworkImpl(NETWORK_LAYER_SIZES);
+		this.neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
 		this.neuralNetwork.setLearningRate(learningRate);
 		this.neuralNetwork.reset();
 		this.IDXImageFileReader = new IDXImageFileReaderImpl();
@@ -50,7 +50,6 @@ public class ControllerImpl implements Controller {
 		predictions = Matrix.matrixToArray(matrix);
 		return predictions;
 	}
-
 
 	private void printPixelsOfOneImage(InputData inputData) {
 		InputData singleImage = IDXImageFileReader.getSingleImageAsPixels();
@@ -98,9 +97,44 @@ public class ControllerImpl implements Controller {
             }
         };
 	}
+	
+	/**
+	 * Trains the network with a trainingset that is initialized in another class.
+	 * This is useful if you want to train different networks quickly as the
+	 * initialization (reading from a file) takes a lot of time.
+	 * @param trainingSet
+	 */	
+	public void trainNetworkTimeEfficiently(ArrayList<InputData> trainingSet) {
+		int amountOfImagesProcessedAtaTime = 10;
+		ArrayList<InputData> partial_trainingSet = new ArrayList<InputData>();
+    	for (int i = 0, j = 0; i < trainingSet.size(); i++, j++) {
+    		if (i % 10000 == 0) {
+				if (learningRate - 0.2 <= 0) {
+					learningRate *= 0.5;
+				} else {
+					learningRate -= 0.2;
+				}
+				neuralNetwork.setLearningRate(learningRate);
+			}
+			partial_trainingSet.add(trainingSet.get(i));
+			if (j == amountOfImagesProcessedAtaTime | i == trainingSet.size()) {
+				neuralNetwork.trainWithaTrainingSet(partial_trainingSet);
+				j = 0;
+				partial_trainingSet.clear();
+			}
+		}
+    	learningRate = 1.0;
+	}
 
 	public void setLearningRate(double learningRate) {
 		neuralNetwork.setLearningRate(learningRate);
+	}
+	
+	public void setNetwork_layer_sizes(int[] network_layer_sizes) {
+		this.network_layer_sizes = network_layer_sizes;
+		this.neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
+		this.neuralNetwork.setLearningRate(learningRate);
+		this.neuralNetwork.reset();
 	}
 
 	@Override
