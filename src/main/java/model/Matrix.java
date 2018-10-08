@@ -33,10 +33,14 @@ public class Matrix {
      * Randomizes all elements of the matrix with a number between -1 and 1 according to normal distribution
      */
     public void randomize(){
+    	this.randomize(0, 1);
+    }
+
+    public void randomize(double min, double max){
     	Random r = new Random();
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
-    			data[i][j] = r.nextGaussian();
+    			data[i][j] = r.nextDouble() * (max-min) - min;
     		}
     	}
     }
