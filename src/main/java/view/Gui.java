@@ -116,13 +116,13 @@ public class Gui extends Application {
 		load.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
-	        	 controller.saveNetwork();
+	        	 controller.loadNetwork();
 		    }
 		});
 		save.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
-	        	 controller.loadNetwork();
+	        	 controller.saveNetwork();
 		    }
 		});
 		primaryStage.setTitle("NeuroCanvas");
