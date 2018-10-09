@@ -88,7 +88,9 @@ public class NodeAndSynapseAccessObject {
 					biasList.add(n.getBias());
 				}
 				arr = biasList.toArray(arr);
-				biasArrayList.add(Stream.of(arr).mapToDouble(Double::doubleValue).toArray());
+				if (!result.isEmpty()) {
+					biasArrayList.add(Stream.of(arr).mapToDouble(Double::doubleValue).toArray());
+				}
 				transaction.commit();
 				layer++;
 				biasList = new ArrayList<Double>();
@@ -121,7 +123,10 @@ public class NodeAndSynapseAccessObject {
 					weightList.add(s.getWeight());
 				}
 				arr = weightList.toArray(arr);
-				weightArrayList.add(Stream.of(arr).mapToDouble(Double::doubleValue).toArray());
+				if (!result.isEmpty()) {
+					weightArrayList.add(Stream.of(arr).mapToDouble(Double::doubleValue).toArray());
+				}
+
 				transaction.commit();
 				layer++;
 				weightList = new ArrayList<Double>();
@@ -136,24 +141,24 @@ public class NodeAndSynapseAccessObject {
 		}
 		return weightArrayList;
 	}
-	
+
 	public void deleteAllDataInDatabase() {
 		Session session = factory.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			session.createQuery("delete from Node").executeUpdate();	
+			session.createQuery("delete from Node").executeUpdate();
 			transaction.commit();
 			transaction = session.beginTransaction();
-			session.createQuery("delete from Synapse").executeUpdate();			
+			session.createQuery("delete from Synapse").executeUpdate();
 			transaction.commit();
 		} catch (Exception e) {
 			System.out.println(e);
-			if (transaction != null) transaction.rollback();
+			if (transaction != null)
+				transaction.rollback();
 		} finally {
 			session.close();
 		}
 
-		
 	}
 }

@@ -116,7 +116,9 @@ public class Matrix {
 
     public static Matrix arrayToMatrix(double[] array, int rows, int cols){
     	Matrix result = new Matrix(rows, cols);
-    	if(rows * cols != array.length) throw new MatrixException("Rows * Cols must equal the array's length");
+    	if(rows * cols != array.length) {
+    		throw new MatrixException("Rows * Cols must equal the array's length");
+    	}
     	for(int row = 0; row < rows; row++){
     		for(int col = 0; col < cols; col++){
     			result.data[row][col] = array[col + cols*row];
