@@ -15,7 +15,7 @@
    <property name="hibernate.connection.url">
       <!--jdbc:mysql://localhost:6666/olsotehtsarja11-->
       <!--jdbc:mysql://localhost:3306/olsotehtsarja11-->
-      jdbc:mysql://localhost:3306/neumeroverkko
+      jdbc:mysql://localhost:6666/neumeroverkko
    </property>
    <property name="hibernate.connection.username">
       verkkouser

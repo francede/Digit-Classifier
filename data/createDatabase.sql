@@ -3,7 +3,7 @@ CREATE DATABASE neumeroverkko;
 USE neumeroverkko;
 
 
-CREATE TABLE Node
+CREATE TABLE node
 (
   Bias DOUBLE NOT NULL,
   NodeOrdinal INT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE Node
   PRIMARY KEY (NodeID)
 );
 
-CREATE TABLE Synapse
+CREATE TABLE synapse
 (
   Weight DOUBLE NOT NULL,
   SynapseId INT NOT NULL AUTO_INCREMENT,
