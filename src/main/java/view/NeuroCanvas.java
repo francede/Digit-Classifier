@@ -21,11 +21,11 @@ import javafx.embed.swing.SwingFXUtils;
 public class NeuroCanvas extends Canvas {
 
 	private GraphicsContext gc;
-	private final double insideImgSize = 20;
-	private final double backGroundImgSize = 28;
+	private final double INSIDEIMGSIZE = 20;
+	private final double BACKGROUDIMGSIZE = 28;
 
 	/**
-	 * Constructor that sets the graphics context for the neurocanvas and the drawing properties.
+	 * Constructor that sets the graphics context for the canvas and the drawing properties.
 	 * @param w is the width of the canvas
 	 * @param h is the height of the canvas
 	 */
@@ -84,8 +84,8 @@ public class NeuroCanvas extends Canvas {
 	}
 
 	/**
-	 * Takes a snapshot of canvas and returns the snapshot image.
-	 * @return Image drawn on canvas as Buffered Image.
+	 * Takes a snapshot of canvas and returns the image.
+	 * @return image drawn on canvas as buffered image.
 	 */
 	private BufferedImage canvasToBimg() {
 		BufferedImage bimg = new BufferedImage((int)this.getWidth(), (int)this.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -109,7 +109,7 @@ public class NeuroCanvas extends Canvas {
 	/**
 	 * Searches the borders of the drawn area and crops the picture so that the white non-drawn area is cut off.
 	 * @param image represents a buffered image to be cropped
-	 * @return a buffered image that has been cropped in which the white borders has been cut off
+	 * @return a buffered image that has been cropped so that the white borders has been cut off
 	 */
 	private BufferedImage crop(BufferedImage image) {
 		int yMin = yMin(image);
@@ -123,30 +123,29 @@ public class NeuroCanvas extends Canvas {
 	}
 
 	/**
-	 * Scales the image given as parameter to the size defined as insideImgSize and sets it to the center
-	 *  of white background sized backGroudImgSize.
+	 * Scales the image given as parameter to the size defined as INSIDEIMGSIZE and sets it to the center
+	 *  of white background sized BACKGROUNDIMGSIZE.
 	 * @param sourceImg represents the image to be scaled and centered.
-	 * @return buffered image consisted of certain size of image set on a certain size of white background.
+	 * @return certain size of image set on a certain size of white background.
 	 */
 	private BufferedImage scale(BufferedImage sourceImg) {
 		double height;
 		double width;
 		if (sourceImg.getWidth() <= sourceImg.getHeight()) {
-			double scale = insideImgSize / sourceImg.getHeight();
-			height = insideImgSize;
+			double scale = INSIDEIMGSIZE / sourceImg.getHeight();
+			height = INSIDEIMGSIZE;
 			width = sourceImg.getWidth() * scale;
 		} else {
-			double scale = insideImgSize / sourceImg.getWidth();
+			double scale = INSIDEIMGSIZE / sourceImg.getWidth();
 			height = sourceImg.getHeight() * scale;
-			width = insideImgSize;
+			width = INSIDEIMGSIZE;
 		}
-		double dx = (backGroundImgSize - width) / 2;
-		double dy = (backGroundImgSize - height) / 2;
-		BufferedImage newImage = new BufferedImage((int) backGroundImgSize, (int) backGroundImgSize,
-				BufferedImage.TYPE_INT_RGB);
+		double dx = (BACKGROUDIMGSIZE - width) / 2;
+		double dy = (BACKGROUDIMGSIZE - height) / 2;
+		BufferedImage newImage = new BufferedImage((int) BACKGROUDIMGSIZE, (int) BACKGROUDIMGSIZE, BufferedImage.TYPE_INT_RGB);
 		Graphics graphics = newImage.getGraphics();
 		graphics.setColor(java.awt.Color.WHITE);
-		graphics.fillRect(0, 0, (int) backGroundImgSize, (int) backGroundImgSize);
+		graphics.fillRect(0, 0, (int) BACKGROUDIMGSIZE, (int) BACKGROUDIMGSIZE);
 		graphics.drawImage(sourceImg, (int) dx, (int) dy, (int) width, (int) height, null);
 		graphics.dispose();
 		return newImage;
@@ -184,11 +183,10 @@ public class NeuroCanvas extends Canvas {
 //	}
 
 	/**
-	 * Finds out the color of pixels of an image.
+	 * Finds out the colors of pixels of an image.
 	 * @param image represents the image, which pixel colors are aimed to find out.
 	 * @return an array of integer pixels in the default RGB color model (TYPE_INT_ARGB)
-	 *  and default sRGB color space from the image data. The pixel colors are organized
-	 *   to the array so that the first value is the color of pixel (0,0), second (1,0), third (1,1) and so on.
+	 *  and default sRGB color space from the image data. The pixel colors are arranged row-wise.
 	 */
 	private int[] getImagePixels(BufferedImage image) {
 		int [] RGBArray = new int[image.getWidth()*image.getHeight()];
@@ -197,10 +195,11 @@ public class NeuroCanvas extends Canvas {
 	}
 
 	/**
-	 * Picks the the value of blue from RGBarray-values and makes a new array of those values.
+	 * Picks the value of blue from RGB-values of an array and makes a new array of the blue values.
 	 * The RGBvalues are reversed so that 255 represents black and 0 white.
 	 * The black colors are lightened to make the image look more like hand-drawn image.
-	 * @return
+	 * @return array of grey values (0 = white, 255 = black) of image pixels arranged row-wise
+	 *
 	 */
 	public double[] getPixels() {
 		int [] tempArray = getImagePixels(scale(crop(canvasToBimg())));

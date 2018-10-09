@@ -59,27 +59,31 @@ public class Gui extends Application {
 
 	/**
 	 * Creates window for the canvas that user can draw on.
-	 * Creates buttons for submitting the answer, clearing the canvas, loading the data and 
+	 * Creates buttons for submitting the answer, clearing the canvas, loading the data,
 	 * training, reseting and saving the network and event handlers of the buttons.
 	 * @param primaryStage is the stage that opens when the program starts.
 	 */
 	private void startPage(Stage primaryStage) {
 		Group root  = new Group();
 		BorderPane borderPane = new BorderPane();
-		HBox hBox1 = new HBox();
-		HBox hBox2 = new HBox();
-		HBox hBox3 = new HBox();
 		borderPane.setCenter(canvas);
 		Button clear = new Button("Clear screen");
 		Button submit = new Button("Submit");
 		Button train = new Button("Train network");
-		Button load = new Button("Load data from database");
-		Button save = new Button("Save session");
+		Button load = new Button("Load from database");
+		Button save = new Button("Save to database");
 		Button reset = new Button("Reset network");
-		hBox1.getChildren().addAll(clear, submit);
-		hBox2.getChildren().addAll(load, train);
-		hBox3.getChildren().addAll(save, reset);
+		Button[] buttons = {clear, submit, train, load, save, reset};
 		VBox vBox = new VBox();
+		for (int i = 0; i < buttons.length; i++) {
+			buttons[i].setPrefWidth(canvas.getWidth()/2);
+		}
+		HBox hBox1 = new HBox();
+		HBox hBox2 = new HBox();
+		HBox hBox3 = new HBox();
+		hBox1.getChildren().addAll(clear, submit);
+		hBox2.getChildren().addAll(load, save);
+		hBox3.getChildren().addAll(reset, train);
 		vBox.getChildren().addAll(hBox1, hBox2, hBox3);
 		borderPane.setBottom(vBox);
 		root.getChildren().add(borderPane);
@@ -121,7 +125,6 @@ public class Gui extends Application {
 	        	 controller.loadNetwork();
 		    }
 		});
-
 		primaryStage.setTitle("NeuroCanvas");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
@@ -129,7 +132,7 @@ public class Gui extends Application {
 
 	/**
 	 * Creates a window for a progressbar that shows the progress of the task given as parameter.
-	 * Starts the task and adds a button for canceling the started progress.
+	 * Starts the task and adds a button to cancel the started progress.
 	 * @param task represents the task that progressbar listens.
 	 */
 	private void progressPage(Task task) {
@@ -180,7 +183,7 @@ public class Gui extends Application {
 
 	/**
 	 * Creates a window that contains a slider to set the amount of images to be read,
-	 *  slider to set the learning rate and buttons to start training.
+	 *  slider to set the learning rate and button to start training.
 	 */
 	private void trainingPage() {
 		Label labelP = new Label("How many images?");
@@ -237,7 +240,7 @@ public class Gui extends Application {
 
 	/**
 	 * Creates a window on which the predictions are shown.
-	 * Adds buttons "right" and "wrong" to tell the system whether its guess was right or wrong.
+	 * Adds buttons "right" and "wrong" to let the user tell the system whether its guess was right or wrong.
 	 * Shows the drawn image.
 	 */
 	private void predictionsPage() {
@@ -267,17 +270,17 @@ public class Gui extends Application {
         predictionWindow.setY(startWindow.getY());
         predictionWindow.setScene(new Scene(root));
         predictionWindow.show();
-//       right.setOnAction(new EventHandler<ActionEvent>() {
-//	         @Override
-//	         public void handle(ActionEvent event) {
-//	        	predictionWindow.close();
-//	        	canvas.clearScreen();
-//		    }
-//		});
+        right.setOnAction(new EventHandler<ActionEvent>() {
+	         @Override
+	         public void handle(ActionEvent event) {
+	        	predictionWindow.close();
+		    }
+		});
 		wrong.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
 	        	 correctPage();
+	        	 predictionWindow.close();
 	         }
 		});
 	}
@@ -326,7 +329,7 @@ public class Gui extends Application {
 
 	/**
 	 * Shows the predictions that it gets as a parameter in vbox.
-	 * @param predictions is a double array that includes the predictions for each number(0-9).
+	 * @param predictions is a double array that includes the prediction for each number(0-9).
 	 * @return vbox that includes the predictions as text nodes.
 	 */
 	private VBox showPredictions(double[] predictions) {
