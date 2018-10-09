@@ -22,7 +22,7 @@ public class ControllerImpl implements Controller {
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
-	private final int[] NETWORK_LAYER_SIZES = {784, 16, 16, 10};
+	private final int[] NETWORK_LAYER_SIZES = {784, 288, 48, 10};
 	private double learningRate = 1;
 
 	public ControllerImpl(Gui gui) {

@@ -57,6 +57,81 @@ public class Gui extends Application {
 		launch(args);
 	}
 
+	/**
+	 * Creates window for the canvas that user can draw on.
+	 * Creates buttons for submitting the answer, clearing the canvas, loading the data and 
+	 * training, reseting and saving the network and event handlers of the buttons.
+	 * @param primaryStage is the stage that opens when the program starts.
+	 */
+	private void startPage(Stage primaryStage) {
+		Group root  = new Group();
+		BorderPane borderPane = new BorderPane();
+		HBox hBox1 = new HBox();
+		HBox hBox2 = new HBox();
+		HBox hBox3 = new HBox();
+		borderPane.setCenter(canvas);
+		Button clear = new Button("Clear screen");
+		Button submit = new Button("Submit");
+		Button train = new Button("Train network");
+		Button load = new Button("Load data from database");
+		Button save = new Button("Save session");
+		Button reset = new Button("Reset network");
+		hBox1.getChildren().addAll(clear, submit);
+		hBox2.getChildren().addAll(load, train);
+		hBox3.getChildren().addAll(save, reset);
+		VBox vBox = new VBox();
+		vBox.getChildren().addAll(hBox1, hBox2, hBox3);
+		borderPane.setBottom(vBox);
+		root.getChildren().add(borderPane);
+		canvas.draw();
+		clear.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	canvas.clearScreen();
+            }
+        });
+		reset.setOnAction(new EventHandler<ActionEvent>() {
+			 @Override
+	         public void handle(ActionEvent event) {
+	        	 controller.resetNetwork();
+		    }
+		});
+		submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	predictionsPage();
+            	canvas.clearScreen();
+            }
+        });
+		train.setOnAction(new EventHandler<ActionEvent>() {
+	         @Override
+	         public void handle(ActionEvent event) {
+	        	 trainingPage();
+		    }
+		});
+		load.setOnAction(new EventHandler<ActionEvent>() {
+	         @Override
+	         public void handle(ActionEvent event) {
+	        	 controller.saveNetwork();
+		    }
+		});
+		save.setOnAction(new EventHandler<ActionEvent>() {
+	         @Override
+	         public void handle(ActionEvent event) {
+	        	 controller.loadNetwork();
+		    }
+		});
+
+		primaryStage.setTitle("NeuroCanvas");
+		primaryStage.setScene(new Scene(root));
+		primaryStage.show();
+	}
+
+	/**
+	 * Creates a window for a progressbar that shows the progress of the task given as parameter.
+	 * Starts the task and adds a button for canceling the started progress.
+	 * @param task represents the task that progressbar listens.
+	 */
 	private void progressPage(Task task) {
 		Group root = new Group();
 		Scene scene = new Scene(root);
@@ -97,14 +172,18 @@ public class Gui extends Application {
                 progressWindow.close();
             }
         });
+        scene.setRoot(vBox);
         progressWindow.setScene(scene);
         progressWindow.setTitle("Progress Control");
-        scene.setRoot(vBox);
         progressWindow.show();
 	}
 
+	/**
+	 * Creates a window that contains a slider to set the amount of images to be read,
+	 *  slider to set the learning rate and buttons to start training.
+	 */
 	private void trainingPage() {
-		Label labelP = new Label("How many pictures?");
+		Label labelP = new Label("How many images?");
 		Slider sliderP = new Slider();
 	    sliderP.setMin(0);
 	    sliderP.setMax(60000);
@@ -115,17 +194,16 @@ public class Gui extends Application {
 	    sliderLR.setMax(1);
 	    sliderLR.setValue(0.1);
 	    Label valueLR = new Label(Double.toString(sliderLR.getValue()));
-        Button train = new Button("Train");
-        Button back = new Button("Back");
-        Button reset = new Button("Reset");
+        Button train = new Button("Start training");
+        //Button back = new Button("Back");
 
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(10));
         vBox.setSpacing(5);
         vBox.getChildren().addAll(labelP, sliderP, valueP, labelLR, sliderLR, valueLR);
-        vBox.getChildren().addAll(train, reset, back);
+        vBox.getChildren().addAll(train);
 
-        Scene scene = new Scene(vBox, 200, 300);
+        Scene scene = new Scene(vBox);
         scene.setRoot(vBox);
         trainingWindow.setScene(scene);
         trainingWindow.setTitle("Training");
@@ -142,20 +220,6 @@ public class Gui extends Application {
 	         }
 	    });
 
-		back.setOnAction(new EventHandler<ActionEvent>() {
-			 @Override
-	         public void handle(ActionEvent event) {
-	        	 trainingWindow.close();
-		    }
-		});
-
-		reset.setOnAction(new EventHandler<ActionEvent>() {
-			 @Override
-	         public void handle(ActionEvent event) {
-	        	 controller.resetNetwork();
-		    }
-		});
-
 		sliderP.valueProperty().addListener(new ChangeListener<Number>() {
            @Override
            public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
@@ -171,51 +235,19 @@ public class Gui extends Application {
 	    });
 	}
 
-	private void startPage(Stage primaryStage) {
-		Group root  = new Group();
-		BorderPane borderPane = new BorderPane();
-		HBox buttonPane = new HBox();
-		borderPane.setCenter(canvas);
-		Button clear = new Button("Clear");
-		Button submit = new Button("Submit");
-		Button train = new Button("Train neural network");
-		buttonPane.getChildren().addAll(clear, submit, train);
-		borderPane.setBottom(buttonPane);
-		root.getChildren().add(borderPane);
-		canvas.draw();
-		clear.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-            	canvas.clearScreen();
-            }
-        });
-		submit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-            	predictionsPage(canvas.takeSnapShot());
-            	canvas.clearScreen();
-            }
-        });
-		train.setOnAction(new EventHandler<ActionEvent>() {
-	         @Override
-	         public void handle(ActionEvent event) {
-	        	 trainingPage();
-		    }
-		});
-
-		primaryStage.setTitle("NeuroCanvas");
-		primaryStage.setScene(new Scene(root));
-		primaryStage.show();
-	}
-
-	private void predictionsPage(WritableImage image) {
+	/**
+	 * Creates a window on which the predictions are shown.
+	 * Adds buttons "right" and "wrong" to tell the system whether its guess was right or wrong.
+	 * Shows the drawn image.
+	 */
+	private void predictionsPage() {
 		Button right = new Button("Right");
 		Button wrong = new Button("Wrong");
 		HBox buttonPane = new HBox();
 		buttonPane.getChildren().addAll(right, wrong);
 		Group root = new Group();
 		NeuroCanvas imageCanvas = new NeuroCanvas(280, 280);
-		imageCanvas.showImage(image);
+		imageCanvas.showImage(canvas.takeSnapShot());
     	BorderPane borderPane = new BorderPane();
     	borderPane.setCenter(imageCanvas);
         borderPane.setBottom(buttonPane);
@@ -235,13 +267,13 @@ public class Gui extends Application {
         predictionWindow.setY(startWindow.getY());
         predictionWindow.setScene(new Scene(root));
         predictionWindow.show();
-        right.setOnAction(new EventHandler<ActionEvent>() {
-	         @Override
-	         public void handle(ActionEvent event) {
-	        	predictionWindow.close();
-	        	canvas.clearScreen();
-		    }
-		});
+//       right.setOnAction(new EventHandler<ActionEvent>() {
+//	         @Override
+//	         public void handle(ActionEvent event) {
+//	        	predictionWindow.close();
+//	        	canvas.clearScreen();
+//		    }
+//		});
 		wrong.setOnAction(new EventHandler<ActionEvent>() {
 	         @Override
 	         public void handle(ActionEvent event) {
@@ -250,6 +282,9 @@ public class Gui extends Application {
 		});
 	}
 
+	/**
+	 * Creates a window, on which the user can tell the right number by radio buttons.
+	 */
 	private void correctPage() {
 		Group root  = new Group();
 		String[] values = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "None"};
@@ -280,7 +315,7 @@ public class Gui extends Application {
 	        	 int toggleGroupValue = Integer.parseInt(selectedRadioButton.getText());
 	        	 System.out.println(toggleGroupValue);
 	        	 correctWindow.close();
-	        	 predictionWindow.close();
+	        	 //predictionWindow.close();
 		    }
 		});
 
@@ -289,7 +324,11 @@ public class Gui extends Application {
        correctWindow.show();
     }
 
-
+	/**
+	 * Shows the predictions that it gets as a parameter in vbox.
+	 * @param predictions is a double array that includes the predictions for each number(0-9).
+	 * @return vbox that includes the predictions as text nodes.
+	 */
 	private VBox showPredictions(double[] predictions) {
 		VBox vBox = new VBox();
     	double max = max(predictions);
@@ -309,6 +348,11 @@ public class Gui extends Application {
     	return vBox;
 	}
 
+	/**
+	 * Finds the max value of an array.
+	 * @param arr is the array, which max value is searched
+	 * @return max value of an array
+	 */
 	private double max(double[] arr) {
         int i;
         double max = arr[0];
