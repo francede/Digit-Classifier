@@ -23,7 +23,7 @@ public class ControllerImpl implements Controller {
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
 
-	private int[] network_layer_sizes = {784, 320, 48, 10};
+	private int[] network_layer_sizes = {784, 288, 48, 10};
 
 	private double learningRate = 1;
 
@@ -46,6 +46,7 @@ public class ControllerImpl implements Controller {
 		return predictions;
 	}
 
+	@Override
 	public double[] makePrediction(InputData inputData) {
 		double[] predictions = null;
 		Matrix matrix = neuralNetwork.makePrediction(inputData);
@@ -53,13 +54,18 @@ public class ControllerImpl implements Controller {
 		return predictions;
 	}
 
+	/**
+	 * Prints the pixel values to the console from the file and from the drawn image (range: 0-1).
+	 * Useful if you want to compare the actual pixel values.
+	 * @param inputData
+	 */
 	private void printPixelsOfOneImage(InputData inputData) {
 		InputData singleImage = IDXImageFileReader.getSingleImageAsPixels();
 		System.out.println("Pixels of image from file:");
 		for (double pixel : singleImage.getInput()) {
 			System.out.println(pixel);
 		}
-		System.out.println("Pixels of image from drawn number:");
+		System.out.println("Pixels of the drawn image:");
 		for (double pixel : inputData.getInput()) {
 			System.out.println(pixel);
 		}
@@ -141,6 +147,7 @@ public class ControllerImpl implements Controller {
 
 	@Override
 	public void saveNetwork() {
+		DAOController.deleteAllDataInDatabase();
 		Matrix[] weights = neuralNetwork.getWeights();
 		Matrix[] biases = neuralNetwork.getBiases();
 		DAOController.putWeightsToDatabase(weights);
@@ -151,7 +158,7 @@ public class ControllerImpl implements Controller {
 	public void loadNetwork() {
 		Matrix[] weights = null;
 		Matrix[] biases = null;
-		weights = DAOController.getWeightsFromDatabase();
+		weights = DAOController.getWeightsFromDatabase(this.network_layer_sizes);
 		biases = DAOController.getBiasesFromDatabase();
 		neuralNetwork.setWeights(weights);
 		neuralNetwork.setBiases(biases);

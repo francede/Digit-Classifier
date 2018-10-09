@@ -59,10 +59,13 @@ public class NeuralNetworkImpl implements NeuralNetwork{
 	 * Sets the weights of the network
 	 */
 	public void setWeights(Matrix[] weights){
-		if(this.weights.length != weights.length) throw new MatrixException("weights[] length must match.");
+		if(this.weights.length != weights.length) {
+			throw new MatrixException("weights[] length must match.");
+		}
 		for(int i = 0; i < this.weights.length; i++){
 			if(weights[i].getCols() == this.weights[i].getCols() && weights[i].getRows() == this.weights[i].getRows()){
 				this.weights[i] = Matrix.clone(weights[i]);
+				
 			}else{
 				throw new MatrixException("Weights' (index: " + i + ") matrices' dimensions must match.");
 			}

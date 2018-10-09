@@ -62,7 +62,8 @@ public class DAOControllerImplTest {
 
 	@Test
 	public void testBiasValidity() {
-		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(new int[] { 784, 8, 10 });
+		int[] network_layer_sizes = new int[] { 10, 8, 10 };
+		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
 		neuralNetwork.reset();
 		Matrix[] biasesFromNeuralNetwork = neuralNetwork.getBiases();
 		DAOController.putBiasesToDatabase(biasesFromNeuralNetwork);
@@ -71,46 +72,55 @@ public class DAOControllerImplTest {
 			fail("Bias matrix from database is null");
 		}
 		for (int i = 0; i < biasesFromNeuralNetwork.length; i++) {
-			double[] layerFromNeuralNetwork = Matrix.matrixToArray(biasesFromNeuralNetwork[i]);
-			double[] layerFromDatabase = Matrix.matrixToArray(biasesFromDatabase[i]);
-			for (int j = 0; j < layerFromNeuralNetwork.length; j++) {
-				assertEquals(layerFromNeuralNetwork[j], layerFromDatabase[j], 0.001);
+			assertEquals(biasesFromNeuralNetwork[i].getCols(), biasesFromDatabase[i].getCols());
+			assertEquals(biasesFromNeuralNetwork[i].getRows(), biasesFromDatabase[i].getRows());
+			for (int j = 0; j < biasesFromNeuralNetwork[i].getCols(); j++) {
+				for (int k = 0; k < biasesFromNeuralNetwork[i].getRows(); k++) {
+					double[][] biases1 = biasesFromNeuralNetwork[i].getData();
+					double[][] biases2 = biasesFromDatabase[i].getData();
+					assertEquals(biases1[k][j], biases2[k][j], 0.001);
+				}
 			}
 		}
 	}
 
 	@Test
 	public void testWeightValidity() {
-		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(new int[] { 784, 8, 10 });
+		int[] network_layer_sizes = new int[] { 10, 8, 10 };
+		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
 		neuralNetwork.reset();
 		Matrix[] weightsFromNeuralNetwork = neuralNetwork.getWeights();
 		DAOController.putWeightsToDatabase(weightsFromNeuralNetwork);
-		Matrix[] weightsFromDatabase = DAOController.getWeightsFromDatabase();
+		Matrix[] weightsFromDatabase = DAOController.getWeightsFromDatabase(network_layer_sizes);
 		if (weightsFromDatabase == null) {
 			fail("Weights matrix from database is null");
 		}
 		for (int i = 0; i < weightsFromNeuralNetwork.length; i++) {
-			double[] synapseFromNeuralNetwork = Matrix.matrixToArray(weightsFromNeuralNetwork[i]);
-			double[] synapseFromDatabase = Matrix.matrixToArray(weightsFromDatabase[i]);
-			for (int j = 0; j < synapseFromNeuralNetwork.length; j++) {
-				assertEquals(synapseFromNeuralNetwork[j], synapseFromDatabase[j], 0.001);
+			assertEquals(weightsFromNeuralNetwork[i].getCols(), weightsFromDatabase[i].getCols());
+			assertEquals(weightsFromNeuralNetwork[i].getRows(), weightsFromDatabase[i].getRows());
+			for (int j = 0; j < weightsFromNeuralNetwork[i].getCols(); j++) {
+				for (int k = 0; k < weightsFromNeuralNetwork[i].getRows(); k++) {
+					double[][] weights1 = weightsFromNeuralNetwork[i].getData();
+					double[][] weights2 = weightsFromDatabase[i].getData();
+					assertEquals(weights1[k][j], weights2[k][j], 0.001);
+				}
 			}
 		}
 	}
-	
-	@Ignore
+
 	@Test
 	public void testDeleteAllDataFromDatabase() {
-		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(new int[] { 10, 8, 10 });
+		int[] network_layer_sizes = { 10, 8, 10 };
+		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
 		neuralNetwork.reset();
 		Matrix[] weightsFromNeuralNetwork = neuralNetwork.getWeights();
 		DAOController.putWeightsToDatabase(weightsFromNeuralNetwork);
 		Matrix[] biasesFromNeuralNetwork = neuralNetwork.getBiases();
 		DAOController.putBiasesToDatabase(biasesFromNeuralNetwork);
 		DAOController.deleteAllDataInDatabase();
-		Matrix[] weightsFromDatabase = DAOController.getWeightsFromDatabase();
-		assertEquals(0, weightsFromDatabase[0].getRows());
+		Matrix[] weightsFromDatabase = DAOController.getWeightsFromDatabase(network_layer_sizes);
+		assertEquals(0, weightsFromDatabase.length);
 		Matrix[] biasesFromDatabase = DAOController.getBiasesFromDatabase();
-		assertEquals(0, biasesFromDatabase[0].getRows());
+		assertEquals(0, biasesFromDatabase.length);
 	}
 }

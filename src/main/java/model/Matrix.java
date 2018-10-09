@@ -40,7 +40,8 @@ public class Matrix {
     	Random r = new Random();
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
-    			data[i][j] = r.nextDouble() * (max-min) - min;
+    			data[i][j] = r.nextGaussian();
+//    			data[i][j] = r.nextDouble() * (max-min) - min;
     		}
     	}
     }
@@ -110,6 +111,19 @@ public class Matrix {
     	Matrix result = new Matrix(array.length, 1);
     	for(int i = 0; i < array.length; i++){
     		result.data[i][0] = array[i];
+    	}
+    	return result;
+    }
+
+    public static Matrix arrayToMatrix(double[] array, int rows, int cols){
+    	Matrix result = new Matrix(rows, cols);
+    	if(rows * cols != array.length) {
+    		throw new MatrixException("Rows * Cols must equal the array's length");
+    	}
+    	for(int row = 0; row < rows; row++){
+    		for(int col = 0; col < cols; col++){
+    			result.data[row][col] = array[col + cols*row];
+    		}
     	}
     	return result;
     }

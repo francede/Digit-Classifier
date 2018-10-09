@@ -34,11 +34,11 @@ public class DAOControllerImpl implements DAOController {
 
 
 	@Override
-	public Matrix[] getWeightsFromDatabase() {
+	public Matrix[] getWeightsFromDatabase(int[] layer_sizes) {
 		ArrayList<double[]> weightsArrayList= nodeAndSynapseAccessObject.getAllWeightsfromBD();
 		Matrix[] weightsMatrixArray = new Matrix[weightsArrayList.size()];
 		for (int i = 0; i < weightsArrayList.size(); i++) {
-			Matrix weightsMatrix = Matrix.arrayToMatrix(weightsArrayList.get(i));
+			Matrix weightsMatrix = Matrix.arrayToMatrix(weightsArrayList.get(i), layer_sizes[i+1], layer_sizes[i]);
 			weightsMatrixArray[i] = weightsMatrix;
 		}
 		return weightsMatrixArray;

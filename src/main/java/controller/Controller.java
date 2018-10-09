@@ -3,16 +3,24 @@ package controller;
 import java.util.ArrayList;
 
 import javafx.concurrent.Task;
+import model.InputData;
 
 public interface Controller {
 
 	/**
-	 * Gives the network a number to make a prediction of and returns it's guess.
+	 * Gives the network an image as pixels to make a prediction of and returns it's guess.
 	 *
 	 * @param imageAsPixels must contain the pixel values (0 = white, 255 = black) of a grayscale 28x28 image arranged row-wise.
 	 * @return predictions as probabilities for each number 0-9.
 	 */
 	public double[] makePrediction(double[] ImageAsPixels);
+	
+	/**
+	 * Gives the network an inputdata object to make a prediction of and returns it's guess.
+	 *
+	 * @return predictions as probabilities for each number 0-9.
+	 */
+	public double[] makePrediction(InputData inputData);
 
 	/**
 	 * Reads the training set, trains the network with them and
