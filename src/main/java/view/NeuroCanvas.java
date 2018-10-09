@@ -21,8 +21,8 @@ import javafx.embed.swing.SwingFXUtils;
 public class NeuroCanvas extends Canvas {
 
 	private GraphicsContext gc;
-	private final double INSIDEIMGSIZE = 20;
-	private final double BACKGROUDIMGSIZE = 28;
+	//private final double insideImgSize = 20;
+	//private final double backGroundImgSize = 28;
 
 	/**
 	 * Constructor that sets the graphics context for the canvas and the drawing properties.
@@ -87,7 +87,7 @@ public class NeuroCanvas extends Canvas {
 	 * Takes a snapshot of canvas and returns the image.
 	 * @return image drawn on canvas as buffered image.
 	 */
-	private BufferedImage canvasToBimg() {
+	public BufferedImage canvasToBimg() {
 		BufferedImage bimg = new BufferedImage((int)this.getWidth(), (int)this.getHeight(), BufferedImage.TYPE_INT_RGB);
 		WritableImage wimg = this.takeSnapShot();
 		Image img = SwingFXUtils.fromFXImage(wimg, null);
@@ -111,7 +111,7 @@ public class NeuroCanvas extends Canvas {
 	 * @param image represents a buffered image to be cropped
 	 * @return a buffered image that has been cropped so that the white borders has been cut off
 	 */
-	private BufferedImage crop(BufferedImage image) {
+	public BufferedImage crop(BufferedImage image) {
 		int yMin = yMin(image);
 		int xMin = xMin(image);
 		int yMax = yMax(image);
@@ -128,24 +128,24 @@ public class NeuroCanvas extends Canvas {
 	 * @param sourceImg represents the image to be scaled and centered.
 	 * @return certain size of image set on a certain size of white background.
 	 */
-	private BufferedImage scale(BufferedImage sourceImg) {
+	public BufferedImage scale(BufferedImage sourceImg, double insideImgSize, double backGroundImgSize) {
 		double height;
 		double width;
 		if (sourceImg.getWidth() <= sourceImg.getHeight()) {
-			double scale = INSIDEIMGSIZE / sourceImg.getHeight();
-			height = INSIDEIMGSIZE;
+			double scale = insideImgSize / sourceImg.getHeight();
+			height = insideImgSize;
 			width = sourceImg.getWidth() * scale;
 		} else {
-			double scale = INSIDEIMGSIZE / sourceImg.getWidth();
+			double scale = insideImgSize / sourceImg.getWidth();
 			height = sourceImg.getHeight() * scale;
-			width = INSIDEIMGSIZE;
+			width = insideImgSize;
 		}
-		double dx = (BACKGROUDIMGSIZE - width) / 2;
-		double dy = (BACKGROUDIMGSIZE - height) / 2;
-		BufferedImage newImage = new BufferedImage((int) BACKGROUDIMGSIZE, (int) BACKGROUDIMGSIZE, BufferedImage.TYPE_INT_RGB);
+		double dx = (backGroundImgSize - width) / 2;
+		double dy = (backGroundImgSize - height) / 2;
+		BufferedImage newImage = new BufferedImage((int) backGroundImgSize, (int) backGroundImgSize, BufferedImage.TYPE_INT_RGB);
 		Graphics graphics = newImage.getGraphics();
 		graphics.setColor(java.awt.Color.WHITE);
-		graphics.fillRect(0, 0, (int) BACKGROUDIMGSIZE, (int) BACKGROUDIMGSIZE);
+		graphics.fillRect(0, 0, (int) backGroundImgSize, (int) backGroundImgSize);
 		graphics.drawImage(sourceImg, (int) dx, (int) dy, (int) width, (int) height, null);
 		graphics.dispose();
 		return newImage;
@@ -169,18 +169,24 @@ public class NeuroCanvas extends Canvas {
 		return wimg;
 	}
 
-//	public WritableImage writePixels(int[] pixelarray) {
-//		WritableImage wimg = new WritableImage(28, 28);
-//		PixelWriter pixelWriter = wimg.getPixelWriter();
-//		int k = 0;
-//		for (int y = 0; y < 28; y++) {
-//			for (int x = 0; x < 28; x++) {
-//				pixelWriter.setArgb(x, y, pixelarray[k]);
-//				k++;
-//			}
-//		}
-//		return wimg;
-//	}
+	/**
+	 * Writes an image from pixelarray.
+	 * @param pixelarray must be an array of colorpixels arranged row-wise
+	 * @param size is the width of the original image
+	 * @return writableimage made of the pixelarray.
+	 */
+	public WritableImage writePixels(int[] pixelarray, int size) {
+		WritableImage wimg = new WritableImage(size, size);
+		PixelWriter pixelWriter = wimg.getPixelWriter();
+		int k = 0;
+		for (int y = 0; y < size; y++) {
+			for (int x = 0; x < size; x++) {
+				pixelWriter.setArgb(x, y, pixelarray[k]);
+				k++;
+			}
+		}
+		return wimg;
+	}
 
 	/**
 	 * Finds out the colors of pixels of an image.
@@ -188,7 +194,7 @@ public class NeuroCanvas extends Canvas {
 	 * @return an array of integer pixels in the default RGB color model (TYPE_INT_ARGB)
 	 *  and default sRGB color space from the image data. The pixel colors are arranged row-wise.
 	 */
-	private int[] getImagePixels(BufferedImage image) {
+	public int[] getImagePixels(BufferedImage image) {
 		int [] RGBArray = new int[image.getWidth()*image.getHeight()];
 		RGBArray = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
 		return RGBArray;
@@ -202,7 +208,7 @@ public class NeuroCanvas extends Canvas {
 	 *
 	 */
 	public double[] getPixels() {
-		int [] tempArray = getImagePixels(scale(crop(canvasToBimg())));
+		int [] tempArray = getImagePixels(scale((crop(canvasToBimg())), 20, 28));
 		double[] rgbArray = new double[tempArray.length];
 		for (int i = 0; i < rgbArray.length; i++) {
 			rgbArray[i] = 255 - getRGBblue(tempArray[i]);

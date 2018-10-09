@@ -3,6 +3,7 @@ package view;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import java.awt.image.BufferedImage;
 import controller.Controller;
 import controller.ControllerImpl;
 import javafx.application.Application;
@@ -241,7 +242,7 @@ public class Gui extends Application {
 	/**
 	 * Creates a window on which the predictions are shown.
 	 * Adds buttons "right" and "wrong" to let the user tell the system whether its guess was right or wrong.
-	 * Shows the drawn image.
+	 * Shows the drawn image to be delivered to controller.
 	 */
 	private void predictionsPage() {
 		Button right = new Button("Right");
@@ -250,8 +251,10 @@ public class Gui extends Application {
 		buttonPane.getChildren().addAll(right, wrong);
 		Group root = new Group();
 		NeuroCanvas imageCanvas = new NeuroCanvas(280, 280);
-		imageCanvas.showImage(canvas.takeSnapShot());
-    	BorderPane borderPane = new BorderPane();
+		//imageCanvas.showImage(canvas.takeSnapShot());
+		BufferedImage scaledImage = canvas.scale((canvas.crop(canvas.canvasToBimg())), 200, 280);
+		imageCanvas.showImage(canvas.writePixels((canvas.getImagePixels(scaledImage)), 280));
+		BorderPane borderPane = new BorderPane();
     	borderPane.setCenter(imageCanvas);
         borderPane.setBottom(buttonPane);
     	VBox predictions = showPredictions(controller.makePrediction(canvas.getPixels()));

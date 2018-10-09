@@ -23,7 +23,7 @@ public class ControllerImpl implements Controller {
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
 
-	private int[] network_layer_sizes = {784, 16, 16, 10};
+	private int[] network_layer_sizes = {784, 320, 48, 10};
 
 	private double learningRate = 1;
 
