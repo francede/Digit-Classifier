@@ -1,0 +1,354 @@
+Fetching images done. Took 197.70987538600002 seconds.
+
+Layersizes: 2 2
+amountOfPredictionsThatGotRight: 28982/100000 (28.98 %)
+
+Took 65.78 seconds
+
+Layersizes: 2 4
+amountOfPredictionsThatGotRight: 30113/100000 (30.11 %)
+
+Took 66.63 seconds
+
+Layersizes: 2 8
+amountOfPredictionsThatGotRight: 35260/100000 (35.26 %)
+
+Took 68.82 seconds
+
+Layersizes: 2 16
+amountOfPredictionsThatGotRight: 32317/100000 (32.32 %)
+
+Took 73.62 seconds
+
+Layersizes: 2 32
+amountOfPredictionsThatGotRight: 31803/100000 (31.80 %)
+
+Took 83.44 seconds
+
+Layersizes: 2 64
+amountOfPredictionsThatGotRight: 27626/100000 (27.63 %)
+
+Took 105.77 seconds
+
+Layersizes: 2 128
+amountOfPredictionsThatGotRight: 22310/100000 (22.31 %)
+
+Took 143.51 seconds
+
+Layersizes: 2 256
+amountOfPredictionsThatGotRight: 19373/100000 (19.37 %)
+
+Took 222.05 seconds
+
+Layersizes: 4 2
+amountOfPredictionsThatGotRight: 32928/100000 (32.93 %)
+
+Took 91.43 seconds
+
+Layersizes: 4 4
+amountOfPredictionsThatGotRight: 53405/100000 (53.41 %)
+
+Took 86.60 seconds
+
+Layersizes: 4 8
+amountOfPredictionsThatGotRight: 50775/100000 (50.78 %)
+
+Took 94.93 seconds
+
+Layersizes: 4 16
+amountOfPredictionsThatGotRight: 55822/100000 (55.82 %)
+
+Took 96.83 seconds
+
+Layersizes: 4 32
+amountOfPredictionsThatGotRight: 55477/100000 (55.48 %)
+
+Took 110.23 seconds
+
+Layersizes: 4 64
+amountOfPredictionsThatGotRight: 53422/100000 (53.42 %)
+
+Took 130.14 seconds
+
+Layersizes: 4 128
+amountOfPredictionsThatGotRight: 37433/100000 (37.43 %)
+
+Took 169.48 seconds
+
+Layersizes: 4 256
+amountOfPredictionsThatGotRight: 33333/100000 (33.33 %)
+
+Took 252.91 seconds
+
+Layersizes: 8 2
+amountOfPredictionsThatGotRight: 41704/100000 (41.70 %)
+
+Took 115.58 seconds
+
+Layersizes: 8 4
+amountOfPredictionsThatGotRight: 67883/100000 (67.88 %)
+
+Took 116.31 seconds
+
+Layersizes: 8 8
+amountOfPredictionsThatGotRight: 77502/100000 (77.50 %)
+
+Took 112.44 seconds
+
+Layersizes: 8 16
+amountOfPredictionsThatGotRight: 80851/100000 (80.85 %)
+
+Took 122.16 seconds
+
+Layersizes: 8 32
+amountOfPredictionsThatGotRight: 78436/100000 (78.44 %)
+
+Took 134.56 seconds
+
+Layersizes: 8 64
+amountOfPredictionsThatGotRight: 77141/100000 (77.14 %)
+
+Took 157.82 seconds
+
+Layersizes: 8 128
+amountOfPredictionsThatGotRight: 72911/100000 (72.91 %)
+
+Took 202.68 seconds
+
+Layersizes: 8 256
+amountOfPredictionsThatGotRight: 45533/100000 (45.53 %)
+
+Took 291.25 seconds
+
+Layersizes: 16 2
+amountOfPredictionsThatGotRight: 42235/100000 (42.24 %)
+
+Took 159.27 seconds
+
+Layersizes: 16 4
+amountOfPredictionsThatGotRight: 71810/100000 (71.81 %)
+
+Took 161.37 seconds
+
+Layersizes: 16 8
+amountOfPredictionsThatGotRight: 86371/100000 (86.37 %)
+
+Took 164.88 seconds
+
+Layersizes: 16 16
+amountOfPredictionsThatGotRight: 87546/100000 (87.55 %)
+
+Took 173.73 seconds
+
+Layersizes: 16 32
+amountOfPredictionsThatGotRight: 87996/100000 (88.00 %)
+
+Took 180.81 seconds
+
+Layersizes: 16 64
+amountOfPredictionsThatGotRight: 87587/100000 (87.59 %)
+
+Took 207.76 seconds
+
+Layersizes: 16 128
+amountOfPredictionsThatGotRight: 81863/100000 (81.86 %)
+
+Took 252.97 seconds
+
+Layersizes: 16 256
+amountOfPredictionsThatGotRight: 79062/100000 (79.06 %)
+
+Took 362.08 seconds
+
+Layersizes: 32 2
+amountOfPredictionsThatGotRight: 43316/100000 (43.32 %)
+
+Took 254.89 seconds
+
+Layersizes: 32 4
+amountOfPredictionsThatGotRight: 77787/100000 (77.79 %)
+
+Took 253.93 seconds
+
+Layersizes: 32 8
+amountOfPredictionsThatGotRight: 89405/100000 (89.41 %)
+
+Took 254.62 seconds
+
+Layersizes: 32 16
+amountOfPredictionsThatGotRight: 90438/100000 (90.44 %)
+
+Took 261.06 seconds
+
+Layersizes: 32 32
+amountOfPredictionsThatGotRight: 90715/100000 (90.72 %)
+
+Took 278.06 seconds
+
+Layersizes: 32 64
+amountOfPredictionsThatGotRight: 90042/100000 (90.04 %)
+
+Took 304.74 seconds
+
+Layersizes: 32 128
+amountOfPredictionsThatGotRight: 88078/100000 (88.08 %)
+
+Took 361.33 seconds
+
+Layersizes: 32 256
+amountOfPredictionsThatGotRight: 85812/100000 (85.81 %)
+
+Took 484.55 seconds
+
+Layersizes: 64 2
+amountOfPredictionsThatGotRight: 35246/100000 (35.25 %)
+
+Took 427.86 seconds
+
+Layersizes: 64 4
+amountOfPredictionsThatGotRight: 79304/100000 (79.30 %)
+
+Took 430.26 seconds
+
+Layersizes: 64 8
+amountOfPredictionsThatGotRight: 90849/100000 (90.85 %)
+
+Took 432.22 seconds
+
+Layersizes: 64 16
+amountOfPredictionsThatGotRight: 92014/100000 (92.01 %)
+
+Took 444.27 seconds
+
+Layersizes: 64 32
+amountOfPredictionsThatGotRight: 92046/100000 (92.05 %)
+
+Took 465.49 seconds
+
+Layersizes: 64 64
+amountOfPredictionsThatGotRight: 91308/100000 (91.31 %)
+
+Took 501.73 seconds
+
+Layersizes: 64 128
+amountOfPredictionsThatGotRight: 90284/100000 (90.28 %)
+
+Took 578.29 seconds
+
+Layersizes: 64 256
+amountOfPredictionsThatGotRight: 88300/100000 (88.30 %)
+
+Took 742.14 seconds
+
+Layersizes: 128 2
+amountOfPredictionsThatGotRight: 33715/100000 (33.72 %)
+
+Took 798.48 seconds
+
+Layersizes: 128 4
+amountOfPredictionsThatGotRight: 76758/100000 (76.76 %)
+
+Took 804.31 seconds
+
+Layersizes: 128 8
+amountOfPredictionsThatGotRight: 91507/100000 (91.51 %)
+
+Took 818.83 seconds
+
+Layersizes: 128 16
+amountOfPredictionsThatGotRight: 92680/100000 (92.68 %)
+
+Took 828.60 seconds
+
+Layersizes: 128 32
+amountOfPredictionsThatGotRight: 92765/100000 (92.77 %)
+
+Took 862.27 seconds
+
+Layersizes: 128 64
+amountOfPredictionsThatGotRight: 92393/100000 (92.39 %)
+
+Took 908.01 seconds
+
+Layersizes: 128 128
+amountOfPredictionsThatGotRight: 91363/100000 (91.36 %)
+
+Took 1010.30 seconds
+
+Layersizes: 128 256
+amountOfPredictionsThatGotRight: 90002/100000 (90.00 %)
+
+Took 1224.41 seconds
+
+Layersizes: 256 2
+amountOfPredictionsThatGotRight: 33914/100000 (33.91 %)
+
+Took 1397.17 seconds
+
+Layersizes: 256 4
+amountOfPredictionsThatGotRight: 67951/100000 (67.95 %)
+
+Took 1439.92 seconds
+
+Layersizes: 256 8
+amountOfPredictionsThatGotRight: 90374/100000 (90.37 %)
+
+Took 1463.49 seconds
+
+Layersizes: 256 16
+amountOfPredictionsThatGotRight: 92831/100000 (92.83 %)
+
+Took 1489.11 seconds
+
+Layersizes: 256 32
+amountOfPredictionsThatGotRight: 93353/100000 (93.35 %)
+
+Took 1533.08 seconds
+
+Layersizes: 256 64
+amountOfPredictionsThatGotRight: 93067/100000 (93.07 %)
+
+Took 1636.40 seconds
+
+Layersizes: 256 128
+amountOfPredictionsThatGotRight: 92192/100000 (92.19 %)
+
+Took 1806.65 seconds
+
+Layersizes: 256 256
+amountOfPredictionsThatGotRight: 91425/100000 (91.43 %)
+
+Took 2230.53 seconds
+
+Analyze complete. Took 31702.626507531 seconds.
+
+Layersizes: 288 16
+amountOfPredictionsThatGotRight: 92869/100000 (92.87 %)
+
+Took 1584.60 seconds
+
+Layersizes: 288 32
+amountOfPredictionsThatGotRight: 93355/100000 (93.36 %)
+
+Took 1700.50 seconds
+
+Layersizes: 288 48
+amountOfPredictionsThatGotRight: 93401/100000 (93.40 %)
+
+Took 1839.51 seconds
+
+Layersizes: 288 64
+amountOfPredictionsThatGotRight: 92954/100000 (92.95 %)
+
+Took 1922.58 seconds
+
+Layersizes: 320 16
+amountOfPredictionsThatGotRight: 92682/100000 (92.68 %)
+
+Took 1959.62 seconds
+
+Layersizes: 320 32
+amountOfPredictionsThatGotRight: 93310/100000 (93.31 %)
+
+Took 1991.33 seconds
+

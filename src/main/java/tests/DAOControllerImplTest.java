@@ -40,8 +40,8 @@ public class DAOControllerImplTest {
 			}
 		}
 		System.out.println("TEST END: getBiasesFromNeuralNetworkAndPutThemToDataBase()");
-		DAOController.putBiasesToDatabase(biases);
-		DAOController.getBiasesFromDatabase();
+//		DAOController.putBiasesToDatabase(biases);
+//		DAOController.getBiasesFromDatabase();
 	}
 	
 	@Test

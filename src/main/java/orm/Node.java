@@ -63,6 +63,13 @@ public class Node {
 	public void setBias(double bias) {
 		this.bias = bias;
 	}
+
+	@Override
+	public String toString() {
+		return "Node [nodeId=" + nodeId + ", nodeOrdinal=" + nodeOrdinal + ", layer=" + layer + ", bias=" + bias + "]";
+	}
+	
+
 	
 	
 	

@@ -87,13 +87,9 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		InputData imageAsPixelsAndLabel = null;
 		int numberOfPixels = numberOfRows * numberOfColumns;
 		double[] pixelsOfImage = new double[numberOfPixels];
-		
 
 		try {
-			
 
-				
-			
 			// Read the pixels of the image
 			for (int p = 0; p < numberOfPixels; p++) {
 				int pixelValue = inImage.read();
@@ -102,10 +98,9 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 
 			// Read the label of the number
 			int labelValue = inLabel.read();
-			
+
 			// Assign the pixels and label to a new object
 			imageAsPixelsAndLabel = new InputDataNumberImages(pixelsOfImage, labelValue);
-			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -191,15 +186,15 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 				int label = inLabel.read();
 
 				hashMap[label]++;
-				
-				if (label == 5) {
+
+				if (label == 9 | label == 4) {
 					File outputfile = new File(outputPath + label + "_0" + hashMap[label] + ".png");
 
 					System.out.println("Created file " + outputPath + label + "_0" + hashMap[label] + ".png");
 
 					ImageIO.write(image, "png", outputfile);
 				}
-				
+
 			}
 
 		} catch (FileNotFoundException e) {
@@ -210,15 +205,20 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public InputData getTheFirstNumberFromTrainingFile() {
 		resetStream();
 		return readImageFiles();
 	}
-	
+
 	public ArrayList<InputData> getTheFirstXAmountOfNumbersFromTrainingFile(int amount) {
+		this.inputImagePath = "data/train-images/testset-images.idx3-ubyte";
+		this.inputLabelPath = "data/train-images/testset-labels.idx1-ubyte";
 		resetStream();
-		return getMultipleImagesAsPixels(amount);
+		ArrayList<InputData> multipleImagesAsPixels = getMultipleImagesAsPixels(amount);
+		this.inputImagePath = "data/train-images/train-images.idx3-ubyte";
+		this.inputLabelPath = "data/train-images/train-labels.idx1-ubyte";
+		return multipleImagesAsPixels;
 	}
 
 }

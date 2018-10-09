@@ -14,8 +14,8 @@ CREATE TABLE Node
 
 CREATE TABLE Synapse
 (
-  Weight FLOAT NOT NULL,
-  SynapseId INT NOT NULL,
+  Weight DOUBLE NOT NULL,
+  SynapseId INT NOT NULL AUTO_INCREMENT,
   Layer INT NOT NULL,
   PRIMARY KEY (SynapseId)
 );
