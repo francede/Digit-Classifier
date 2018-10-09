@@ -40,7 +40,8 @@ public class Matrix {
     	Random r = new Random();
     	for(int i = 0; i < rows; i++){
     		for(int j = 0; j < cols; j++){
-    			data[i][j] = r.nextDouble() * (max-min) - min;
+    			data[i][j] = r.nextGaussian();
+//    			data[i][j] = r.nextDouble() * (max-min) - min;
     		}
     	}
     }
