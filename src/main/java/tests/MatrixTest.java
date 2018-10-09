@@ -47,6 +47,15 @@ public class MatrixTest {
 			}
 		}
 	}
+	
+	@Test public void testArrayToMatrix() {
+		double[] inputArray = new double[]{1, 2, 3};
+		double[] outputArray;
+		Matrix input = Matrix.arrayToMatrix(inputArray);
+		outputArray = Matrix.matrixToArray(input);
+		assertEquals(inputArray[0],outputArray[0], 0.01); 
+	}
+	
 
 	@Test public void testClone(){
 		Matrix m1clone = Matrix.clone(m1);
@@ -57,3 +66,4 @@ public class MatrixTest {
 		}
 	}
 }
+

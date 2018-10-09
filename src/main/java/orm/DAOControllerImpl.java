@@ -1,6 +1,8 @@
 package orm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 import model.Matrix;
 
@@ -10,13 +12,6 @@ public class DAOControllerImpl implements DAOController {
 	
 	public DAOControllerImpl() {
 		nodeAndSynapseAccessObject = new NodeAndSynapseAccessObject();
-	}
-
-	@Override
-	public void putWeightsAndBiasesToDatabase(Matrix[] weights, Matrix[] biases) {
-		for (Matrix layer : weights) {
-			double[] weightsOfLayer = Matrix.matrixToArray(layer);
-		}
 	}
 	
 	public void putBiasesToDatabase(Matrix[] biasesAsMatrix) {
@@ -34,40 +29,37 @@ public class DAOControllerImpl implements DAOController {
 			double[] synapseAsDoubles = Matrix.matrixToArray(synapseAsMatrix);
 			weightsAsArrayList.add(synapseAsDoubles);
 		}
-		nodeAndSynapseAccessObject.createAllNodes(weightsAsArrayList);
+		nodeAndSynapseAccessObject.createAllSynapses(weightsAsArrayList);
 	}
 
 
 	@Override
 	public Matrix[] getWeightsFromDatabase() {
-//		int amountOfLayers = 2; // nodeAndSynapseObject.getAmountOfLayers();
-//		Matrix[] weightsAsMatrix = new Matrix[amountOfLayers - 1];
-//		
-//		for (int i = 0; i < amountOfLayers - 1; i++) {
-//			double[][] weights = new double[4][2];// nodeAndSynapseObject.getWeightsFrom(i, i+1)
-//			weightsAsMatrix[i] = Matrix.arrayToMatrix(weights);
-//		}
-////		int layer0Size = 2;
-////		int layer1Size = 4;
-////		double[][] weightsFrom0to1 = new double[4][2]; // [rivit], [sarakkeet]
-//		return weightsAsMatrix;
-		return null;
+		ArrayList<double[]> weightsArrayList= nodeAndSynapseAccessObject.getAllWeightsfromBD();
+		Matrix[] weightsMatrixArray = new Matrix[weightsArrayList.size()];
+		for (int i = 0; i < weightsArrayList.size(); i++) {
+			Matrix weightsMatrix = Matrix.arrayToMatrix(weightsArrayList.get(i));
+			weightsMatrixArray[i] = weightsMatrix;
+		}
+		return weightsMatrixArray;
 	}
 
 	@Override
 	public Matrix[] getBiasesFromDatabase() {
-//		int amountOfLayers = 2; 
-//		// int amountOfLayers = nodeAndSynapseObject.getAmountOfLayers();
-//		Matrix[] biasesAsMatrix = new Matrix[amountOfLayers - 1];
-//		
-//		for (int i = 0; i < amountOfLayers - 1; i++) {
-//			double[] biases = new double[2]; 
-//			// double[] biases = nodeAndSynapseObject.getBiasesOfLayer(i)
-//			biasesAsMatrix[i] = Matrix.arrayToMatrix(biases);
-//		}
-//		return biasesAsMatrix;
-		nodeAndSynapseAccessObject.getAllBiasesfromDB();
-		return null;
+		ArrayList<double[]> biasesArrayList= nodeAndSynapseAccessObject.getAllBiasesfromDB();
+		Matrix[] biasesMatrixArray = new Matrix[biasesArrayList.size()];
+		for (int i = 0; i < biasesArrayList.size(); i++) {
+			Matrix biasesMatrix = Matrix.arrayToMatrix(biasesArrayList.get(i));
+			biasesMatrixArray[i] = biasesMatrix;
+		}
+		return biasesMatrixArray;
 	}
+	
+	@Override
+	public void deleteAllDataInDatabase() {
+		nodeAndSynapseAccessObject.deleteAllDataInDatabase();
+	}
+	
+	
 
 }
