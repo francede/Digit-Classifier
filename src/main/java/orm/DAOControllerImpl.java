@@ -13,13 +13,6 @@ public class DAOControllerImpl implements DAOController {
 	public DAOControllerImpl() {
 		nodeAndSynapseAccessObject = new NodeAndSynapseAccessObject();
 	}
-
-	@Override
-	public void putWeightsAndBiasesToDatabase(Matrix[] weights, Matrix[] biases) {
-		for (Matrix layer : weights) {
-			double[] weightsOfLayer = Matrix.matrixToArray(layer);
-		}
-	}
 	
 	public void putBiasesToDatabase(Matrix[] biasesAsMatrix) {
 		ArrayList<double[]> biasesAsArrayList = new ArrayList<>();
@@ -61,5 +54,12 @@ public class DAOControllerImpl implements DAOController {
 		}
 		return biasesMatrixArray;
 	}
+	
+	@Override
+	public void deleteAllDataInDatabase() {
+		nodeAndSynapseAccessObject.deleteAllDataInDatabase();
+	}
+	
+	
 
 }

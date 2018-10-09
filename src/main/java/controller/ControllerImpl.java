@@ -139,20 +139,20 @@ public class ControllerImpl implements Controller {
 
 	@Override
 	public void saveNetwork() {
-//		Matrix[] weights = neuralNetwork.getWeights();
-//		Matrix[] biases = neuralNetwork.getBiases();
-//		DAOController.putWeightsAndBiasesToDatabase(weights, biases);
+		Matrix[] weights = neuralNetwork.getWeights();
+		Matrix[] biases = neuralNetwork.getBiases();
+		DAOController.putWeightsToDatabase(weights);
+		DAOController.putBiasesToDatabase(biases);
 	}
 
 	@Override
 	public void loadNetwork() {
 		Matrix[] weights = null;
 		Matrix[] biases = null;
-//		weights = DAOController.getWeightsFromDatabase
-//		biases = DAOController.getBiasesFromDatabase
-//		neuralNetwork.setWeights(weights);
-//		neuralNetwork.setBiases(biases);
-
+		weights = DAOController.getWeightsFromDatabase();
+		biases = DAOController.getBiasesFromDatabase();
+		neuralNetwork.setWeights(weights);
+		neuralNetwork.setBiases(biases);
 	}
 
 	@Override
