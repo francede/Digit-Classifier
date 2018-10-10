@@ -27,6 +27,7 @@ public class NodeAndSynapseAccessObject {
 	}
 
 	public void createAllNodes(ArrayList<double[]> biasesOfLayers) {
+		System.out.println("Inserting nodes to database");
 		Session session = factory.openSession();
 		Transaction transaction = null;
 		try {
@@ -34,14 +35,15 @@ public class NodeAndSynapseAccessObject {
 			for (int i = 0; i < biasesOfLayers.size(); i++) {
 				double[] biasesOfLayer = biasesOfLayers.get(i);
 				for (int j = 0; j < biasesOfLayer.length; j++) {
-					if (j % 1000 == 0) {
-						System.out.println("Inserting bias no. " + j + "/" + biasesOfLayer.length + " of layer " + i + "/" + biasesOfLayers.size());
+					if (j % 1000 == 0 & j != 0) {
+						System.out.println("Inserting node no. " + j + "/" + biasesOfLayer.length + " of layer " + i + "/" + biasesOfLayers.size());
 					}
 					Node n = new Node(0, j, i, biasesOfLayer[j]);
 					session.saveOrUpdate(n);
 				}
 			}
 			transaction.commit();
+			System.out.println("Done inserting nodes to database");
 		} catch (Exception e) {
 			if (transaction != null)
 				transaction.rollback();
@@ -52,6 +54,7 @@ public class NodeAndSynapseAccessObject {
 	}
 
 	public void createAllSynapses(ArrayList<double[]> weightsOfLayers) {
+		System.out.println("Inserting synapses to database");
 		Session session = factory.openSession();
 		Transaction transaction = null;
 		try {
@@ -60,14 +63,15 @@ public class NodeAndSynapseAccessObject {
 			for (int i = 0; i < weightsOfLayers.size(); i++) {
 				double[] weightsOfLayer = weightsOfLayers.get(i);
 				for (int j = 0; j < weightsOfLayer.length; j++) {
-					if (j % 1000 == 0) {
-						System.out.println("Inserting weight no. " + j + "/" + weightsOfLayer.length + " of synapse layer " + i + "/" + weightsOfLayers.size());
+					if (j % 1000 == 0 & j != 0) {
+						System.out.println("Inserting synapse no. " + j + "/" + weightsOfLayer.length + " of synapse layer " + i + "/" + weightsOfLayers.size());
 					}
 					Synapse s = new Synapse(0, i, weightsOfLayer[j]);
 					session.saveOrUpdate(s);
 				}
 			}
 			transaction.commit();
+			System.out.println("Done inserting synapses to database");
 			
 		} catch (Exception e) {
 			if (transaction != null)
