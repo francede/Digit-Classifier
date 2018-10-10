@@ -21,8 +21,8 @@ import javafx.embed.swing.SwingFXUtils;
 public class NeuroCanvas extends Canvas {
 
 	private GraphicsContext gc;
-	//private final double insideImgSize = 20;
-	//private final double backGroundImgSize = 28;
+	private final double INSIDEIMGSIZE = 20;
+	private final double BACKGROUNDIMGSIZE = 28;
 
 	/**
 	 * Constructor that sets the graphics context for the canvas and the drawing properties.
@@ -123,9 +123,11 @@ public class NeuroCanvas extends Canvas {
 	}
 
 	/**
-	 * Scales the image given as parameter to the size defined as INSIDEIMGSIZE and sets it to the center
-	 *  of white background sized BACKGROUNDIMGSIZE.
+	 * Scales the image given as parameter to the size defined as insideImgSize and sets it to the center
+	 *  of white background sized backGroundImgSize.
 	 * @param sourceImg represents the image to be scaled and centered.
+	 * @param insideImgSize represents the size of the image that is placed on the white background
+	 * @param backGroundImgSize is the size of the background on which the other image is placed
 	 * @return certain size of image set on a certain size of white background.
 	 */
 	public BufferedImage scale(BufferedImage sourceImg, double insideImgSize, double backGroundImgSize) {
@@ -208,11 +210,10 @@ public class NeuroCanvas extends Canvas {
 	 *
 	 */
 	public double[] getPixels() {
-		int [] tempArray = getImagePixels(scale((crop(canvasToBimg())), 20, 28));
+		int [] tempArray = getImagePixels(scale((crop(canvasToBimg())), INSIDEIMGSIZE, BACKGROUNDIMGSIZE));
 		double[] rgbArray = new double[tempArray.length];
 		for (int i = 0; i < rgbArray.length; i++) {
 			rgbArray[i] = 255 - getRGBblue(tempArray[i]);
-			System.out.println(rgbArray[i]);
 			if (rgbArray[i] == 255) {
 				rgbArray[i] = rgbArray[i] - 5 * Math.random();
 			}
