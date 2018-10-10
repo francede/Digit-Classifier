@@ -45,7 +45,7 @@ public class ControllerImpl implements Controller {
 		printPixelsOfOneImage(inputData);
 		return predictions;
 	}
-	
+
 	@Override
 	public double[] makePrediction(InputData inputData) {
 		double[] predictions = null;
@@ -53,9 +53,9 @@ public class ControllerImpl implements Controller {
 		predictions = Matrix.matrixToArray(matrix);
 		return predictions;
 	}
-	
+
 	/**
-	 * Prints the pixel values to the console from the file and from the drawn image (range: 0-1). 
+	 * Prints the pixel values to the console from the file and from the drawn image (range: 0-1).
 	 * Useful if you want to compare the actual pixel values.
 	 * @param inputData
 	 */
