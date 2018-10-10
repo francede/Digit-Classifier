@@ -37,7 +37,7 @@ public class NeuroCanvas extends Canvas {
 		gc.setStroke(Color.rgb(0, 0, 0, 0.5));
 		gc.setLineCap(StrokeLineCap.ROUND);
 		DropShadow ds = new DropShadow();
-		ds.setRadius(10);
+		ds.setRadius(5);
 		ds.setColor(Color.rgb(0, 0, 0, 0.5));
 		gc.setEffect(ds);
 		gc.setLineWidth(20);

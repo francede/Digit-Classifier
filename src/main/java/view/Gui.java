@@ -251,9 +251,9 @@ public class Gui extends Application {
 		buttonPane.getChildren().addAll(right, wrong);
 		Group root = new Group();
 		NeuroCanvas imageCanvas = new NeuroCanvas(280, 280);
-		//imageCanvas.showImage(canvas.takeSnapShot());
-		BufferedImage scaledImage = canvas.scale((canvas.crop(canvas.canvasToBimg())), 200, 280);
-		imageCanvas.showImage(canvas.writePixels((canvas.getImagePixels(scaledImage)), 280));
+		imageCanvas.showImage(canvas.takeSnapShot());
+		//BufferedImage scaledImage = canvas.scale((canvas.crop(canvas.canvasToBimg())), 20, 28);
+		//imageCanvas.showImage(canvas.writePixels((canvas.getImagePixels(scaledImage)), 28));
 		BorderPane borderPane = new BorderPane();
     	borderPane.setCenter(imageCanvas);
         borderPane.setBottom(buttonPane);
