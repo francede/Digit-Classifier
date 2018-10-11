@@ -108,8 +108,8 @@ public class ControllerImpl implements Controller {
 
 	/**
 	 * Trains the network with a trainingset that is initialized in another class.
-	 * This is useful if you want to train different networks quickly as the
-	 * initialization (reading from a file) takes a lot of time.
+	 * This is useful if you want to train multiple networks quickly as
+	 * reading images from a file takes a lot of time.
 	 * @param trainingSet
 	 */
 	public void trainNetworkTimeEfficiently(ArrayList<InputData> trainingSet) {

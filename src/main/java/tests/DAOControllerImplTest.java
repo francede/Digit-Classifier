@@ -2,69 +2,37 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import controller.Controller;
-import controller.ControllerImpl;
 import model.Matrix;
 import model.NeuralNetwork;
 import model.NeuralNetworkImpl;
-import orm.DAOController;
 import orm.DAOControllerImpl;
 
 public class DAOControllerImplTest {
 
 	public static DAOControllerImpl DAOController;
+	private int[] network_layer_sizes = new int[] { 10, 8, 10 };
+	private NeuralNetwork neuralNetwork;
 
 	@BeforeClass
 	public static void initTest() {
 		DAOController = new DAOControllerImpl();
 	}
-
-	@Ignore("Replaced by testBiasValidity")
-	@Test
-	public void getBiasesFromNeuralNetworkAndPutThemToDataBase() {
-		System.out.println("TEST BEGIN: getBiasesFromNeuralNetworkAndPutThemToDataBase()");
-		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(new int[] { 784, 8, 10 });
+	
+	@Before
+	public void initNetwork() {
+		System.out.println("--TEST BEGINS--");
+		neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
 		neuralNetwork.reset();
-		Matrix[] biases = neuralNetwork.getBiases();
-		for (int i = 0; i < biases.length; i++) {
-			double[] layerAsDoubles = Matrix.matrixToArray(biases[i]);
-			System.out.println("Layer " + i + " biases: ");
-			for (int j = 0; j < layerAsDoubles.length; j++) {
-				System.out.println("[" + j + "]: " + layerAsDoubles[j]);
-			}
-		}
-		System.out.println("TEST END: getBiasesFromNeuralNetworkAndPutThemToDataBase()");
-//		DAOController.putBiasesToDatabase(biases);
-//		DAOController.getBiasesFromDatabase();
 	}
-
-	@Ignore("Replaced by testWeightValidity")
+	
+	/**
+	 * Puts biases to the database and recovers them, and compares the data.
+	 */
 	@Test
-	public void getWeightsFromNeuralNetworkAndPutThemToDataBase() {
-		System.out.println("TEST BEGIN: getWeightsFromNeuralNetworkAndPutThemToDataBase()");
-		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(new int[] { 784, 8, 10 });
-		neuralNetwork.reset();
-		Matrix[] biases = neuralNetwork.getWeights();
-		for (int i = 0; i < biases.length; i++) {
-			double[] layerAsDoubles = Matrix.matrixToArray(biases[i]);
-			System.out.println("Weights between layers: " + i + " and " + (1 + i));
-			for (int j = 0; j < layerAsDoubles.length; j++) {
-				System.out.println("[" + j + "]: " + layerAsDoubles[j]);
-			}
-		}
-		System.out.println("TEST END: getWeightsFromNeuralNetworkAndPutThemToDataBase()");
-//		DAOController.putWeightsToDatabase(biases);
-	}
-
-	@Test
-	public void testBiasValidity() {
-		int[] network_layer_sizes = new int[] { 10, 8, 10 };
-		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
-		neuralNetwork.reset();
+	public void testBiasValidity() {		
 		Matrix[] biasesFromNeuralNetwork = neuralNetwork.getBiases();
 		DAOController.putBiasesToDatabase(biasesFromNeuralNetwork);
 		Matrix[] biasesFromDatabase = DAOController.getBiasesFromDatabase();
@@ -83,12 +51,12 @@ public class DAOControllerImplTest {
 			}
 		}
 	}
-
+	
+	/**
+	 * Puts weights to the database and recovers them, and compares the data.
+	 */
 	@Test
 	public void testWeightValidity() {
-		int[] network_layer_sizes = new int[] { 10, 8, 10 };
-		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
-		neuralNetwork.reset();
 		Matrix[] weightsFromNeuralNetwork = neuralNetwork.getWeights();
 		DAOController.putWeightsToDatabase(weightsFromNeuralNetwork);
 		Matrix[] weightsFromDatabase = DAOController.getWeightsFromDatabase(network_layer_sizes);
@@ -107,12 +75,12 @@ public class DAOControllerImplTest {
 			}
 		}
 	}
-
+	
+	/**
+	 * Puts biases and weights to the database and deletes them, and validates that the database is empty.
+	 */
 	@Test
 	public void testDeleteAllDataFromDatabase() {
-		int[] network_layer_sizes = { 10, 8, 10 };
-		NeuralNetwork neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
-		neuralNetwork.reset();
 		Matrix[] weightsFromNeuralNetwork = neuralNetwork.getWeights();
 		DAOController.putWeightsToDatabase(weightsFromNeuralNetwork);
 		Matrix[] biasesFromNeuralNetwork = neuralNetwork.getBiases();
