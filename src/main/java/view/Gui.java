@@ -189,7 +189,7 @@ public class Gui extends Application {
 	private void trainingPage() {
 		Label labelP = new Label("How many images?");
 		Slider sliderP = new Slider();
-	    sliderP.setMin(0);
+	    sliderP.setMin(1);
 	    sliderP.setMax(60000);
 	    Label valueP = new Label(Integer.toString((int)sliderP.getValue()));
 	    Label labelLR = new Label("Learning rate");
