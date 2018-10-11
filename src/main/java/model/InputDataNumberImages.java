@@ -7,6 +7,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * InputData implementing class that is specialized to numbers
+ *
+ */
 public class InputDataNumberImages implements InputData {
 
 	private final double[] input;

@@ -1,5 +1,8 @@
 package model;
-
+/**
+ * InputData implementing class that is specialized to boolean type data
+ *
+ */
 public class InputDataBoolean implements InputData{
 	private final double[] input;
 	private double[] target;

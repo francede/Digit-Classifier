@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import controller.Controller;
 import controller.ControllerImpl;
+import javafx.concurrent.Task;
 import model.*;
 import view.Gui;
 
@@ -30,12 +31,6 @@ public class ControllerTest {
 		controller = new ControllerImpl(null);
 	}
 
-	@Test
-	public void testTrainNetwork() {
-		controller.trainNetwork(24);
-	}
-
-	@Ignore
 	@Test
 	public void tryPredictionsWithTestSetNumbers() {
 		System.out.println("tryPredictionsWithTestSetNumbers");
@@ -57,7 +52,7 @@ public class ControllerTest {
 					predictionChance = predictions[i];
 					prediction = i;
 				}
-				System.out.println("[" + i + "]: " + predictions[i]);
+				System.out.printf(("[" + i + "]: %.5f \n"), predictions[i]);
 			}
 			if (Integer.parseInt(inputdata.getLabel()) == prediction) {
 				amountOfPredictionsThatGotRight++;
@@ -65,8 +60,8 @@ public class ControllerTest {
 			}
 			totalPredictions[prediction]++;
 
-//			System.out.println("Label: " + inputdata.getLabel() + ", prediction: " + prediction);
-//			System.out.println();
+			System.out.println("Label: " + inputdata.getLabel() + ", prediction: " + prediction);
+			System.out.println();
 		}
 		System.out.println("---------------------------------");
 		System.out.println("amountOfPredictionsThatGotRight: " + amountOfPredictionsThatGotRight);
@@ -75,35 +70,33 @@ public class ControllerTest {
 		}
 		System.out.println("---------------------------------");
 	}
-
+	
+	// @Ignore("This should be implemented as it's own class")
 	@Test
 	public void tryPredictionsWithTestSetNumbersAndDifferentHiddenLayerCombinations() {
 		System.out.println("tryPredictionsWithTestSetNumbersAndDifferentHiddenLayerCombinations");
 		String fileName = "analyze.txt";
 		BufferedWriter writer;
-		int amountOfPredictions = 10000;
+		int amountOfPredictions = 100;
 		// Iterate through different layer combinations: 1 and 2 layers, sizes varies
 		ArrayList<Integer> network_layer_sizes = new ArrayList();
 		long startTime = System.nanoTime();
 		System.out.println("Fetching images from files (this might take some time)");
-		ArrayList<InputData> trainingSet = controller.getIDXImageFileReader().getMultipleImagesAsPixels(60000);
+		ArrayList<InputData> trainingSet = controller.getIDXImageFileReader().getMultipleImagesAsPixels(100);
 		ArrayList<InputData> testingSet = controller.getIDXImageFileReader()
 				.getTheFirstXAmountOfNumbersFromTrainingFile(amountOfPredictions);
 		long endTime = System.nanoTime();
 		long duration = (endTime - startTime);
 		System.out.printf("Fetching images done. Took %.2f seconds.\n", duration * Math.pow(10, -9));
 		System.out.println("Training and analyzing networks (this might take some time)");
-		
-		
-
 		network_layer_sizes.add(2);
 		network_layer_sizes.add(2);
 		int n = network_layer_sizes.size() - 1;
 
 		for (int i2 = 1; i2 < network_layer_sizes.size(); i2++) {
-			for (int j = 288; j <= 384; j += 32) {
+			for (int j = 2; j <= 4; j *= 2) {
 				network_layer_sizes.set(n - i2, j);
-				for (int k = 16; k <= 64; k += 16) {
+				for (int k = 2; k <= 4; k *= 2) {
 					long startTimeOfTraining = System.nanoTime();
 					network_layer_sizes.set(n, k);
 					int[] network_layer_sizes_array = new int[4];
@@ -128,7 +121,6 @@ public class ControllerTest {
 						for (InputData inputdata : testingSet) {
 							inputdata = (InputDataNumberImages) inputdata;
 							double[] predictions = controller.makePrediction(inputdata);
-//							System.out.println("Predictions: ");
 							int prediction = 0;
 							double predictionChance = 0;
 							for (int i = 0; i < predictions.length; i++) {
@@ -136,7 +128,6 @@ public class ControllerTest {
 									predictionChance = predictions[i];
 									prediction = i;
 								}
-//								System.out.println("[" + i + "]: " + predictions[i]);
 							}
 							if (Integer.parseInt(inputdata.getLabel()) == prediction) {
 								amountOfPredictionsThatGotRight++;
@@ -147,11 +138,9 @@ public class ControllerTest {
 						totalAmountOfPredictionsThatGotRight += amountOfPredictionsThatGotRight;
 					}
 					long endTimeOfTraining = System.nanoTime();
-
 					try {
 						FileWriter fileWriter = new FileWriter(fileName, true);
 						PrintWriter printWriter = new PrintWriter(fileWriter);
-//						printWriter.println("---------------------------------");
 						duration = endTimeOfTraining - startTimeOfTraining;
 						
 						printWriter.println(
@@ -164,12 +153,6 @@ public class ControllerTest {
 						printWriter.printf("Took %.2f seconds", duration * Math.pow(10, -9));
 						printWriter.println();
 						printWriter.println();
-//						for (int i = 0; i < predictionsThatGotRight.length; i++) {
-//							System.out.println("[" + i + "]: " + predictionsThatGotRight[i] + "/"
-//									+ totalPredictionsPerOutputType[i]);
-//						}
-//						printWriter.println("---------------------------------");
-
 						printWriter.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block

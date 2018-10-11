@@ -12,9 +12,6 @@ import org.hibernate.cfg.Configuration;
 public class NodeAndSynapseAccessObject {
 	private static SessionFactory factory = null;
 
-	@SuppressWarnings({})
-	private static SessionFactory session;
-
 	public NodeAndSynapseAccessObject() {
 		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
 		try {
