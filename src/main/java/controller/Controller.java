@@ -1,7 +1,5 @@
 package controller;
 
-import java.util.ArrayList;
-
 import javafx.concurrent.Task;
 import model.InputData;
 

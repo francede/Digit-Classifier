@@ -11,7 +11,6 @@ import org.junit.Test;
 import controller.IDXImageFileReader;
 import controller.IDXImageFileReaderImpl;
 import model.InputData;
-import model.InputDataNumberImages;
 
 public class IDXImageFileReaderImplTest {
 	
@@ -40,7 +39,7 @@ public class IDXImageFileReaderImplTest {
 	
 //	@Ignore("It is not necessary to create PNG files unless you want to validate the pictures visually")
 	@Test public void createPNGfiles() {
-		IDXReader.createPNGFiles(5);
+		IDXReader.createPNGFiles(10, 5, 2, 3);
 	}
 	
 	@Test public void checkLabelValues() {

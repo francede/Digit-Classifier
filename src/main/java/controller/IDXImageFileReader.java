@@ -3,7 +3,6 @@ package controller;
 import java.util.ArrayList;
 
 import model.InputData;
-import model.InputDataNumberImages;
 
 /**
  * Reads and returns number images as ImageAsPixelsAndLabel objects from the training set.
@@ -36,8 +35,17 @@ public interface IDXImageFileReader {
 	/**
 	 * If you want to verify the numbers from the training set. 
 	 * Starts extracting from the beginning of the set.
+	 * @param amount The amount of produced PNG's
 	 */
 	public void createPNGFiles(int amount);
+	
+	/**
+	 * If you want to verify the numbers from the training set. 
+	 * Starts extracting from the beginning of the set.
+	 * @param amount the amount of produced PNG's
+	 * @param restricOutputToTheseLabels If you want to output only certain numbers
+	 */
+	public void createPNGFiles(int amount, int... restrictOutputToTheseLabels);
 	
 	/**
 	 * For testing if the neural network can predict correctly the same number it learned from.

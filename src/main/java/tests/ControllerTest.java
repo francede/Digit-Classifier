@@ -1,26 +1,14 @@
 package tests;
 
-import static org.junit.Assert.*;
-
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import controller.Controller;
 import controller.ControllerImpl;
-import javafx.concurrent.Task;
 import model.*;
-import view.Gui;
 
 public class ControllerTest {
 
@@ -31,13 +19,19 @@ public class ControllerTest {
 		controller = new ControllerImpl(null);
 	}
 
+	/**
+	 * Trains a network with default layer sizes and tests it with a number training
+	 * set. Prints the predictions of each test number to console.
+	 */
 	@Test
 	public void tryPredictionsWithTestSetNumbers() {
 		System.out.println("tryPredictionsWithTestSetNumbers");
+		int amountOfTrainingData = 10000;
+		int amountOfTestData = 10;
 		controller.resetNetwork();
-		controller.trainNetwork(100);
+		controller.trainNetwork(amountOfTrainingData);
 		ArrayList<InputData> inputdataList = controller.getIDXImageFileReader()
-				.getTheFirstXAmountOfNumbersFromTrainingFile(100);
+				.getTheFirstXAmountOfNumbersFromTrainingFile(amountOfTestData);
 		int amountOfPredictionsThatGotRight = 0;
 		int[] predictionsThatGotRight = new int[10];
 		int[] totalPredictions = new int[10];
@@ -70,70 +64,81 @@ public class ControllerTest {
 		}
 		System.out.println("---------------------------------");
 	}
-	
-	// @Ignore("This should be implemented as it's own class")
+
+	/**
+	 * Creates multiple neural networks with variable hidden layer sizes and
+	 * produces a file with performance results. The hidden layer sizes are
+	 * multiplied by 2 in each iteration.
+	 */
+//	@Ignore("This should be implemented as a separate class")
 	@Test
 	public void tryPredictionsWithTestSetNumbersAndDifferentHiddenLayerCombinations() {
 		System.out.println("tryPredictionsWithTestSetNumbersAndDifferentHiddenLayerCombinations");
 		String fileName = "analyze.txt";
-		BufferedWriter writer;
-		int amountOfPredictions = 100;
-		// Iterate through different layer combinations: 1 and 2 layers, sizes varies
-		ArrayList<Integer> network_layer_sizes = new ArrayList();
+		int amountOfTrainingData = 100;
+		int amountOfTestData = 100;
+		int amountOfRetrainingForEachNetwork = 10;
+		int inputLayerSize = 784;
+		int outputLayerSize = 10;
+		int hiddenLayer1StartingSize = 2;
+		int hiddenLayer1EndingSize = 8;
+		int hiddenLayer2StartingSize = 2;
+		int hiddenLayer2EndingSize = 8;
+
+		ArrayList<Integer> network_layer_sizes = new ArrayList<Integer>();
 		long startTime = System.nanoTime();
 		System.out.println("Fetching images from files (this might take some time)");
-		ArrayList<InputData> trainingSet = controller.getIDXImageFileReader().getMultipleImagesAsPixels(100);
+		ArrayList<InputData> trainingSet = controller.getIDXImageFileReader()
+				.getMultipleImagesAsPixels(amountOfTrainingData);
 		ArrayList<InputData> testingSet = controller.getIDXImageFileReader()
-				.getTheFirstXAmountOfNumbersFromTrainingFile(amountOfPredictions);
+				.getTheFirstXAmountOfNumbersFromTrainingFile(amountOfTestData);
 		long endTime = System.nanoTime();
 		long duration = (endTime - startTime);
 		System.out.printf("Fetching images done. Took %.2f seconds.\n", duration * Math.pow(10, -9));
 		System.out.println("Training and analyzing networks (this might take some time)");
-		network_layer_sizes.add(2);
-		network_layer_sizes.add(2);
+//		network_layer_sizes.add(2);
+//		network_layer_sizes.add(2);
 		int n = network_layer_sizes.size() - 1;
 
-		for (int i2 = 1; i2 < network_layer_sizes.size(); i2++) {
-			for (int j = 2; j <= 4; j *= 2) {
-				network_layer_sizes.set(n - i2, j);
-				for (int k = 2; k <= 4; k *= 2) {
+		for (int i = 1; i < network_layer_sizes.size(); i++) {
+			for (int j = hiddenLayer1StartingSize; j <= hiddenLayer1EndingSize; j *= 2) {
+				network_layer_sizes.set(n - i, j);
+				for (int k = hiddenLayer2StartingSize; k <= hiddenLayer2EndingSize; k *= 2) {
 					long startTimeOfTraining = System.nanoTime();
 					network_layer_sizes.set(n, k);
 					int[] network_layer_sizes_array = new int[4];
-					network_layer_sizes_array[0] = 784;
+					network_layer_sizes_array[0] = inputLayerSize;
 					network_layer_sizes_array[1] = network_layer_sizes.get(0);
 					network_layer_sizes_array[2] = network_layer_sizes.get(1);
-					network_layer_sizes_array[3] = 10;
-					
+					network_layer_sizes_array[3] = outputLayerSize;
+
 					int totalAmountOfPredictionsThatGotRight = 0;
-					
-					for (int reTrain = 0; reTrain < 10; reTrain++) {
 
+					for (int reTrain = 0; reTrain < amountOfRetrainingForEachNetwork; reTrain++) {
 						controller.setNetwork_layer_sizes(network_layer_sizes_array);
-
 						controller.resetNetwork();
 						controller.trainNetworkTimeEfficiently(trainingSet);
 
 						int amountOfPredictionsThatGotRight = 0;
-						int[] predictionsThatGotRight = new int[10];
-						int[] totalPredictionsPerOutputType = new int[10];
-						
+						int[] predictionsThatGotRight = new int[outputLayerSize];
+						int[] totalPredictionsPerOutput = new int[outputLayerSize];
+
 						for (InputData inputdata : testingSet) {
 							inputdata = (InputDataNumberImages) inputdata;
 							double[] predictions = controller.makePrediction(inputdata);
-							int prediction = 0;
+							int predictionWithHighestChance = 0;
 							double predictionChance = 0;
-							for (int i = 0; i < predictions.length; i++) {
-								if (predictions[i] > predictionChance) {
-									predictionChance = predictions[i];
-									prediction = i;
+							for (int i2 = 0; i2 < predictions.length; i2++) {
+								if (predictions[i2] > predictionChance) {
+									predictionChance = predictions[i2];
+									predictionWithHighestChance = i2;
 								}
 							}
-							if (Integer.parseInt(inputdata.getLabel()) == prediction) {
+							if (Integer.parseInt(inputdata.getLabel()) == predictionWithHighestChance) {
 								amountOfPredictionsThatGotRight++;
-								predictionsThatGotRight[prediction]++;
+								predictionsThatGotRight[predictionWithHighestChance]++;
 							}
-							totalPredictionsPerOutputType[prediction]++;
+							totalPredictionsPerOutput[predictionWithHighestChance]++;
 						}
 						totalAmountOfPredictionsThatGotRight += amountOfPredictionsThatGotRight;
 					}
@@ -142,13 +147,14 @@ public class ControllerTest {
 						FileWriter fileWriter = new FileWriter(fileName, true);
 						PrintWriter printWriter = new PrintWriter(fileWriter);
 						duration = endTimeOfTraining - startTimeOfTraining;
-						
+
 						printWriter.println(
 								"Layersizes: " + network_layer_sizes_array[1] + " " + network_layer_sizes_array[2]);
 						printWriter.printf(
 								"amountOfPredictionsThatGotRight: " + totalAmountOfPredictionsThatGotRight + "/"
-										+ amountOfPredictions * 10 + " (%.2f %%)\n",
-								(totalAmountOfPredictionsThatGotRight / (double) (amountOfPredictions * 10) * 100));
+										+ amountOfTestData * 10 + " (%.2f %%)\n",
+								(totalAmountOfPredictionsThatGotRight
+										/ (double) (amountOfTestData * amountOfRetrainingForEachNetwork) * 100));
 						printWriter.println();
 						printWriter.printf("Took %.2f seconds", duration * Math.pow(10, -9));
 						printWriter.println();

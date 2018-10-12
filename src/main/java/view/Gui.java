@@ -3,7 +3,6 @@ package view;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import java.awt.image.BufferedImage;
 import controller.Controller;
 import controller.ControllerImpl;
 import javafx.application.Application;
@@ -23,7 +22,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.image.WritableImage;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 

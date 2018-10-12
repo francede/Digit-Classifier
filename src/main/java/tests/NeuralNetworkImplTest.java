@@ -3,14 +3,12 @@ package tests;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import model.InputData;
 import model.InputDataBoolean;
 import model.Matrix;
 import model.Matrix.MapOperation;
-import model.NeuralNetwork;
 import model.NeuralNetworkImpl;
 
 public class NeuralNetworkImplTest {

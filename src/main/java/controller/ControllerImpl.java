@@ -1,8 +1,6 @@
 package controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import javafx.concurrent.Task;
 import model.InputData;
 import model.InputDataNumberImages;

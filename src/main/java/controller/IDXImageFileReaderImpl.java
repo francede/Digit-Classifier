@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
@@ -27,8 +27,10 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	private FileInputStream inImage = null;
 	private FileInputStream inLabel = null;
 
-	private String inputImagePath = "data/train-images/train-images.idx3-ubyte";
-	private String inputLabelPath = "data/train-images/train-labels.idx1-ubyte";
+	private String trainsetImagePath = "data/train-images/train-images.idx3-ubyte";
+	private String trainsetLabelPath = "data/train-images/train-labels.idx1-ubyte";
+	private String testsetImagePath = "data/train-images/testset-images.idx3-ubyte";
+	private String testsetLabelPath = "data/train-images/testset-labels.idx1-ubyte";
 	private String outputPNGPath = "data/train-images/";
 
 	private int numberOfImages;
@@ -42,13 +44,16 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 		numberOfImagesRead = 0;
 	}
 
+	@SuppressWarnings("unused")
 	private void openFileStreams() {
 		try {
-			inImage = new FileInputStream(inputImagePath);
-			inLabel = new FileInputStream(inputLabelPath);
+			inImage = new FileInputStream(trainsetImagePath);
+			inLabel = new FileInputStream(trainsetLabelPath);
 
-			// Although magicNumberImages isn't used in this class, it must be read from the
-			// bit stream.
+			/*
+			 * Although magicNumberImages isn't used in this class, it must be read from the
+			 * bit stream.
+			 */
 			int magicNumberImages = (inImage.read() << 24) | (inImage.read() << 16) | (inImage.read() << 8)
 					| (inImage.read());
 			numberOfImages = (inImage.read() << 24) | (inImage.read() << 16) | (inImage.read() << 8) | (inImage.read());
@@ -56,9 +61,10 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			numberOfColumns = (inImage.read() << 24) | (inImage.read() << 16) | (inImage.read() << 8)
 					| (inImage.read());
 
-			// Although magicNumberLabels or numberOfLabels aren't used in this class, they
-			// must be read from the
-			// bit stream.
+			/*
+			 * Although magicNumberLabels or numberOfLabels aren't used in this class, they
+			 * must be read from the bit stream.
+			 */
 			int magicNumberLabels = (inLabel.read() << 24) | (inLabel.read() << 16) | (inLabel.read() << 8)
 					| (inLabel.read());
 			int numberOfLabels = (inLabel.read() << 24) | (inLabel.read() << 16) | (inLabel.read() << 8)
@@ -154,54 +160,41 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 
 	@Override
 	public void createPNGFiles(int amount) {
+		createPNGFiles(amount, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+	}
 
-		String inputImagePath = "data/train-images/train-images.idx3-ubyte";
-		String inputLabelPath = "data/train-images/train-labels.idx1-ubyte";
-		String outputPath = "data/train-images/";
-
+	@Override
+	public void createPNGFiles(int amount, int... restrictOutputToTheseLabels) {
 		int[] hashMap = new int[10];
-
 		try {
-
 			BufferedImage image = new BufferedImage(numberOfColumns, numberOfRows, BufferedImage.TYPE_INT_ARGB);
 			int numberOfPixels = numberOfRows * numberOfColumns;
 			int[] imgPixels = new int[numberOfPixels];
 			System.out.println("Number of pixels: " + numberOfPixels);
 			System.out.println("NumberofRows: " + numberOfRows);
 			System.out.println("numberOfColumns: " + numberOfColumns);
-
-			for (int i = 0; i < amount; i++) {
-
+			for (int i = 0; i < amount;) {
 				if (i % 100 == 0) {
 					System.out.println("Number of images extracted: " + i);
 				}
-
 				for (int p = 0; p < numberOfPixels; p++) {
 					int gray = 255 - inImage.read();
 					imgPixels[p] = 0xFF000000 | (gray << 16) | (gray << 8) | gray;
 				}
-
 				image.setRGB(0, 0, numberOfColumns, numberOfRows, imgPixels, 0, numberOfColumns);
-
 				int label = inLabel.read();
-
 				hashMap[label]++;
-
-				if (label == 9 | label == 4) {
-					File outputfile = new File(outputPath + label + "_0" + hashMap[label] + ".png");
-
-					System.out.println("Created file " + outputPath + label + "_0" + hashMap[label] + ".png");
-
+				if (Arrays.stream(restrictOutputToTheseLabels).anyMatch(j -> j == label)) {
+					File outputfile = new File(outputPNGPath + label + "_0" + hashMap[label] + ".png");
+					System.out.println("Created file " + outputPNGPath + label + "_0" + hashMap[label] + ".png");
 					ImageIO.write(image, "png", outputfile);
+					i++;
 				}
-
 			}
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -212,12 +205,14 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 	}
 
 	public ArrayList<InputData> getTheFirstXAmountOfNumbersFromTrainingFile(int amount) {
-		this.inputImagePath = "data/train-images/testset-images.idx3-ubyte";
-		this.inputLabelPath = "data/train-images/testset-labels.idx1-ubyte";
+		String s1 = this.trainsetImagePath;
+		String s2 = this.trainsetLabelPath;
+		this.trainsetImagePath = testsetImagePath;
+		this.trainsetLabelPath = testsetLabelPath;
 		resetStream();
 		ArrayList<InputData> multipleImagesAsPixels = getMultipleImagesAsPixels(amount);
-		this.inputImagePath = "data/train-images/train-images.idx3-ubyte";
-		this.inputLabelPath = "data/train-images/train-labels.idx1-ubyte";
+		this.trainsetImagePath = s1;
+		this.trainsetLabelPath = s2;
 		return multipleImagesAsPixels;
 	}
 

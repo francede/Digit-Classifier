@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 import org.hibernate.*;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.*;
-import org.hibernate.cfg.Configuration;
 
 public class NodeAndSynapseAccessObject {
 	private static SessionFactory factory = null;
@@ -56,7 +55,6 @@ public class NodeAndSynapseAccessObject {
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			long startTime = System.nanoTime();
 			for (int i = 0; i < weightsOfLayers.size(); i++) {
 				double[] weightsOfLayer = weightsOfLayers.get(i);
 				for (int j = 0; j < weightsOfLayer.length; j++) {
