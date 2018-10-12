@@ -5,7 +5,6 @@ import javax.persistence.*;
 @Entity
 @Table (name= "node") 
 
-
 public class Node {
 	
 	private int nodeId;
