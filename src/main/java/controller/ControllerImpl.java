@@ -20,14 +20,13 @@ public class ControllerImpl implements Controller {
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
-
-	private int[] network_layer_sizes = {784, 288, 48, 10};
+	private int[] networkLayersizes = {784, 288, 48, 10};
 
 	private double learningRate = 1;
 
 	public ControllerImpl(Gui gui) {
 		this.gui = gui;
-		this.neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
+		this.neuralNetwork = new NeuralNetworkImpl(networkLayersizes);
 		this.neuralNetwork.setLearningRate(learningRate);
 		this.neuralNetwork.reset();
 		this.IDXImageFileReader = new IDXImageFileReaderImpl();
@@ -137,7 +136,7 @@ public class ControllerImpl implements Controller {
 	}
 
 	public void setNetwork_layer_sizes(int[] network_layer_sizes) {
-		this.network_layer_sizes = network_layer_sizes;
+		this.networkLayersizes = network_layer_sizes;
 		this.neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
 		this.neuralNetwork.setLearningRate(learningRate);
 		this.neuralNetwork.reset();
@@ -156,7 +155,7 @@ public class ControllerImpl implements Controller {
 	public void loadNetwork() {
 		Matrix[] weights = null;
 		Matrix[] biases = null;
-		weights = DAOController.getWeightsFromDatabase(this.network_layer_sizes);
+		weights = DAOController.getWeightsFromDatabase(this.networkLayersizes);
 		biases = DAOController.getBiasesFromDatabase();
 		neuralNetwork.setWeights(weights);
 		neuralNetwork.setBiases(biases);

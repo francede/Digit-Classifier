@@ -170,13 +170,11 @@ public class IDXImageFileReaderImpl implements IDXImageFileReader {
 			BufferedImage image = new BufferedImage(numberOfColumns, numberOfRows, BufferedImage.TYPE_INT_ARGB);
 			int numberOfPixels = numberOfRows * numberOfColumns;
 			int[] imgPixels = new int[numberOfPixels];
+			System.out.println("Extracting PNGs");
 			System.out.println("Number of pixels: " + numberOfPixels);
 			System.out.println("NumberofRows: " + numberOfRows);
 			System.out.println("numberOfColumns: " + numberOfColumns);
 			for (int i = 0; i < amount;) {
-				if (i % 100 == 0) {
-					System.out.println("Number of images extracted: " + i);
-				}
 				for (int p = 0; p < numberOfPixels; p++) {
 					int gray = 255 - inImage.read();
 					imgPixels[p] = 0xFF000000 | (gray << 16) | (gray << 8) | gray;
