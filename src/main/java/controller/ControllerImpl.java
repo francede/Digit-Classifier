@@ -135,9 +135,9 @@ public class ControllerImpl implements Controller {
 		neuralNetwork.setLearningRate(learningRate);
 	}
 
-	public void setNetwork_layer_sizes(int[] network_layer_sizes) {
-		this.networkLayersizes = network_layer_sizes;
-		this.neuralNetwork = new NeuralNetworkImpl(network_layer_sizes);
+	public void setNetworkLayerSizes(int[] networkLayerSizes) {
+		this.networkLayersizes = networkLayerSizes;
+		this.neuralNetwork = new NeuralNetworkImpl(networkLayerSizes);
 		this.neuralNetwork.setLearningRate(learningRate);
 		this.neuralNetwork.reset();
 	}

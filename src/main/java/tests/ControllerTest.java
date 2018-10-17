@@ -1,10 +1,6 @@
 package tests;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;

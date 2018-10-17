@@ -12,9 +12,16 @@ import view.Gui;
 
 /**
  * Creates multiple neural networks with variable hidden layer sizes and
- * produces a file with performance results. The hidden layer sizes are
- * multiplied by 2 in each iteration.
+ * produces a file with performance results.
+ * 
+ * By default, the hidden layer sizes are multiplied by 2 in each iteration.
+ * This can be changed by setting the layersize increase operator and layersize
+ * increase amount.
+ * 
+ * To choose how many hidden layers there will be, simply change the arrays
+ * {@link #hiddenLayerStartingSizes} and {@link #hiddenLayerEndingSizes}. The length of the arrays will determine the amount of hidden layers.
  */
+
 public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 	private int amountOfTrainingData = 60000;
 	private int amountOfTestData = 10000;
@@ -24,7 +31,9 @@ public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 	private int outputLayerSize = 10;
 	private int[] hiddenLayerStartingSizes = new int[] { 32 };
 	private int[] hiddenLayerEndingSizes = new int[] { 512 };
-	private int amountOfHiddenLayers = hiddenLayerStartingSizes.length;
+	private int amountOfHiddenLayers;
+	private LayerSizeIncreaseOperators layerSizeIncreaseOperator = LayerSizeIncreaseOperators.MULTIPLY;
+	private int layerSizeIncreaseAmount = 2;
 	private ArrayList<InputData> trainingSet;
 	private ArrayList<InputData> testingSet;
 	private String fileName = "analyzeHiddenLayerAmount1.txt";
@@ -38,6 +47,27 @@ public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 	}
 
 	public void startAnalyze() {
+		amountOfHiddenLayers = hiddenLayerStartingSizes.length;
+		try {
+			isHiddenLayerStartingAndEndingSizesTheSame();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return;
+		}
+		try {
+			FileWriter fileWriter = new FileWriter(fileName, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.println("--------------------------------------------");
+			printWriter.println("Analysis setup: ");
+			printWriter.println("Amount of training data: " + amountOfTrainingData);
+			printWriter.println("Amount of test data: " + amountOfTestData);
+			printWriter.println("Amount of testing for each layer setup: " + amountOfTestingForEachLayerSetup);
+			printWriter.println("Amount of retraining for each network: " + amountOfRetrainingForEachNetwork);
+			printWriter.println();
+			printWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		long startTime = System.nanoTime();
 		System.out.println("Fetching images from files (this might take some time)");
 		trainingSet = super.getIDXImageFileReader().getMultipleImagesAsPixels(amountOfTrainingData);
@@ -48,11 +78,18 @@ public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 		System.out.println("Training and analyzing networks (this might take some time)");
 		startTime = System.nanoTime();
 		System.out.println("Analyzing layer setup: " + Arrays.toString(hiddenLayerStartingSizes));
-		analyzeSingleLayerSetup(hiddenLayerStartingSizes); // The first case is special
+		analyzeSingleLayerSetup(hiddenLayerStartingSizes); // The first setup must be dealt separately because the
+															// recursion skips it
 		analyze(hiddenLayerStartingSizes, amountOfHiddenLayers - 1);
 		endTime = System.nanoTime();
 		duration = endTime - startTime;
 		System.out.printf("Analyze complete. Took %.2f seconds.\n", duration * Math.pow(10, -9));
+	}
+
+	private void isHiddenLayerStartingAndEndingSizesTheSame() throws Exception {
+		if (hiddenLayerEndingSizes.length != hiddenLayerStartingSizes.length) {
+			throw new Exception("Hidden layer starting and ending size arrays are not the same lenght");
+		}
 	}
 
 	private int[] analyze(int[] layerSizes, int layerToGrow) {
@@ -63,7 +100,7 @@ public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 			layerSizes[layerToGrow] = hiddenLayerStartingSizes[layerToGrow];
 			return analyze(layerSizes, layerToGrow - 1); // Grow previous hidden layer
 		} else {
-			layerSizes[layerToGrow] *= 2;
+			layerSizes[layerToGrow] = increaseLayerSize(layerSizes[layerToGrow]);
 			System.out.println("Analyzing layer setup: " + Arrays.toString(layerSizes));
 			analyzeSingleLayerSetup(layerSizes);
 			if (layerToGrow != layerSizes.length - 1) { // Grow the last hidden layer
@@ -74,17 +111,28 @@ public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 		}
 	}
 
+	private int increaseLayerSize(int i) {
+		switch (layerSizeIncreaseOperator) {
+		case MULTIPLY:
+			i *= layerSizeIncreaseAmount;
+			break;
+		case SUM:
+			i += layerSizeIncreaseAmount;
+		}
+		return i;
+	}
+
 	private void analyzeSingleLayerSetup(int[] hiddenLayerSizes) {
 		long startTimeOfAnalyzing = System.nanoTime();
-		int[] network_layer_sizes_array = new int[amountOfHiddenLayers + 2];
-		network_layer_sizes_array[0] = inputLayerSize;
-		for (int i = 1; i < network_layer_sizes_array.length - 1; i++) {
-			network_layer_sizes_array[i] = hiddenLayerSizes[i - 1];
+		int[] networkLayerSizes = new int[amountOfHiddenLayers + 2];
+		networkLayerSizes[0] = inputLayerSize;
+		for (int i = 1; i < networkLayerSizes.length - 1; i++) {
+			networkLayerSizes[i] = hiddenLayerSizes[i - 1];
 		}
-		network_layer_sizes_array[network_layer_sizes_array.length - 1] = outputLayerSize;
+		networkLayerSizes[networkLayerSizes.length - 1] = outputLayerSize;
 		int totalAmountOfPredictionsThatGotRight = 0;
 		for (int reTestLayerSetup = 0; reTestLayerSetup < amountOfTestingForEachLayerSetup; reTestLayerSetup++) {
-			super.setNetwork_layer_sizes(network_layer_sizes_array);
+			super.setNetworkLayerSizes(networkLayerSizes);
 			super.resetNetwork();
 			for (int reTrain = 0; reTrain < amountOfRetrainingForEachNetwork; reTrain++) {
 				super.trainNetworkTimeEfficiently(trainingSet);
@@ -97,10 +145,10 @@ public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 				double[] predictions = super.makePrediction(inputdata);
 				int predictionWithHighestChance = 0;
 				double predictionChance = 0;
-				for (int i2 = 0; i2 < predictions.length; i2++) {
-					if (predictions[i2] > predictionChance) {
-						predictionChance = predictions[i2];
-						predictionWithHighestChance = i2;
+				for (int i = 0; i < predictions.length; i++) {
+					if (predictions[i] > predictionChance) {
+						predictionChance = predictions[i];
+						predictionWithHighestChance = i;
 					}
 				}
 				if (Integer.parseInt(inputdata.getLabel()) == predictionWithHighestChance) {
@@ -118,7 +166,7 @@ public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 			long duration = endTimeOfAnalyzing - startTimeOfAnalyzing;
 			printWriter.print("Layersizes: ");
 			for (int i = 0; i < hiddenLayerSizes.length; i++) {
-				printWriter.print(network_layer_sizes_array[i] + " ");
+				printWriter.print(hiddenLayerSizes[i] + " ");
 			}
 			printWriter.println();
 			printWriter.printf(
@@ -133,8 +181,75 @@ public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 			printWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-
 		}
+	}
+
+	public void setAmountOfTrainingData(int amountOfTrainingData) {
+		this.amountOfTrainingData = amountOfTrainingData;
+	}
+
+	public void setAmountOfTestData(int amountOfTestData) {
+		this.amountOfTestData = amountOfTestData;
+	}
+	
+	/**
+	 * Sets how many times each layer setup will be trained and tested. Bigger amount will produce more accurate results.
+	 * @param amountOfTestingForEachLayerSetup
+	 */
+	public void setAmountOfTestingForEachLayerSetup(int amountOfTestingForEachLayerSetup) {
+		this.amountOfTestingForEachLayerSetup = amountOfTestingForEachLayerSetup;
+	}
+	
+	/**
+	 * Sets how many times the network is trained with the training data.
+	 * @param amountOfRetrainingForEachNetwork
+	 */
+	public void setAmountOfRetrainingForEachNetwork(int amountOfRetrainingForEachNetwork) {
+		this.amountOfRetrainingForEachNetwork = amountOfRetrainingForEachNetwork;
+	}
+
+	public void setInputLayerSize(int inputLayerSize) {
+		this.inputLayerSize = inputLayerSize;
+	}
+
+	public void setOutputLayerSize(int outputLayerSize) {
+		this.outputLayerSize = outputLayerSize;
+	}
+	
+	/**
+	 * Sets the starting point for hidden layer sizes. The array must be of the same length as the ending size array.
+	 * @param hiddenLayerStartingSizes
+	 */
+	public void setHiddenLayerStartingSizes(int[] hiddenLayerStartingSizes) {
+		this.hiddenLayerStartingSizes = hiddenLayerStartingSizes;
+	}
+	
+	/**
+	 * Sets the ending point for hidden layer sizes. The array must be of the same length as the ending size array.
+	 * @param hiddenLayerEndingSizes
+	 */
+	public void setHiddenLayerEndingSizes(int[] hiddenLayerEndingSizes) {
+		this.hiddenLayerEndingSizes = hiddenLayerEndingSizes;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	
+	/**
+	 * Sets the operator for the increasing of layer sizes.
+	 * @param layerSizeIncreaseOperator
+	 */
+	public void setLayerSizeIncreaseOperator(LayerSizeIncreaseOperators layerSizeIncreaseOperator) {
+		this.layerSizeIncreaseOperator = layerSizeIncreaseOperator;
+	}
+	
+	/**
+	 * Sets the amount of how much the layer size will be increased in each iteration by the increase operator.
+	 * @param layerSizeIncreaseAmount
+	 */
+	public void setLayerSizeIncreaseAmount(int layerSizeIncreaseAmount) {
+		this.layerSizeIncreaseAmount = layerSizeIncreaseAmount;
 	}
 
 }

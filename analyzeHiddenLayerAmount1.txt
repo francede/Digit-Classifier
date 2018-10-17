@@ -1,29 +1,26 @@
-Layersizes: 32 10
-amountOfPredictionsThatGotRight: 44960/50000 (89.92 %)
 
-Took 116.60 seconds
 
-Layersizes: 32 10
+Layersizes: 32
 amountOfPredictionsThatGotRight: 45105/50000 (90.21 %)
 
 Took 129.85 seconds
 
-Layersizes: 64 10
+Layersizes: 64
 amountOfPredictionsThatGotRight: 45847/50000 (91.69 %)
 
 Took 197.17 seconds
 
-Layersizes: 128 10
+Layersizes: 128
 amountOfPredictionsThatGotRight: 46328/50000 (92.66 %)
 
 Took 372.76 seconds
 
-Layersizes: 256 10
+Layersizes: 256
 amountOfPredictionsThatGotRight: 46531/50000 (93.06 %)
 
 Took 714.88 seconds
 
-Layersizes: 512 10
+Layersizes: 512
 amountOfPredictionsThatGotRight: 46630/50000 (93.26 %)
 
 Took 1460.81 seconds
