@@ -12,16 +12,11 @@ import orm.DAOControllerImpl;
 import view.Gui;
 
 public class ControllerImpl implements Controller {
-
-	// TODO:
-	// Import and instantiate DAO-controller
-
 	private Gui gui;
 	private NeuralNetwork neuralNetwork;
 	private IDXImageFileReader IDXImageFileReader;
 	private DAOController DAOController;
 	private int[] networkLayersizes = {784, 288, 48, 10};
-
 	private double learningRate = 1;
 
 	public ControllerImpl(Gui gui) {
@@ -39,7 +34,7 @@ public class ControllerImpl implements Controller {
 		InputData inputData = new InputDataNumberImages(imageAsPixels);
 		Matrix matrix = neuralNetwork.makePrediction(inputData);
 		predictions = Matrix.matrixToArray(matrix);
-		printPixelsOfOneImage(inputData);
+//		printPixelsOfOneImage(inputData);
 		return predictions;
 	}
 

@@ -12,14 +12,26 @@ import view.Gui;
 
 /**
  * Creates multiple neural networks with variable hidden layer sizes and
- * produces a file with performance results.
+ * produces a file with performance results.<br><br>
  * 
  * By default, the hidden layer sizes are multiplied by 2 in each iteration.
- * This can be changed by setting the layersize increase operator and layersize
- * increase amount.
+ * This can be changed by setting the {@link #layerSizeIncreaseOperator} and {@link #layerSizeIncreaseAmount}.<br><br>
  * 
  * To choose how many hidden layers there will be, simply change the arrays
- * {@link #hiddenLayerStartingSizes} and {@link #hiddenLayerEndingSizes}. The length of the arrays will determine the amount of hidden layers.
+ * {@link #hiddenLayerStartingSizes} and {@link #hiddenLayerEndingSizes}. The length of the arrays will determine the amount of hidden layers.<br><br>
+ * 
+ * Example usage:<br>
+ * 		ControllerImplLayerSizeAnalyze analyzer = new ControllerImplLayerSizeAnalyze();<br>
+ * 		analyzer.setHiddenLayerStartingSizes(new int[] {30, 30, 30});<br>
+		analyzer.setHiddenLayerEndingSizes(new int[] {90, 90, 90});<br>
+		analyzer.setLayerSizeIncreaseOperator(LayerSizeIncreaseOperators.SUM);<br>
+		analyzer.setLayerSizeIncreaseAmount(30);<br>
+		analyzer.setAmountOfRetrainingForEachNetwork(1);<br>
+		analyzer.setAmountOfTestingForEachLayerSetup(5);<br>
+		analyzer.setAmountOfTrainingData(60000);<br>
+		analyzer.setAmountOfTestData(10000);<br>
+		analyzer.setFileName("NNAnalyzeThreeLayers.txt");<br>
+		analyzer.startAnalyze();<br>
  */
 
 public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
@@ -80,7 +92,7 @@ public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 		System.out.println("Analyzing layer setup: " + Arrays.toString(hiddenLayerStartingSizes));
 		analyzeSingleLayerSetup(hiddenLayerStartingSizes); // The first setup must be dealt separately because the
 															// recursion skips it
-		analyze(hiddenLayerStartingSizes, amountOfHiddenLayers - 1);
+		analyze(hiddenLayerStartingSizes.clone(), amountOfHiddenLayers - 1);
 		endTime = System.nanoTime();
 		duration = endTime - startTime;
 		System.out.printf("Analyze complete. Took %.2f seconds.\n", duration * Math.pow(10, -9));
@@ -102,7 +114,7 @@ public class ControllerImplLayerSizeAnalyze extends ControllerImpl {
 		} else {
 			layerSizes[layerToGrow] = increaseLayerSize(layerSizes[layerToGrow]);
 			System.out.println("Analyzing layer setup: " + Arrays.toString(layerSizes));
-			analyzeSingleLayerSetup(layerSizes);
+//			analyzeSingleLayerSetup(layerSizes);
 			if (layerToGrow != layerSizes.length - 1) { // Grow the last hidden layer
 				return analyze(layerSizes, layerSizes.length - 1);
 			} else {

@@ -25,3 +25,56 @@ amountOfPredictionsThatGotRight: 46630/50000 (93.26 %)
 
 Took 1460.81 seconds
 
+--------------------------------------------
+Analysis setup: 
+Amount of training data: 60000
+Amount of test data: 10000
+Amount of testing for each layer setup: 5
+Amount of retraining for each network: 1
+
+Layersizes: 400 
+amountOfPredictionsThatGotRight: 46677/50000 (93.35 %)
+
+Took 1141.70 seconds
+
+Layersizes: 450 
+amountOfPredictionsThatGotRight: 46668/50000 (93.34 %)
+
+Took 1297.43 seconds
+
+Layersizes: 500 
+amountOfPredictionsThatGotRight: 46664/50000 (93.33 %)
+
+Took 1461.02 seconds
+
+Layersizes: 550 
+amountOfPredictionsThatGotRight: 46664/50000 (93.33 %)
+
+Took 1758.90 seconds
+
+--------------------------------------------
+Analysis setup: 
+Amount of training data: 60000
+Amount of test data: 10000
+Amount of testing for each layer setup: 5
+Amount of retraining for each network: 1
+
+Layersizes: 600 
+amountOfPredictionsThatGotRight: 46734/50000 (93.47 %)
+
+Took 2074.12 seconds
+
+Layersizes: 460 
+amountOfPredictionsThatGotRight: 46579/50000 (93.16 %)
+
+Took 1599.13 seconds
+
+Layersizes: 490 
+amountOfPredictionsThatGotRight: 46631/50000 (93.26 %)
+
+Took 1423.81 seconds
+
+Layersizes: 520 
+amountOfPredictionsThatGotRight: 46708/50000 (93.42 %)
+
+Took 1516.42 seconds
