@@ -1,6 +1,6 @@
 # Handwritten Digit Classifier
 
-This project is an implementation of an multilayer neural network that can learn to recognize handwritten digits as well as digits drawn to the GUI. The implementation allows the network to have any number of layers and nodes, but is currently optimized to work with the [MNIST database](http://yann.lecun.com/exdb/mnist/ "MNIST database.").
+This project is an implementation of an multilayer neural network that can learn to recognize handwritten digits as well as digits drawn to the GUI. It is currently configured and optimized to work with the [MNIST database](http://yann.lecun.com/exdb/mnist/ "MNIST database."), but the implementation allows for any number of inputs, layer sizes and outputs.
 
 #### Network setup and optimization
 ------------
