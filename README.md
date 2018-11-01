@@ -23,7 +23,7 @@ Hibernate is used to map the neural network to SQL-based database and vice versa
 
 The GUI is created with JavaFX. The project implements the MVC architectural pattern. The project is a Maven project. The required libraries are JavaFX, MySQLConnector and Hibernate.
 
-Yann LeCun and Corinna Cortes hold the copyright of MNIST database. The IDX Image File Reader is based on a solution presented in [ Stackoverflow by RayDeeA](https://stackoverflow.com/questions/17279049/reading-a-idx-file-type-in-java "RayDeeA").
+Yann LeCun and Corinna Cortes holds the copyright of MNIST database. The IDX Image File Reader is based on a solution presented in [ Stackoverflow by RayDeeA](https://stackoverflow.com/questions/17279049/reading-a-idx-file-type-in-java "RayDeeA").
 
 
 No external APIs or frameworks are used for the neural network. The project was done as a school project in Metropolia UAS.
